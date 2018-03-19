@@ -45,4 +45,4 @@ Start-XDMonitor C:\Monitoring
 
 ## Contributors
 
-Dave Brett [@dbretty](https://twitter.com/dbretty) | James Kindon [@james_kindon](https://twitter.com/james_kindon)
+Dave Brett [@dbretty](https://twitter.com/dbretty) | James Kindon [@james_kindon](https://twitter.com/james_kindon) | Ryan Butler [@ryan_c_butler](https://twitter.com/Ryan_C_Butler) | David Wilkinson [@WilkyIT](https://twitter.com/WilkyIT) | Gareth Carson [@CitXen](https://twitter.com/CitXen) | Jake Walsh [@jakewalsh90](https://twitter.com/jakewalsh90) | Andy Mallins [@andymallins](https://twitter.com/andymallins)
