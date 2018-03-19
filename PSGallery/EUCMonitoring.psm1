@@ -18,6 +18,7 @@
     David Brett             1.0             07/02/2018          Script Creation
     David Brett             1.1             20/02/2018          Added Error Checking and Single Ring output
     James Kindon            1.2             15/03/2018          Added Provisioning Server Module
+    James Kindon            1.3             17/03/2018          Added WEM, UPS and FAS Modules
 .PARAMETER RootDirectory
     RootDirectory
 .EXAMPLE
@@ -144,6 +145,24 @@ if (test-path $MyConfigFileLocation) {
     # NetScaler Gateway Data
     $TestNetScalerGateway = $MyJSONConfigFile.Citrix.netscalergateway.test
     $NetScalerHostingGateway = $MyJSONConfigFile.Citrix.netscalergateway.netscalerhostinggateway
+    
+    # Citrix WEM Data
+    $TestWEM = $MyJSONConfigFile.Citrix.WEM.test
+    $WEMServers = $MyJSONConfigFile.Citrix.WEM.WEMServers
+    $WEMAgentServicePort = $MyJSONConfigFile.Citrix.WEM.WEMAgentPort
+    $WEMServices = $MyJSONConfigFile.Citrix.WEM.WEMServices
+
+    # Citrix Universal Print Server Data
+    $TestUPS = $MyJSONConfigFile.Citrix.UPS.test
+    $UPSServers = $MyJSONConfigFile.Citrix.UPS.UPSServers
+    $UPSPort = $MyJSONConfigFile.Citrix.UPS.UPSPort
+    $UPSServices = $MyJSONConfigFile.Citrix.UPS.UPSServices
+
+    # Citrix Federated Authentication Server Data
+    $TestFAS = $MyJSONConfigFile.Citrix.FAS.test
+    $FASServers = $MyJSONConfigFile.Citrix.FAS.FASServers
+    $FASPort = $MyJSONConfigFile.Citrix.FAS.FASPort
+    $FASServices = $MyJSONConfigFile.Citrix.FAS.FASServices
 
     # Build HTML Output and Error File Full Path
     $ServerErrorFileFullPath = Join-Path -Path $OutputLocation -ChildPath $ServerErrorFile
@@ -699,6 +718,93 @@ if (test-path $MyConfigFileLocation) {
         "Total Users - $TotalUsers" | Out-File $NetScalerGatewayData -Append
         Write-Verbose "Current NetScaler Gateway Users: $TotalUsers"
     }
+    
+    # Checking WEM Servers
+    if ($TestWEM -eq "yes") {
+        # Increment Infrastructure Components
+        $InfrastructureComponents++
+        $InfrastructureList += "WEM"
+
+        Write-Verbose "Citrix WEM Server Testing enabled"
+        Write-Verbose "Building Citrix WEM Server Data Output Files"
+        $WEMServerData = Join-Path -Path $OutputLocation -ChildPath "WEM-data.txt"
+
+        # Build Donut File Paths for Citrix WEM
+        $WEMDonut = Join-Path -Path $OutputLocation -ChildPath "WEM.html"
+
+        # Remove Existing Data Files
+        if (test-path $WEMServerData) {
+            Remove-Item $PWEMServerData
+        }
+
+        # Test the Workspace Environment Management Infrastructure
+        Test-WEM $WEMServers $WEMAgentServicePort $WEMServices $InfraErrorFileFullPath $WEMServerData
+
+        Write-Verbose "Building Donut Files for Citrix Workspace Environment Management"
+        Build-Donut $WEMDonut $WEMServerData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "WEM"
+
+        # Removing Donut Data File
+        remove-item $WEMServerData -Force
+        Write-Verbose "Deleted Donut Data File $WEMServerData"
+    }
+
+    # Checking Citrix Universal Print Servers
+    if ($TestUPS -eq "yes") {
+        # Increment Infrastructure Components
+        $InfrastructureComponents++
+        $InfrastructureList += "UPS"
+
+        Write-Verbose "Citrix Universal Print Server Testing enabled"
+        Write-Verbose "Building Citrix Universal Print Server Data Output Files"
+        $UPSServerData = Join-Path -Path $OutputLocation -ChildPath "UPSServer-data.txt"
+
+        # Build Donut File Paths for Citrix Universal Print Server
+        $UPSDonut = Join-Path -Path $OutputLocation -ChildPath "UPS.html"
+
+        # Remove Existing Data Files
+        if (test-path $UPSServerData) {
+            Remove-Item $UPSServerData
+        }
+
+        # Test the Universal Print Server Infrastructure
+        Test-UPS $UPSServers $UPSPort $UPSServices $InfraErrorFileFullPath $UPSServerData
+
+        Write-Verbose "Building Donut Files for Citrix Univeral Print Servers"
+        Build-Donut $UPSDonut $UPSServerData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "UPS"
+
+        # Removing Donut Data File
+        remove-item $UPSServerData -Force
+        Write-Verbose "Deleted Donut Data File $UPSServerData"
+    }
+
+   # Checking Citrix Federated Authentication Servers
+   if ($TestFAS -eq "yes") {
+        # Increment Infrastructure Components
+        $InfrastructureComponents++
+        $InfrastructureList += "FAS"
+
+        Write-Verbose "Federated Authentication Server Testing enabled"
+        Write-Verbose "Building Federated Authentication Server Data Output Files"
+        $FASServerData = Join-Path -Path $OutputLocation -ChildPath "FASServer-data.txt"
+
+        # Build Donut File Paths for Federated Authentication Server
+        $FASDonut = Join-Path -Path $OutputLocation -ChildPath "FAS.html"
+
+        # Remove Existing Data Files
+        if (test-path $FASServerData) {
+            Remove-Item $FASServerData
+        }
+
+        # Test the Federated Authentication Server Infrastructure
+        Test-FAS $FASServers $FASPort $FASServices $InfraErrorFileFullPath $FASServerData
+
+        Write-Verbose "Building Donut Files for Citrix Federated Authentication Servers"
+        Build-Donut $FASDonut $FASServerData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "FAS"
+
+        # Removing Donut Data File
+        remove-item $FASServerData -Force
+        Write-Verbose "Deleted Donut Data File $FASServerData"
+    }
   
     # Build the HTML output file
     New-HTMLReport $HTMLOutput $OutputLocation $InfrastructureComponents $InfrastructureList $WorkLoads $RootDirectory
@@ -817,6 +923,12 @@ function Set-EUCMonitoring {
     Invoke-WebRequest -Uri https://raw.githubusercontent.com/dbretty/eucmonitoring/master/Package/modules/Test-XenServer.ps1 -OutFile $MonitoringPath\modules\Test-XenServer.ps1
     Write-Verbose "Pulling Validate-IP.ps1"
     Invoke-WebRequest -Uri https://raw.githubusercontent.com/dbretty/eucmonitoring/master/Package/modules/Validate-IP.ps1 -OutFile $MonitoringPath\modules\Validate-IP.ps1
+    Write-Verbose "Pulling Test-WEM.ps1"
+    Invoke-WebRequest -Uri https://raw.githubusercontent.com/dbretty/eucmonitoring/master/Package/modules/Test-WEM.ps1 -OutFile $MonitoringPath\modules\Test-WEM.ps1
+    Write-Verbose "Pulling Test-FAS.ps1"
+    Invoke-WebRequest -Uri https://raw.githubusercontent.com/dbretty/eucmonitoring/master/Package/modules/Test-FAS.ps1 -OutFile $MonitoringPath\modules\Test-FAS.ps1
+    Write-Verbose "Pulling Test-UPS.ps1"
+    Invoke-WebRequest -Uri https://raw.githubusercontent.com/dbretty/eucmonitoring/master/Package/modules/Test-UPS.ps1 -OutFile $MonitoringPath\modules\Test-UPS.ps1
 
     # Set the old Verbose Preference back to original value
     $VerbosePreference = $OldVerbosePreference
