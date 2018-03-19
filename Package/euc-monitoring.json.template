@@ -1,12 +1,6 @@
 {
-    "Global": {
-        "xdbrokerprimary": "broker.domain.com",
-        "xdbrokerfailover": "broker1.domain.com",
-        "workloads": "server,desktop",
-        "controlup": "yes"
-    },
     "WebData": {
-        "outputlocation": "c:\\monitoring",
+        "outputlocation": "c:\\webdata",
         "htmldatafile": "htmldata.txt",
         "htmloutputfile": "index.html",
         "servererrorfile": "server-errors.txt",
@@ -19,67 +13,75 @@
         "Infradonutsize": 160,
         "infraerrorfile": "infra-errors.txt"
     },
-    "server": {
-        "bootthreshold": "7",
-        "donutfile": "donut.txt",
-        "highload": 8000
-    },
-    "desktop": {
-        "bootthreshold": "31",
-        "donutfile": "donut.txt",
-        "highload": 8000
-    },
-    "xenserver": {
-        "test": "yes",
-        "poolmasters": "1.1.1.1,2.2.2.2",
-        "poolmasterport": "80",
-        "username": "root",
-        "password": "password"
-    },
-    "storefront": {
-        "test": "yes",
-        "storefrontservers": "web1.domain.com,web2.domain.com",
-        "storefrontport": "80",
-        "storefrontpath": "/citrix/storeweb",
-        "protocol": "http"
-    },
-    "licensing": {
-        "test": "yes",
-        "licenseservers": "lic1.domain.com,lic2.domain.com",
-        "vendordaemonport": "7279",
-        "licenseport": "27000",
-        "webadminport": "8082",
-        "simplelicenseserviceport": "8083"
-    },
-    "director": {
-        "test": "yes",
-        "directorervers": "dir1.domain.com,dir2.domain.com",
-        "directorport": "80",
-        "directorpath": "/Director/LogOn.aspx?cc=true",
-        "protocol": "http"
-    },
-    "controllers": {
-        "test": "yes",
-        "controllerservers": "xd1.domain.com,xd2.domain.com",
-        "controllerport": "80",
-        "controllerservices": "CitrixADIdentityService,CitrixAnalytics,CitrixAppLibrary"
-    },
-    "netscalers": {
-        "test": "yes",
-        "netscalers": "3.3.3.3,4.4.4.4",
-        "netscalerusername": "nsroot",
-        "netscalerpassword": "nsroot"
-    },
-    "netscalergateway": {
-        "test": "yes",
-        "netscalerhostinggateway": "3.3.3.3,4.4.4.4"
-    },
-    "ProvisioningServers": {
-        "test": "yes",
-        "ProvisioningServerFarm": "FarmName",
-        "ProvisioningServerSite": "SiteName",
-        "ProvisioningServers": "pvs1.domain.com",
-        "ProvisioningServerPort": "54321",
-        "ProvisioningServerServices": "BNPXE,BNTFTP,PvsApi,PVSTSB,soapserver,StreamService"
+    "Citrix": {
+        "Global": {
+            "xdbrokerprimary": "xdprimary.domain.com",
+            "xdbrokerfailover": "xdsecondary.domain.com",
+            "workloads": "server,desktop",
+            "controlup": "no"
+        },
+        "server": {
+            "bootthreshold": "7",
+            "donutfile": "donut.txt",
+            "highload": 8000
+        },
+        "desktop": {
+            "bootthreshold": "31",
+            "donutfile": "donut.txt",
+            "highload": 8000
+        },
+        "xenserver": {
+            "test": "yes",
+            "poolmasters": "pool_master_ip",
+            "poolmasterport": "80",
+            "username": "root",
+            "password": "password"
+        },
+        "storefront": {
+            "test": "yes",
+            "storefrontservers": "storefront.domain.com",
+            "storefrontport": "80",
+            "storefrontpath": "/citrix/storeweb",
+            "protocol": "http"
+        },
+        "licensing": {
+            "test": "yes",
+            "licenseservers": "license.domain.com",
+            "vendordaemonport": "7279",
+            "licenseport": "27000",
+            "webadminport": "8082",
+            "simplelicenseserviceport": "8083"
+        },
+        "director": {
+            "test": "yes",
+            "directorervers": "web.bretty.me.uk",
+            "directorport": "80",
+            "directorpath": "/Director/LogOn.aspx?cc=true",
+            "protocol": "http"
+        },
+        "controllers": {
+            "test": "yes",
+            "controllerservers": "controller.domain.com",
+            "controllerport": "80",
+            "controllerservices": "CitrixADIdentityService,CitrixAnalytics,CitrixAppLibrary"
+        },
+        "netscalers": {
+            "test": "yes",
+            "netscalers": "nerscaler_ip",
+            "netscalerusername": "nsroot",
+            "netscalerpassword": "nsroot"
+        },
+        "netscalergateway": {
+            "test": "yes",
+            "netscalerhostinggateway": "netscaler_gateway_ip"
+        },
+        "ProvisioningServers": {
+            "test": "yes",
+            "ProvisioningServerFarm": "pvs",
+            "ProvisioningServerSite": "pvs_site",
+            "ProvisioningServers": "pvs.domain.com",
+            "ProvisioningServerPort": "54321",
+            "ProvisioningServerServices": "BNPXE,BNTFTP,PvsApi,PVSTSB,soapserver,StreamService"
+        }
     }
 }
