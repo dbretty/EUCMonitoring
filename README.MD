@@ -21,12 +21,11 @@ The Server that you want to run this script from must have the XenServer and Xen
 ### Installation steps
 
 1. Open up PowerShell on the machine you want to use for monitoring.
-   * Run PowerShell as **Administrator** to install for all users
 2. Run the following to locate on PSGallery
 ```text
 Find-Module EUCMonitoring
 ```
-2. Run the following command to install the EUC Monitoring Base Scripts.
+3. Run the following command to install the EUC Monitoring Module.
    * Install for **Allusers** (Need to be run as Administrator)
         ```text
         Install-Module EUCMonitoring
@@ -35,21 +34,21 @@ Find-Module EUCMonitoring
         ```text
         Install-Module EUCMonitoring -Scope CurrentUser
         ```
-3. Next run the following command pointing to a directory that you want the EUC Monitoring Scripts to reside.
+4. Next run the following command pointing to a directory that you want the EUC Monitoring setting files and output HTML to reside.
 
 ```text
 Set-EUCMonitoring C:\Monitoring
 ```
 
-4. Once this is done go to that directory and rename the **euc-monitoring.json.template** file to **euc-monitoring.json**
-5. Edit the json file to reflect your environment
-6. Finally run the following command pointing to the directory that holds all the EUC Monitoring Scripts
+5. Once this is done go to that directory and rename the **euc-monitoring.json.template** file to **euc-monitoring.json**
+6. Edit the json file to reflect your environment
+7. Finally run the following command pointing to the directory that holds all the EUC Monitoring Scripts
 
 ```text
 Start-XDMonitor C:\Monitoring
 ```
 
-7. Open up your new dashboard HTML file from the location you specified in your json for web data output
+8. Open up your new dashboard HTML file from the location you specified in your json for web data output
 
 ## Contributors
 
