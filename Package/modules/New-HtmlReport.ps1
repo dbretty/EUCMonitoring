@@ -44,7 +44,8 @@ function New-HtmlReport {
     # Write HTML Header Information
     "<html>" | Out-File $HTMLOutputFileFull -Append
     "<head>" | Out-File $HTMLOutputFileFull -Append
-
+    "<meta http-equiv='X-UA-Compatible' content='IE=edge'>" | Out-File $HTMLOutputFileFull -Append
+    
     # Write CSS Style
     "<style>" | Out-File $HTMLOutputFileFull -Append
     $CSSData = Get-Content "$RootDirectory\euc-monitor.css"
