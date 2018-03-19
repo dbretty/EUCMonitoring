@@ -8,7 +8,7 @@ This is a [EUC monitoring platform](http://bretty.me.uk/free-citrix-xendesktop-7
 
 ## Motivation
 
-The reason I started writing this is because I wanted a platform that will give you a high level, birds eye view of whats happening on your End User Compute Estate. More importantly I wanted it to be free! There are a number of products out there that can give you a lot of detail about whats happening but none that give you an overview of everything.  That what this is intended to resolve. It will automate and take away the steps that you normally do day to day on your estate and give you all of that information in a nice visual dashboard.
+The reason I started writing this is because I wanted a platform that will give you a high level, birds eye view of whats happening on your End User Compute Estate. More importantly I wanted it to be free! There are a number of products out there that can give you a lot of detail about whats happening but none that give you an overview of everything.  Thats what this is intended to resolve. It will automate and take away the steps that you normally do day to day on your estate and give you all of that information in a nice visual dashboard.
 
 ## Installation
 
