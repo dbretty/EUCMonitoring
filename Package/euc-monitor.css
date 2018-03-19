@@ -1,0 +1,87 @@
+.chart-text {
+    font: 16px/1.4em 'Montserrat', Arial, sans-serif;
+    fill: #000; 
+    -moz-transform: translateY(0.25em); 
+    -ms-transform: translateY(0.25em); 
+    -webkit-transform: translateY(0.25em); 
+    transform: translateY(0em); 
+} 
+
+.chart-label { 
+    font-size: 0.25em; 
+    text-anchor: middle; 
+    -moz-transform: translateY(0.7em); 
+    -ms-transform: translateY(0.7em); 
+    -webkit-transform: translateY(0.7em); 
+    transform: translateY(0.3em); 
+} 
+
+.worker-chart-text { 
+    font: 16px/1em 'Montserrat', Arial, sans-serif; 
+    fill: #000; 
+    -moz-transform: translateY(0.25em); 
+    -ms-transform: translateY(0.25em); 
+    -webkit-transform: translateY(0.25em); 
+    transform: translateY(0em); 
+} 
+
+.worker-chart-label { 
+    font-size: 0.1em; 
+    text-anchor: middle; 
+    -moz-transform: translateY(0.7em); 
+    -ms-transform: translateY(0.7em); 
+    -webkit-transform: translateY(0.7em); 
+    transform: translateY(0.7em); 
+} 
+
+td.monitoring-info { 
+    text-align:left; 
+    font-size: 0.9em; 
+    vertical-align:top; 
+    color: #696969;  
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;  
+} 
+
+.title-info { 
+    text-align:left; 
+    font-size: 2.0em; 
+    vertical-align:middle; 
+    color: #696969;  
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;  
+} 
+
+.error-text
+{
+    font-weight:normal;
+    color:#FF0000;
+    text-align:left; 
+    font-size: 0.9em;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+}
+
+.error-title
+{
+    font-weight:bold;
+    color:#FF0000;
+    text-align:left; 
+    font-size: 1em;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+}
+
+.info-text
+{
+    font-weight:normal;
+    color:#696969;
+    text-align:left; 
+    font-size: 0.9em;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+}
+
+.info-title
+{
+    font-weight:bold;
+    color:#3d73cc;
+    text-align:left; 
+    font-size: 1em;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+}

@@ -1,0 +1,123 @@
+{
+    "Global": {
+        "xdbrokerprimary": "broker.domain.com", - Primary XenDesktop Broker for Site
+        "xdbrokerfailover": "broker1.domain.com", - Failover XenDesktop Broker for Site
+        "workloads": "server,desktop", - Workloads you want to monitor
+        "controlup": "yes" - Check for Control Up Agent
+    },
+    "WebData": {
+        "outputlocation": "c:\\monitoring", - Output Directory
+        "htmldatafile": "htmldata.txt", - HTML Data File - Can Leave as Default
+        "htmloutputfile": "index.html", - HTML Output File - Can Leave as Default
+        "servererrorfile": "server-errors.txt", - Server Error File - Can Leave as Default
+        "desktoperrorfile": "desktop-errors.txt", - Desktop Error File - Can Leave as Default
+        "UpColour": "rgba(221, 70, 70, 0.9)", - Color for "UP" Servers on the output graph
+        "DownColour": "rgba(67, 137, 203, 0.95)", - Color for "Down" Servers on the output graph
+        "WorkerDonutStroke": 5, - Width for the Worker Donut Ring
+        "workerdonutsize": 500, - Size for the Worker Donut
+        "InfraDonutStroke": 4, - Width for the Infrastructure Donut Ring
+        "Infradonutsize": 160, - Size for the Infrastructure Donut
+        "infraerrorfile": "infra-errors.txt" - Infrastructure Error File - Can Leave as Default
+    },
+    "server": {
+        "bootthreshold": "7", - Number of Days before Server Reboot Error Threshold Hit
+        "donutfile": "donut.txt", - Output Donut File - Can Leave as Default
+        "highload": 8000 - Max Server Load before Error
+    },
+    "desktop": {
+        "bootthreshold": "31", - Number of Days before Desktop Reboot Error Threshold Hit
+        "donutfile": "donut.txt", - Output Donut File - Can Leave as Default
+        "highload": 8000 - Max Desktop Load before Error
+    },
+    "xenserver": {
+        "test": "yes", - yes/no - Test XenServer
+        "poolmasters": "1.1.1.1,2.2.2.2", - Comma Delimited List of Pool Masters
+        "poolmasterport": "80", - Port to communicate with Pool Master
+        "username": "root", - Username for Pool Master
+        "password": "password" - Password for Pool Master
+    },
+    "storefront": {
+        "test": "yes", - yes/no - Test StoreFront
+        "storefrontservers": "web1.domain.com,web2.domain.com", - Comma Delimited List of StoreFront Servers
+        "storefrontport": "80", - Port to use for communication
+        "storefrontpath": "/citrix/storeweb", - Path to Receiver for Web Site - must start with /
+        "protocol": "http" - Protocol to use
+    },
+    "licensing": {
+        "test": "yes", - yes/no - Test Licensing
+        "licenseservers": "lic1.domain.com,lic2.domain.com", - Comma Delimited List of License Servers
+        "vendordaemonport": "7279", - Default Port
+        "licenseport": "27000", - Default Port
+        "webadminport": "8082", - Default Port
+        "simplelicenseserviceport": "8283" - Default Port
+    },
+    "director": {
+        "test": "yes", - yes/no - Test Director
+        "directorervers": "dir1.domain.com,dir2.domain.com", - Comma Delimited List of Director Servers
+        "directorport": "80", - Port to use
+        "directorpath": "/Director/LogOn.aspx?cc=true", - Full Path to Director Login Page - must start with /
+        "protocol": "http" - Protocol to use
+    },
+    "controllers": {
+        "test": "yes", - yes/no - Test Controllers
+        "controllerservers": "xd1.domain.com,xd2.domain.com", - Comma Delimited List of Controller Servers
+        "controllerport": "80", - Port to use
+        "controllerservices": "CitrixADIdentityService,CitrixAnalytics,CitrixAppLibrary" - Comma Delimited List of Service Names to ensure Controller is up and running properly
+    },
+    "netscalers": {
+        "test": "yes",  - yes/no - Test NetScalers
+        "netscalers": "3.3.3.3,4.4.4.4", - Comma Delimited list of NetScaler IP's or Subnet IP's for your NetScalers
+        "netscalerusername": "nsroot", - NetScaler Username
+        "netscalerpassword": "nsroot" - NetScaler Password
+    },
+    "ProvisioningServers": {
+    "test": "yes", - yes/no - Test Provisioning Servers
+    "ProvisioningServerFarm": "FarmName", - Provisioning Server Farm Name 
+    "ProvisioningServerSite": "SiteName", - Provisioning Server Site Name
+    "ProvisioningServers": "pvs1.domain.com", - Comma Delimited List of Provisioning Servers
+    "ProvisioningServerPort": "54321", - Provisioning Server Default Server Port 
+    "ProvisioningServerServices": "BNPXE,BNTFTP,PvsApi,PVSTSB,soapserver,StreamService" - List of Services to test. See bottom of file Service reference list
+    }
+}
+
+Service reference List
+Provisioning Server:
+BNBOOTP = Citrix PVS BOOTP Service
+BNPXE = Citrix PVS PXE Service
+BNTFTP = Citrix PVS TFTP Service
+PvsApi = Citrix PVS API Service
+PVSTSB = Citrix PVS Two-Stage Boot Service
+soapserver = Citrix PVS Soap Server
+StreamService = Citrix PVS Stream Service
+
+Controllers/Storefront/Licencing:
+Citrix Licensing  = Citrix Licensing
+Citrix Peer Resolution Service = Citrix Peer Resolution Service
+Citrix_GTLicensingProv = Citrix Licensing WMI
+CitrixADIdentityService = Citrix AD Identity Service
+CitrixAnalytics = Citrix Analytics
+CitrixAppLibrary = Cirix App Library
+CitrixBrokerService = Citrix Broker Service
+CitrixConfigSyncService = Citrix Config Synchronizer Service
+CitrixConfigurationLogging = Citrix Configuration Logging Service
+CitrixConfigurationReplication = Citrix Configuration Replication
+CitrixConfigurationService = Citrix Configuration Service
+CitrixConnector = Citrix Smart Tools Agent Service
+CitrixCredentialWallet = Citrix Credential Wallet
+CitrixDefaultDomainService = Citrix Default Domain Services
+CitrixDelegatedAdmin = Citrix Delegated Administration Service
+CitrixEnvTest = Citrix Environment Test Service
+CitrixHighAvailabilityService = Citrix High Availability Service
+CitrixHostService = Citrix Host Service
+CitrixMachineCreationService = Citrix Machine Creation Service
+CitrixMonitor = Citrix Monitor Service
+CitrixOrchestration = Citrix Orchestration Service
+CitrixPrivilegedService = Citrix Storefront Privileged Administration Service
+CitrixServiceMonitor = Citrix Service Monitor
+CitrixStorefront = Citrix Storefront Service
+CitrixSubscriptionsStore = Citrix Subscriptions Store
+CitrixTelemetryService = Citrix Telemetry Service
+CitrixTrust = Citrix Trust Service
+CitrixWebServicesforLicensing = Citrix Web Services for Licensing
+CtxLSPortSvc = Citrix Licensing Support Service
+XaXdCloudProxy = Citrix Remote Broker Provider
