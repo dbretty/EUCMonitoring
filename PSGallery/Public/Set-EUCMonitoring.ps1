@@ -24,9 +24,16 @@
 
     Param
     (
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$MonitoringPath
+        [parameter(Mandatory = $false, ValueFromPipeline = $true)]$MonitoringPath
     )
 
+    if($MonitoringPath -eq $null){
+        $MonitoringPath = "C:\Monitoring"
+    }
+
+    New-Item -Path "HKLM:\Software" -Name "EUCMonitoring" -Force
+    New-ItemProperty -Path "HKLM:\Software\EUCMonitoring" -Name "FileLocation" -Value $MonitoringPath
+    
     # Get old Verbose Preference and storeit, change Verbose Preference to Continue
     $OldVerbosePreference = $VerbosePreference
     $VerbosePreference = "Continue"

@@ -19,6 +19,7 @@
     David Brett             1.1             20/02/2018          Added Error Checking and Single Ring output
     James Kindon            1.2             15/03/2018          Added Provisioning Server Module
     James Kindon            1.3             17/03/2018          Added WEM, UPS and FAS Modules
+    David Brett             1.4             19/03/2018          Added the ability to pull the files location from the registry
 .PARAMETER RootDirectory
     RootDirectory
 .EXAMPLE
@@ -27,8 +28,12 @@
 
     Param
     (
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$RootDirectory
+        [parameter(Mandatory = $false, ValueFromPipeline = $true)]$RootDirectory
     )
+
+if($RootDirectory -eq $null) {
+    $RootDirectory = Get-ItemPropertyValue -Path "HKLM:\Software\EUCMonitoring" -Name "FileLocation"
+}
 
 # Get old Verbose Preference and storeit, change Verbose Preference to Continue
 $OldVerbosePreference = $VerbosePreference
