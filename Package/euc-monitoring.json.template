@@ -82,6 +82,24 @@
             "ProvisioningServers": "pvs.domain.com",
             "ProvisioningServerPort": "54321",
             "ProvisioningServerServices": "BNPXE,BNTFTP,PvsApi,PVSTSB,soapserver,StreamService"
+        },
+        "WEM": {
+            "test": "yes",
+            "WEMServers": "wembroker.domain.com",
+            "WEMAgentPort": "8286",
+            "WEMServices": "Norskale Infrastructure Service"
+        },
+        "UPS": {
+            "test": "yes",
+            "UPSServers": "upsserver.domain.com",
+            "UPSPort": "7229",
+            "UPSServices": "UpSvc,CitrixXTEServer"
+        },
+        "FAS": {
+            "test": "yes",
+            "FASServers": "fasserver.domain.com",
+            "FASPort": "135",
+            "FASServices": "CitrixFederatedAuthenticationService"
         }
     }
 }
