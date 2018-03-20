@@ -105,7 +105,7 @@ function New-HtmlReport {
 
     # Start the Worker Donur Build
     $WorkerList = $WorkerList.Split(",")
-    $WorkerCount = ($WorkerList | Measure).Count
+    $WorkerCount = ($WorkerList | Measure-Object).Count
 
     # Work out column sizes
     if ($WorkerCount -eq 2) {
