@@ -42,7 +42,7 @@ Set-EUCMonitoring C:\Monitoring -verbose
 
 5. Once this is done go to that directory and rename the **euc-monitoring.json.template** file to **euc-monitoring.json**
 6. Edit the json file to reflect your environment
-7. Finally run the following command pointing to the directory that holds all the EUC Monitoring Scripts
+7. Finally run the following command pointing to the directory that holds the needed files
 
 ```text
 cd C:\Monitoring
