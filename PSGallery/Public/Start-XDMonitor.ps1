@@ -202,8 +202,8 @@ if (test-path $MyConfigFileLocation) {
     $ctxsnap = get-pssnapin citrix*
 
     if ($ctxsnap -eq $null) {
-        Write-Verbose "XenDesktop Powershell Snapin Load Failed - No XenDesktop Brokering SDK Found"
-        Write-Verbose "Cannot Load XenDesktop Powershell SDK"
+        Write-error "XenDesktop Powershell Snapin Load Failed - No XenDesktop Brokering SDK Found"
+        Write-error "Cannot Load XenDesktop Powershell SDK"
         Exit
     }
     else {
@@ -222,7 +222,7 @@ if (test-path $MyConfigFileLocation) {
             Write-Verbose "Cannot connect to any of the configured brokers - quitting"
             # Remove Global Functions File
             remove-module xendesktop-monitor-global
-            Write-Warning"Cannot Connect to XenDesktop Brokers $XDBrokerPrimary or $XDBrokerFailover"
+            Write-error "Cannot Connect to XenDesktop Brokers $XDBrokerPrimary or $XDBrokerFailover"
             Exit
         }
     }
