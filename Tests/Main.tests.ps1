@@ -1,8 +1,8 @@
 # AppVeyor Testing
-# $projectRoot = $env:APPVEYOR_BUILD_FOLDER
+$projectRoot = $env:APPVEYOR_BUILD_FOLDER
 
 # Local Testing 
-$projectRoot = "F:\_Dave\Scripts"
+# $projectRoot = "Path\Scripts"
 
 Describe "General project validation" {
 
