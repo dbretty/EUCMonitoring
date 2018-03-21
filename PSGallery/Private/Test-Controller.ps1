@@ -1,4 +1,4 @@
-function Test-Controllers {
+function Test-Controller {
     <#   
 .SYNOPSIS   
     Tests Citrix XenDesktop Controllers Functionailty.
@@ -79,7 +79,7 @@ function Test-Controllers {
 
                 # Check Each Service for a Running State
                 foreach ($Service in $ControllerServices) {
-                    $CurrentServiceStatus = Check-Service $Controller $Service
+                    $CurrentServiceStatus = Test-Service $Controller $Service
                     If ($CurrentServiceStatus -ne "Running") {
                         # If the Service is not running set ServicesUp to No and Append The Service with an error to the error description
                         if ($ServiceError -eq "") {
