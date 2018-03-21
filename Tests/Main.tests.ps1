@@ -41,7 +41,7 @@ Describe "General project validation" {
 
 Describe "Function validation" {
     
-    $scripts = Get-ChildItem "$projectRoot\EUCMonitoring\PSGallery" -Recurse -Include *.ps1
+    $scripts = Get-ChildItem "$projectRoot\PSGallery" -Recurse -Include *.ps1
     $testCase = $scripts | Foreach-Object {@{file = $_}}         
     It "Script <file> should only contain one function" -TestCases $testCase {
         param($file)   
