@@ -3,6 +3,7 @@
         "outputlocation": "c:\\webdata",
         "htmldatafile": "htmldata.txt",
         "htmloutputfile": "index.html",
+        "refreshduration": 0,
         "servererrorfile": "server-errors.txt",
         "desktoperrorfile": "desktop-errors.txt",
         "UpColour": "rgba(221, 70, 70, 0.9)",
