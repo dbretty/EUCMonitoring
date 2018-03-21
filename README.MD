@@ -14,9 +14,23 @@ The reason I started writing this is because I wanted a platform that will give 
 
 To install and run this software follow these steps
 
-### Pre-requisites
+### Pre-requisites 
+(On-Premises) 
 
 The Server that you want to run this script from must have the XenServer and XenDesktop PowerShell SDK Installed. Install Citrix Studio on the monitoring server and also install the XenServer SDK from the [XenServer 7.2 Standard Edition](https://www.citrix.com/downloads/xenserver/product-software/xenserver-72-standard-edition.html) download page.
+
+(Cloud)
+The Server that you want to run this script from must have the Remote PowerShell SDK for Applications and Desktops Service from: http://download.apps.cloud.com/CitrixPoshSdk.exe
+
+Obtain a Citrix Cloud automation credential as follows:
+- Login to https://citrix.cloud.com/
+- Navigate to "Identity and Access Management". 
+- Click "API Access". 
+- Enter a name for Secure Client and click Create Client. 
+- Once Secure Client is created, download Secure Client Credentials file (ie. downloaded to C:\Monitoring)
+
+Note the Customer ID located in this same page, this is case senstitive.
+Set-XDCredentials -CustomerId "%Customer ID%" -SecureClientFile "C:\Monitoring\secureclient.csv" -ProfileType CloudApi -StoreAs "CloudAdmin"
 
 ### Installation steps
 

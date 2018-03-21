@@ -20,6 +20,7 @@
     James Kindon            1.2             15/03/2018          Added Provisioning Server Module
     James Kindon            1.3             17/03/2018          Added WEM, UPS and FAS Modules
     David Brett             1.4             19/03/2018          Added the ability to pull the files location from the registry
+    David Wilkinson         1.4.1           19/03/2018          Added Cloud Connector Module
 .PARAMETER JsonFile
     Path to JSON settings file
 .PARAMETER CSSFile
@@ -154,6 +155,12 @@
         $FASServers = $MyJSONConfigFile.Citrix.FAS.FASServers
         $FASPort = $MyJSONConfigFile.Citrix.FAS.FASPort
         $FASServices = $MyJSONConfigFile.Citrix.FAS.FASServices
+        
+        # Citrix Cloud Connector Server Data
+        $TestCC = $MyJSONConfigFile.Citrix.CC.test
+        $CCServers = $MyJSONConfigFile.Citrix.CC.CCServers
+        $CCPort = $MyJSONConfigFile.Citrix.CC.CCPort
+        $CCServices = $MyJSONConfigFile.Citrix.CC.CCServices
 
         $TestEnvChecksXD = $MyJSONConfigFile.Citrix.EnvChecks.test
         $EnvChecksXDCheckddc = $MyJSONConfigFile.Citrix.EnvChecks.ddccheck
@@ -801,9 +808,38 @@
             Write-Verbose "Deleted Donut Data File $FASServerData"
         }
 
-        # This needs to be in place when the Test-CC is fully enabled
-        #if ( ($TestEnvChecksXD -eq "yes") -and ($Broker -notmatch $CCServers)) {
-        if ($TestEnvChecksXD -eq "yes") {
+
+        # Checking Cloud Connector Servers
+        if ($TestCC -eq "yes") { 
+            # Increment Infrastructure Components
+            $InfrastructureComponents++
+            $InfrastructureList += "CC"
+
+            Write-Verbose "Citrix Cloud Connector Server Testing enabled"
+            Write-Verbose "Building Citrix Cloud Connector Server Data Output Files"
+            $CCServerData = Join-Path -Path $OutputLocation -ChildPath "CCServer-data.txt"
+
+            # Build Donut File Paths for Citrix Cloud Connector Server
+            $CCDonut = Join-Path -Path $OutputLocation -ChildPath "CC.html"
+
+            # Remove Existing Data Files
+            if (test-path $CCServerData) {
+                Remove-Item $CCServerData
+            }
+
+            # Test the Cloud Connector Server Infrastructure
+            Test-CC $CCServers $CCPort $CCServices $InfraErrorFileFullPath $CCServerData
+
+            Write-Verbose "Building Donut Files for Citrix Cloud Connector Servers"
+            Build-Donut $CCDonut $CCServerData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "CC"
+
+            # Removing Donut Data File
+            remove-item $CCServerData -Force
+            Write-Verbose "Deleted Donut Data File $CCServerData"
+        }
+        
+        if ( ($TestEnvChecksXD -eq "yes") -and ($TestCC -eq "no")) {
+            #if ($TestEnvChecksXD -eq "yes") {
             # Increment Infrastructure Components
             $InfrastructureComponents++
             $InfrastructureList += "EnvChecks-XD"
