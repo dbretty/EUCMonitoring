@@ -839,7 +839,6 @@
         }
         
         if ( ($TestEnvChecksXD -eq "yes") -and ($TestCC -eq "no")) {
-            #if ($TestEnvChecksXD -eq "yes") {
             # Increment Infrastructure Components
             $InfrastructureComponents++
             $InfrastructureList += "EnvChecks-XD"
@@ -848,7 +847,7 @@
             Write-Verbose "Building EnvCheck Data Output Files"
             $EnvChecksXDData = Join-Path -Path $OutputLocation -ChildPath "envcheckxd-data.txt"
 
-            # Build Donut File Paths for Federated Authentication Server
+            # Build Donut File Paths for Citrix Environmental Checks
             $EnvCheckXDDonut = Join-Path -Path $OutputLocation -ChildPath "envcheckxd.html"
 
             # Remove Existing Data Files
@@ -856,7 +855,7 @@
                 Remove-Item $EnvCheckXDData 
             }
 
-            # Test the Federated Authentication Server Infrastructure
+            # Test the Citrix Environmental Checks
             Test-EnvChecksXD $Broker $InfraErrorFileFullPath $EnvCheckXDData $EnvChecksXDCheckddc $EnvChecksXDCheckdeliverygroup $EnvChecksXDCheckcatalog $EnvChecksXDHypervisor
 
             Write-Verbose "Building Donut Files for Citrix Environmental Checks"
