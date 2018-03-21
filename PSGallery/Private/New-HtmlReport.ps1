@@ -24,6 +24,8 @@ function New-HtmlReport {
     None Required
 #> 
 
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High")]
+    
     Param
     (
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$HTMLOutputFile,

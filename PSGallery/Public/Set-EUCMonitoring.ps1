@@ -21,7 +21,8 @@
     .EXAMPLE
         None Required
     #>
-        [cmdletbinding()]
+        [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High")]
+        
         Param
         (
             [parameter(Mandatory = $false, ValueFromPipeline = $true)]$MonitoringPath = (get-location) #gets current directory location
@@ -41,7 +42,7 @@
     
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
         #Files needed to check and downloads
-        $filesneeded = @("euc-monitor.css","euc-monitoring.json.template","euc-monitoring-json-ref.txt")
+        $filesneeded = @("euc-monitoring.css","euc-monitoring.json.template","euc-monitoring-json-ref.txt")
         
         foreach ($needed in $filesneeded)
         {

@@ -27,10 +27,14 @@ Function Get-Uptime {
 
     process {
         try {
-            $hostdns = [System.Net.DNS]::GetHostEntry($ComputerName)
-            $OS = Get-WmiObject win32_operatingsystem -ComputerName $ComputerName -ErrorAction Stop
-            $BootTime = $OS.ConvertToDateTime($OS.LastBootUpTime)
-            $Uptime = $OS.ConvertToDateTime($OS.LocalDateTime) - $boottime
+            # Commenting out as the variable is never used
+            # $hostdns = [System.Net.DNS]::GetHostEntry($ComputerName)
+            $os = Get-Ciminstance -ClassName win32_operatingsystem -ComputerName $ComputerName -ErrorAction Stop
+            # Commenting out as was using the WMI method and not CIM
+            # $OS = Get-WmiObject win32_operatingsystem -ComputerName $ComputerName -ErrorAction Stop
+            # $BootTime = $OS.ConvertToDateTime($OS.LastBootUpTime)
+            # $Uptime = $OS.ConvertToDateTime($OS.LocalDateTime) - $boottime
+            $Uptime = $OS.LocalDateTime - $os.LastBootUpTime
             return $Uptime.Days
         } 
         catch [Exception] {

@@ -1,4 +1,4 @@
-function Validate-IP {
+function Test-IP {
     <# 
     .SYNOPSIS 
         Validate a passed in IP Address.
@@ -7,7 +7,7 @@ function Validate-IP {
     .PARAMETER IPAddress 
         IP Address to be validated. 
     .NOTES 
-        Name: Validate-IP
+        Name: Test-IP
         Author: David Brett
         Date Created: 15/03/2017 
     .CHANGE LOG
