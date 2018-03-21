@@ -1,6 +1,6 @@
 # AppVeyor Testing
-$manifest = "$env:APPVEYOR_BUILD_FOLDER\EUCMonitoring\EUCMonitoring.psd1"
-$module = "$env:APPVEYOR_BUILD_FOLDER\EUCMonitoring\EUCMonitoring.psm1"
+$manifest = "$env:APPVEYOR_BUILD_FOLDER\PSGallery\EUCMonitoring.psd1"
+$module = "$env:APPVEYOR_BUILD_FOLDER\PSGallery\EUCMonitoring.psm1"
 
 # Local Testing 
 # $manifest = "Path\EUCMonitoring\PSGallery\EUCMonitoring.psd1"

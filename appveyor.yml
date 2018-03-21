@@ -1,0 +1,31 @@
+version: 1.0.{build}
+os: WMF 5
+skip_commits:
+  files:
+    - README.md
+only_commits:
+  files:
+    - PSGallery/
+pull_requests:
+  do_not_increment_build_number: true
+build_script:
+- ps: |
+    Install-PackageProvider -Name NuGet -Force | Out-Null
+    find-module -Repository PSGallery -Name PowerShellGet | Out-Null
+    Install-Module -Name PowerShellGet -Force -Repository PSGallery | Out-Null
+    find-module -Repository PSGallery -Name PSScriptAnalyzer | Out-Null
+    Install-Module -Name PSScriptAnalyzer -Force -Repository PSGallery | Out-Null
+    find-module -Repository PSGallery -Name Pester | Out-Null
+    Install-Module -Name Pester -Force -Repository PSGallery | Out-Null
+    find-module -Repository PSGallery -Name PSDeploy | Out-Null
+    Install-Module -Name PSDeploy -Force -Repository PSGallery | Out-Null
+    find-module -Repository PSGallery -Name posh-git | Out-Null
+    Install-Module -Name posh-git -Force -Repository PSGallery | Out-Null
+    $env:Path += ";$env:ProgramFiles\Git\cmd"
+test_script:
+  - ps: |
+      write-verbose "Running Pester..."
+      $pest = Invoke-Pester -passthru -verbose
+      if ($pest.FailedCount -gt 0) { 
+        throw "$($pest.FailedCount) tests failed."
+        }
