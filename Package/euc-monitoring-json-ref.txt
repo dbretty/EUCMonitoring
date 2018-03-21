@@ -72,13 +72,13 @@
         "netscalerpassword": "nsroot" - NetScaler Password
     },
     "ProvisioningServers": {
-    "test": "yes", - yes/no - Test Provisioning Servers
-    "ProvisioningServerFarm": "FarmName", - Provisioning Server Farm Name 
-    "ProvisioningServerSite": "SiteName", - Provisioning Server Site Name
-    "ProvisioningServers": "pvs1.domain.com", - Comma Delimited List of Provisioning Servers
-    "ProvisioningServerPort": "54321", - Provisioning Server Default Server Port 
-    "ProvisioningServerServices": "BNPXE,BNTFTP,PvsApi,PVSTSB,soapserver,StreamService" - List of Services to test. See bottom of file Service reference list
-    }
+        "test": "yes", - yes/no - Test Provisioning Servers
+        "ProvisioningServerFarm": "FarmName", - Provisioning Server Farm Name 
+        "ProvisioningServerSite": "SiteName", - Provisioning Server Site Name
+        "ProvisioningServers": "pvs1.domain.com", - Comma Delimited List of Provisioning Servers
+        "ProvisioningServerPort": "54321", - Provisioning Server Default Server Port 
+        "ProvisioningServerServices": "BNPXE,BNTFTP,PvsApi,PVSTSB,soapserver,StreamService" - List of Services to test. See bottom of file Service reference list
+    },
     "EnvChecks": {
         "test": "yes", - yes/no - Environment Checks, will not run if preferred Broker is Cloud Controller
         "ddccheck": "yes", - yes/no - Delivery Controller Environment checks
