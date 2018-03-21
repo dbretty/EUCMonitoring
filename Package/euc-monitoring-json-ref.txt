@@ -80,10 +80,10 @@
         "ProvisioningServerServices": "BNPXE,BNTFTP,PvsApi,PVSTSB,soapserver,StreamService" - List of Services to test. See bottom of file Service reference list
     },
     "CC": {
-        "test": "yes",
-        "CCServers": "ccserver1.domain,ccserver2.domain",
-        "CCPort": "80",
-        "CCServices": "CitrixWorkspaceCloudADProvider,CitrixWorkspaceCloudAgentDiscovery,CitrixWorkspaceCloudAgentLogger,CitrixWorkspaceCloudAgentSystem,CitrixWorkspaceCloudAgentWatchDog,CitrixWorkspaceCloudCredentialProvider,CitrixWorkspaceCloudWebRelayProvider,CitrixConfigSyncService,CitrixHighAvailabilityService,Citrix NetScaler Cloud Gateway,XaXdCloudProxy,RemoteHCLServer,SessionManagerProxy"
+        "test": "yes", - yes/no - Test Cloud Connector
+        "CCServers": "ccserver1.domain,ccserver2.domain", - Comma Delimited List of Cloud Connector Servers
+        "CCPort": "80", - Port to use
+        "CCServices": "CitrixWorkspaceCloudADProvider,..." - Comma delimited list of services to test.  
     },
     "EnvChecks": {
         "test": "yes", - yes/no - Environment Checks, will not run if preferred Broker is Cloud Controller
