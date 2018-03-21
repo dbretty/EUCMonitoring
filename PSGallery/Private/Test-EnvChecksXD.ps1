@@ -166,14 +166,3 @@ function Test-EnvChecksXD {
     Write-Verbose "Writing EnvCheck Data to output file"
     "envcheck-xd,$EnvCheckUp,$EnvCheckDown" | Out-File $OutputFile
 }
-
-
-
-
-
-
-
-
-
-
-}
