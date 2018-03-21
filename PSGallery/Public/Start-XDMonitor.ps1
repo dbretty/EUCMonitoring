@@ -162,6 +162,7 @@
         $CCPort = $MyJSONConfigFile.Citrix.CC.CCPort
         $CCServices = $MyJSONConfigFile.Citrix.CC.CCServices
 
+        # Citrix Environmental Checks
         $TestEnvChecksXD = $MyJSONConfigFile.Citrix.EnvChecks.test
         $EnvChecksXDCheckddc = $MyJSONConfigFile.Citrix.EnvChecks.ddccheck
         $EnvChecksXDCheckdeliverygroup = $MyJSONConfigFile.Citrix.EnvChecks.deliverygroupcheck

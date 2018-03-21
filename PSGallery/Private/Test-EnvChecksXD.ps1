@@ -167,13 +167,3 @@ function Test-EnvChecksXD {
     "envcheck-xd,$EnvCheckUp,$EnvCheckDown" | Out-File $OutputFile
 }
 
-
-
-
-
-
-
-
-
-
-}
