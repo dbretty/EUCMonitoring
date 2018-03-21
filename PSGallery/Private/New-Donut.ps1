@@ -1,4 +1,4 @@
-function Build-Donut {
+function New-Donut {
     <#   
 .SYNOPSIS   
     Build a HTML Output Monitoring Page
@@ -31,6 +31,8 @@ function Build-Donut {
     None Required
 #>
 
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High")]
+    
     Param
     (
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$DonutFile,
@@ -55,7 +57,8 @@ function Build-Donut {
     $HTMLInputData = Get-Content $DonutFullPath
     foreach ($Line in $HTMLInputData) {
         $LineData = $Line -Split ","
-        $ChartTitle = $LineData[0]
+        # Commenting out Chart Title as its not used
+        # $ChartTitle = $LineData[0]
         [int]$Good = $LineData[1]
         [int]$Bad = $LineData[2]
         $Full = $Good + $Bad

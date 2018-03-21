@@ -1,4 +1,4 @@
-function Check-Service($ServerName, $ServiceName) {
+function Test-Service($ServerName, $ServiceName) {
 
     <#   
 .SYNOPSIS   

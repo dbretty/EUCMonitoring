@@ -29,7 +29,7 @@ function Disconnect-NetScaler {
     )
 
     # Validate That the IP Address is valid
-    Validate-IP $NSIP
+    Test-IP $NSIP
 
     # Check to see if a valid NSSession is active. If not then quit the function
     if ($NSSession -eq "") {

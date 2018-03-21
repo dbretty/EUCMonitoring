@@ -72,7 +72,7 @@ function Test-CC {
 
                 # Check Each Service for a Running State
                 foreach ($Service in $CCServices) {
-                    $CurrentServiceStatus = Check-Service $CCServer $Service
+                    $CurrentServiceStatus = Test-Service $CCServer $Service
                     If ($CurrentServiceStatus -ne "Running") {
                         # If the Service is not running set ServicesUp to No and Append The Service with an error to the error description
                         if ($ServiceError -eq "") {

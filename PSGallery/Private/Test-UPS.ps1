@@ -72,7 +72,7 @@ function Test-UPS {
 
                 # Check Each Service for a Running State
                 foreach ($Service in $UPSServices) {
-                    $CurrentServiceStatus = Check-Service $UPSServer $Service
+                    $CurrentServiceStatus = Test-Service $UPSServer $Service
                     If ($CurrentServiceStatus -ne "Running") {
                         # If the Service is not running set ServicesUp to No and Append The Service with an error to the error description
                         if ($ServiceError -eq "") {
