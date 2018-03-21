@@ -102,5 +102,12 @@
             "FASPort": "135",
             "FASServices": "CitrixFederatedAuthenticationService"
         }
+        "EnvChecks": {
+            "test": "yes",
+            "ddccheck": "yes",
+            "deliverygroupcheck": "yes"
+            "catalogcheck": "yes"
+            "hypervisorcheck": "yes"
+        }
     }
 }

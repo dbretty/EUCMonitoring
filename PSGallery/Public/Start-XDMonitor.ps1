@@ -155,6 +155,12 @@
         $FASPort = $MyJSONConfigFile.Citrix.FAS.FASPort
         $FASServices = $MyJSONConfigFile.Citrix.FAS.FASServices
 
+        $TestEnvChecksXD = $MyJSONConfigFile.Citrix.EnvChecks.test
+        $EnvChecksXDCheckddc = $MyJSONConfigFile.Citrix.EnvChecks.ddccheck
+        $EnvChecksXDCheckdeliverygroup = $MyJSONConfigFile.Citrix.EnvChecks.deliverygroupcheck
+        $EnvChecksXDCheckcatalog = $MyJSONConfigFile.Citrix.EnvChecks.catalogcheck
+        $EnvChecksXDHypervisor = $MyJSONConfigFile.Citrix.EnvChecks.hypervisorcheck
+
         # Build HTML Output and Error File Full Path
         $ServerErrorFileFullPath = Join-Path -Path $OutputLocation -ChildPath $ServerErrorFile
         $DesktopErrorFileFullPath = Join-Path -Path $OutputLocation -ChildPath $DesktopErrorFile
@@ -794,7 +800,37 @@
             remove-item $FASServerData -Force
             Write-Verbose "Deleted Donut Data File $FASServerData"
         }
-  
+
+        # This needs to be in place when the Test-CC is fully enabled
+        #if ( ($TestEnvChecksXD -eq "yes") -and ($Broker -notmatch $CCServers)) {
+        if ($TestEnvChecksXD -eq "yes") {
+            # Increment Infrastructure Components
+            $InfrastructureComponents++
+            $InfrastructureList += "EnvChecks-XD"
+
+            Write-Verbose "Citrix Environmental Checks Testing enabled"
+            Write-Verbose "Building EnvCheck Data Output Files"
+            $EnvChecksXDData = Join-Path -Path $OutputLocation -ChildPath "envcheckxd-data.txt"
+
+            # Build Donut File Paths for Federated Authentication Server
+            $EnvCheckXDDonut = Join-Path -Path $OutputLocation -ChildPath "envcheckxd.html"
+
+            # Remove Existing Data Files
+            if (test-path $EnvCheckXDData) {
+                Remove-Item $EnvCheckXDData 
+            }
+
+            # Test the Federated Authentication Server Infrastructure
+            Test-EnvChecksXD $Broker $InfraErrorFileFullPath $EnvCheckXDData $EnvChecksXDCheckddc $EnvChecksXDCheckdeliverygroup $EnvChecksXDCheckcatalog $EnvChecksXDHypervisor
+
+            Write-Verbose "Building Donut Files for Citrix Environmental Checks"
+            New-Donut $EnvCheckXDDonut $EnvCheckXDData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "EnvChecks-XD"
+
+            # Removing Donut Data File
+            remove-item $EnvChecksXDData -Force
+            Write-Verbose "Deleted Donut Data File $EnvChecksXDData"
+        }
+
         # Build the HTML output file
         New-HTMLReport $HTMLOutput $OutputLocation $InfrastructureComponents $InfrastructureList $WorkLoads $CSSFile $RefreshDuration
 
