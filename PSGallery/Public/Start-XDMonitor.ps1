@@ -65,6 +65,7 @@ if (test-path $MyConfigFileLocation) {
     # Web Data
     $HTMLData = $MyJSONConfigFile.WebData.htmldatafile
     $HTMLOutput = $MyJSONConfigFile.WebData.htmloutputfile
+    $RefreshDuration = $MyJSONConfigFile.WebData.refreshduration     
     $ServerErrorFile = $MyJSONConfigFile.WebData.servererrorfile
     $DesktopErrorFile = $MyJSONConfigFile.WebData.desktoperrorfile
     $InfraErrorFile = $MyJSONConfigFile.WebData.infraerrorfile
@@ -791,7 +792,7 @@ if (test-path $MyConfigFileLocation) {
     }
   
     # Build the HTML output file
-    New-HTMLReport $HTMLOutput $OutputLocation $InfrastructureComponents $InfrastructureList $WorkLoads $CSSFile
+    New-HTMLReport $HTMLOutput $OutputLocation $InfrastructureComponents $InfrastructureList $WorkLoads $CSSFile $RefreshDuration
 
     # Stop the timer and display the output
     $EndTime = (Get-Date)
