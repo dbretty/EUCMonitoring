@@ -1,7 +1,7 @@
 # EUC Platform Monitoring Tool
 
 ## Project Desription
-(https://ci.appveyor.com/api/projects/status/2yb4ai0n72nrsm2x?svg=true)
+![]https://ci.appveyor.com/api/projects/status/2yb4ai0n72nrsm2x?svg=true
 
 ## Project Desription
 
