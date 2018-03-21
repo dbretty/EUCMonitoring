@@ -9,6 +9,7 @@
         "outputlocation": "c:\\monitoring", - Output Directory
         "htmldatafile": "htmldata.txt", - HTML Data File - Can Leave as Default
         "htmloutputfile": "index.html", - HTML Output File - Can Leave as Default
+        "refreshduration": 300, - HTML Automatic page refresh in seconds, 0 for disabled
         "servererrorfile": "server-errors.txt", - Server Error File - Can Leave as Default
         "desktoperrorfile": "desktop-errors.txt", - Desktop Error File - Can Leave as Default
         "UpColour": "rgba(221, 70, 70, 0.9)", - Color for "UP" Servers on the output graph

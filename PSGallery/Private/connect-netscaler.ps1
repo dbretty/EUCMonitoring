@@ -41,7 +41,7 @@ function Connect-NetScaler {
             Position = 2,
             ParameterSetName = '',
             ValueFromPipeline = $True)]
-        [string]$Password
+        [System.Security.SecureString]$Password
     )
 
     # Check to see if parameters were passed in, if not then prompt the user for them
@@ -53,14 +53,17 @@ function Connect-NetScaler {
         $Password = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BasePassword)
     }
 
+    $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)
+    $UnsecurePassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
+
     # Validate That the IP Address is valid
-    Validate-IP $NSIP
+    Test-IP $NSIP
 
     # Set up the JSON Payload to send to the netscaler    
     $PayLoad = ConvertTo-JSON @{
         "login" = @{
             "username" = $UserName;
-            "password" = $Password
+            "password" = $UnsecurePassword
         }
     }
 

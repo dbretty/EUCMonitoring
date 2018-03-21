@@ -34,12 +34,16 @@ function Test-XenServer {
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ErrorFile,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$OutputFile,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$XenUserName,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$XenPassword
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)][System.Security.SecureString]$XenPassword
     )
+
+    # Convert Secure Password to Standard Text
+    $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($XenPassword)
+    $UnsecurePassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
 
     # Import XenServer SDK
     $xenTest = get-module xen*
-    if ($xentest -eq $null) {
+    if ($null -eq $xentest) {
         write-verbose "XenServer checks are enabled but no XenServer SDK Found"
         "XenServer checks are enabled but no XenServer SDK Found" | Out-File $ErrorFile -Append
     }
@@ -78,7 +82,7 @@ function Test-XenServer {
 
                     # Connect to XenServer Pool
                     [int]$PortInt = [convert]::ToInt32($ConnectionPort, 10)
-                    $Session = Connect-XenServer $PoolMaster -Port $PortInt -UserName $XenUserName -Password $XenPassword
+                    $Session = Connect-XenServer $PoolMaster -Port $PortInt -UserName $XenUserName -Password $UnsecurePassword
                     Write-Verbose "Connecting to XenServer Pool Using PoolMaster $PoolMaster"
 
                     # Gather Hosts in Pool

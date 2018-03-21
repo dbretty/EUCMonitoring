@@ -1,4 +1,4 @@
-function Get-AAAUsers {
+function Get-AAAUser {
     <#   
 .SYNOPSIS   
     Build a Global Variable with all current vServer Status.
@@ -26,7 +26,7 @@ function Get-AAAUsers {
     (
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$NSIP,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$UserName,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$Password,
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)][System.Security.SecureString]$Password,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$UserType
 
     )

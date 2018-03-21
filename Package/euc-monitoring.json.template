@@ -3,6 +3,7 @@
         "outputlocation": "c:\\webdata",
         "htmldatafile": "htmldata.txt",
         "htmloutputfile": "index.html",
+        "refreshduration": 0,
         "servererrorfile": "server-errors.txt",
         "desktoperrorfile": "desktop-errors.txt",
         "UpColour": "rgba(221, 70, 70, 0.9)",
@@ -53,8 +54,8 @@
             "simplelicenseserviceport": "8083"
         },
         "director": {
-            "test": "yes",
-            "directorervers": "web.bretty.me.uk",
+            "test": "yes",            
+            "directorervers": "director.domain.com",
             "directorport": "80",
             "directorpath": "/Director/LogOn.aspx?cc=true",
             "protocol": "http"
@@ -67,7 +68,7 @@
         },
         "netscalers": {
             "test": "yes",
-            "netscalers": "nerscaler_ip",
+            "netscalers": "netscaler_ip",
             "netscalerusername": "nsroot",
             "netscalerpassword": "nsroot"
         },
@@ -100,6 +101,12 @@
             "FASServers": "fasserver.domain.com",
             "FASPort": "135",
             "FASServices": "CitrixFederatedAuthenticationService"
+         },   
+         "CC": {
+            "test": "yes",
+            "CCServers": "ccserver1.domain,ccserver2.domain",
+            "CCPort": "80",
+            "CCServices": "CitrixWorkspaceCloudADProvider,CitrixWorkspaceCloudAgentDiscovery,CitrixWorkspaceCloudAgentLogger,CitrixWorkspaceCloudAgentSystem,CitrixWorkspaceCloudAgentWatchDog,CitrixWorkspaceCloudCredentialProvider,CitrixWorkspaceCloudWebRelayProvider,CitrixConfigSyncService,CitrixHighAvailabilityService,Citrix NetScaler Cloud Gateway,XaXdCloudProxy,RemoteHCLServer,SessionManagerProxy"
         }
     }
 }

@@ -24,6 +24,8 @@ function New-HtmlReport {
     None Required
 #> 
 
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High")]
+    
     Param
     (
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$HTMLOutputFile,
@@ -31,7 +33,8 @@ function New-HtmlReport {
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$InfrastructureComponents,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$InfrastructureList,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$WorkerList,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$RootDirectory
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$CSSFile,
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$RefreshDuration
     )
 
     # Generate HTML Output File
@@ -47,10 +50,15 @@ function New-HtmlReport {
 
     # Write CSS Style
     "<style>" | Out-File $HTMLOutputFileFull -Append
-    $CSSData = Get-Content "$RootDirectory\euc-monitor.css"
+    $CSSData = Get-Content $CSSFile
     $CSSData | Out-File $HTMLOutputFileFull -Append
     "</style>" | Out-File $HTMLOutputFileFull -Append
-
+    
+    # Add automatic refresh in seconds. 
+    if ( $RefreshDuration -ne 0 ) {
+        '<meta http-equiv="refresh" content="' + $RefreshDuration + '" >' | Out-File $HTMLOutputFileFull -Append
+    }
+    
     "</head>" | Out-File $HTMLOutputFileFull -Append
     "<body>" | Out-File $HTMLOutputFileFull -Append
 
@@ -105,7 +113,7 @@ function New-HtmlReport {
 
     # Start the Worker Donur Build
     $WorkerList = $WorkerList.Split(",")
-    $WorkerCount = ($WorkerList | Measure).Count
+    $WorkerCount = ($WorkerList | Measure-Object).Count
 
     # Work out column sizes
     if ($WorkerCount -eq 2) {

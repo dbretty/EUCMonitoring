@@ -14,34 +14,60 @@ The reason I started writing this is because I wanted a platform that will give 
 
 To install and run this software follow these steps
 
-### Pre-requisites
+### Pre-requisites 
+(On-Premises) 
 
 The Server that you want to run this script from must have the XenServer and XenDesktop PowerShell SDK Installed. Install Citrix Studio on the monitoring server and also install the XenServer SDK from the [XenServer 7.2 Standard Edition](https://www.citrix.com/downloads/xenserver/product-software/xenserver-72-standard-edition.html) download page.
 
+(Cloud)
+The Server that you want to run this script from must have the Remote PowerShell SDK for Applications and Desktops Service from: http://download.apps.cloud.com/CitrixPoshSdk.exe
+
+Obtain a Citrix Cloud automation credential as follows:
+- Login to https://citrix.cloud.com/
+- Navigate to "Identity and Access Management". 
+- Click "API Access". 
+- Enter a name for Secure Client and click Create Client. 
+- Once Secure Client is created, download Secure Client Credentials file (ie. downloaded to C:\Monitoring)
+
+Note the Customer ID located in this same page, this is case senstitive.
+Set-XDCredentials -CustomerId "%Customer ID%" -SecureClientFile "C:\Monitoring\secureclient.csv" -ProfileType CloudApi -StoreAs "CloudAdmin"
+
 ### Installation steps
 
-1. Open up PowerShell as an Administrator on the machine you want to use for monitoring.
-2. Run the following command to install the EUC Monitoring Base Scripts.
+1. Open up PowerShell on the machine you want to use for monitoring.
+2. Run the following to locate on PSGallery
+```text
+Find-Module EUCMonitoring
+```
+3. Run the following command to install the EUC Monitoring Module.
+   * Install for **Allusers** (Need to be run as Administrator)
+        ```text
+        Install-Module EUCMonitoring
+        ```
+   * Install for **Currentuser**
+        ```text
+        Install-Module EUCMonitoring -Scope CurrentUser
+        ```
+4. Next run the following command pointing to a directory that you want the EUC Monitoring setting files and output HTML to reside.
 
 ```text
-Install-Module EUCMonitoring
+Set-EUCMonitoring C:\Monitoring -verbose
 ```
 
-3. Next run the following command pointing to a directory that you want the EUC Monitoring Scripts to reside.
+5. Once this is done go to that directory and rename the **euc-monitoring.json.template** file to **euc-monitoring.json**
+6. Edit the json file to reflect your environment
+7. Finally run the following command pointing to the directory that holds the needed files
 
 ```text
-Set-EUCMonitoring C:\Monitoring
+cd C:\Monitoring
+Start-XDMonitor
 ```
-
-4. Once this is done go to that directory and rename the euc-monitoring.json.template file to euc-monitoring.json
-5. Edit the json file to reflect your environment
-6. Finally run the following command pointing to the directory that holds all the EUC Monitoring Scripts
-
+OR
 ```text
-Start-XDMonitor C:\Monitoring
+Start-XDMonitor -JsonFile ".\mysettings.json" -LogFile ".\mylog.txt" -CSSFile ".\euc-monitor.css" -Verbose 
 ```
 
-7. Open up your new dashboard HTML file from the location you specified in your json for web data output
+8. Open up your new dashboard HTML file from the location you specified in your json for web data output
 
 ## Contributors
 

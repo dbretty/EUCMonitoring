@@ -71,7 +71,7 @@ function Test-FAS {
 
                 # Check Each Service for a Running State
                 foreach ($Service in $FASServices) {
-                    $CurrentServiceStatus = Check-Service $FASServer $Service
+                    $CurrentServiceStatus = Test-Service $FASServer $Service
                     If ($CurrentServiceStatus -ne "Running") {
                         # If the Service is not running set ServicesUp to No and Append The Service with an error to the error description
                         if ($ServiceError -eq "") {
