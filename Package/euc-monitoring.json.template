@@ -67,7 +67,7 @@
         },
         "netscalers": {
             "test": "yes",
-            "netscalers": "nerscaler_ip",
+            "netscalers": "netscaler_ip",
             "netscalerusername": "nsroot",
             "netscalerpassword": "nsroot"
         },
