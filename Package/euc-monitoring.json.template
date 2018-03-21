@@ -111,8 +111,8 @@
         "EnvChecks": {
             "test": "yes",
             "ddccheck": "yes",
-            "deliverygroupcheck": "yes"
-            "catalogcheck": "yes"
+            "deliverygroupcheck": "yes",
+            "catalogcheck": "yes",
             "hypervisorcheck": "yes"
         }
     }
