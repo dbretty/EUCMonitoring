@@ -6,7 +6,7 @@ skip_commits:
 only_commits:
   files:
     - PSGallery/
-    - Package/
+    - Package/*.template
 pull_requests:
   do_not_increment_build_number: true
 build_script:
