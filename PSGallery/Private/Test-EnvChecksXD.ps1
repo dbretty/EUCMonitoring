@@ -1,4 +1,4 @@
-function Test-EnvChecks-XD.ps1 {
+function Test-EnvChecksXD {
     <#   
 .SYNOPSIS   
     Checks the Status of the Environmental Tests Passed In
