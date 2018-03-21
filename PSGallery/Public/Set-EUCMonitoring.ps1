@@ -17,7 +17,7 @@
         Name                    Version         Date                Change Detail
         David Brett             1.0             19/03/2018          Script Creation
     .PARAMETER MonitoringPath
-        MonitoringPath
+        Folder path to download files needed for monitoring process
     .EXAMPLE
         None Required
     #>

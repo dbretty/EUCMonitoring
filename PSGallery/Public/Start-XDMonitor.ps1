@@ -20,8 +20,12 @@
     James Kindon            1.2             15/03/2018          Added Provisioning Server Module
     James Kindon            1.3             17/03/2018          Added WEM, UPS and FAS Modules
     David Brett             1.4             19/03/2018          Added the ability to pull the files location from the registry
-.PARAMETER RootDirectory
-    RootDirectory
+.PARAMETER JsonFile
+    Path to JSON settings file
+.PARAMETER CSSFile
+    Path to CSS file for HTML output
+.PARAMETER LogFile
+    Path to log output file
 .EXAMPLE
     None Required
 #>
