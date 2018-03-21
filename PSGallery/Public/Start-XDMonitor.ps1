@@ -20,30 +20,29 @@
     James Kindon            1.2             15/03/2018          Added Provisioning Server Module
     James Kindon            1.3             17/03/2018          Added WEM, UPS and FAS Modules
     David Brett             1.4             19/03/2018          Added the ability to pull the files location from the registry
-.PARAMETER RootDirectory
-    RootDirectory
+.PARAMETER JsonFile
+    Path to JSON settings file
+.PARAMETER CSSFile
+    Path to CSS file for HTML output
+.PARAMETER LogFile
+    Path to log output file
 .EXAMPLE
     None Required
 #>
-
+[cmdletbinding()]
     Param
-    (
-        [parameter(Mandatory = $false, ValueFromPipeline = $true)]$RootDirectory
+    (        
+        [parameter(Mandatory = $false, ValueFromPipeline = $true)]$JsonFile = ("$(get-location)\euc-monitor.json"),
+        [parameter(Mandatory = $false, ValueFromPipeline = $true)]$CSSFile = ("$(get-location)\euc-monitor.css"),
+        [parameter(Mandatory = $false, ValueFromPipeline = $true)]$LogFile = ("$(get-location)\euc-monitoring.log")
     )
 
-if($RootDirectory -eq $null) {
-    $RootDirectory = Get-ItemPropertyValue -Path "HKLM:\Software\EUCMonitoring" -Name "FileLocation"
-}
-
-# Get old Verbose Preference and storeit, change Verbose Preference to Continue
-$OldVerbosePreference = $VerbosePreference
-$VerbosePreference = "Continue"
-
-# Set Log file location
-$Log = "${env:SystemRoot}" + "\Temp\euc-monitoring.log"
+#if($RootDirectory -eq $null) {
+#    $RootDirectory = Get-ItemPropertyValue -Path "HKLM:\Software\EUCMonitoring" -Name "FileLocation"
+#}
     
 # Read in the JSON File
-$MyConfigFileLocation = ("$RootDirectory\euc-monitoring.json")
+$MyConfigFileLocation = $jsonfile
 
 if (test-path $MyConfigFileLocation) {
 
@@ -53,7 +52,7 @@ if (test-path $MyConfigFileLocation) {
     $MyJSONConfigFile = Get-Content -Raw -Path $MyConfigFileLocation | ConvertFrom-Json
     
     # Start the Transcript
-    Start-Transcript $Log
+    Start-Transcript $LogFile
     
     # Read in the JSON Data
 
@@ -169,7 +168,7 @@ if (test-path $MyConfigFileLocation) {
             New-Item -ItemType directory -Path $OutputLocation -ErrorAction Stop
         }
         Catch {
-            Write-Verbose "Could Not Create Output Directory $OutputLocation Quitting"
+            Write-Error "Could Not Create Output Directory $OutputLocation Quitting"
             Exit
         } 
     }
@@ -203,10 +202,8 @@ if (test-path $MyConfigFileLocation) {
     $ctxsnap = get-pssnapin citrix*
 
     if ($ctxsnap -eq $null) {
-        Write-Verbose "XenDesktop Powershell Snapin Load Failed - No XenDesktop Brokering SDK Found"
-        # Remove Global Functions File
-        remove-module xendesktop-monitor-global
-        Write-Verbose "Cannot Load XenDesktop Powershell SDK"
+        Write-error "XenDesktop Powershell Snapin Load Failed - No XenDesktop Brokering SDK Found"
+        Write-error "Cannot Load XenDesktop Powershell SDK"
         Exit
     }
     else {
@@ -225,7 +222,7 @@ if (test-path $MyConfigFileLocation) {
             Write-Verbose "Cannot connect to any of the configured brokers - quitting"
             # Remove Global Functions File
             remove-module xendesktop-monitor-global
-            Write-Verbose "Cannot Connect to XenDesktop Brokers $XDBrokerPrimary or $XDBrokerFailover"
+            Write-error "Cannot Connect to XenDesktop Brokers $XDBrokerPrimary or $XDBrokerFailover"
             Exit
         }
     }
@@ -286,7 +283,7 @@ if (test-path $MyConfigFileLocation) {
         "Total User Base,$TotalConnectedUsers,$TotalUsersDisconnected" | Out-File $HTMLDataFullPath -Append
 
         # Work out the number of Delivery Groups in Maintenance Mode and write them back to the HTML Data File
-        $DGFullCount = ($DeliveryGroups | Measure).Count
+        $DGFullCount = ($DeliveryGroups | Measure-Object).Count
         $DGMaintenanceCount = ($DeliveryGroups | Where-Object {$_.InMaintenanceMode -match "True"} | Measure).Count
         $DGNonMaintenanceCount = ($DeliveryGroups | Where-Object {$_.InMaintenanceMode -match "False"} | Measure).Count
         Write-Verbose "Total Number of Delivery Groups: $DGFullCount"
@@ -303,7 +300,7 @@ if (test-path $MyConfigFileLocation) {
         else {
             $BrokerMachines = Get-BrokerMachine | Where-Object {$_.SessionSupport -eq "SingleSession"} | Select HostedMachineName, DesktopKind, InMaintenanceMode, PowerState, RegistrationState, SessionSupport, WindowsConnectionSetting, ZoneName
         }
-        $BMFullCount = ($BrokerMachines | Measure).Count
+        $BMFullCount = ($BrokerMachines | Measure-object).Count
         $BMMaintenanceCount = ($BrokerMachines | Where-Object {($_.InMaintenanceMode -match "True" -and $_.PowerState -match "On")} | Measure).Count
         $BMOffCount = ($BrokerMachines | Where-Object {($_.PowerState -match "Off")} | Measure).Count
         $BMOnCount = ($BrokerMachines | Where-Object {($_.PowerState -match "On")} | Measure).Count
@@ -794,21 +791,18 @@ if (test-path $MyConfigFileLocation) {
     }
   
     # Build the HTML output file
-    New-HTMLReport $HTMLOutput $OutputLocation $InfrastructureComponents $InfrastructureList $WorkLoads $RootDirectory
+    New-HTMLReport $HTMLOutput $OutputLocation $InfrastructureComponents $InfrastructureList $WorkLoads $CSSFile
 
     # Stop the timer and display the output
     $EndTime = (Get-Date)
-    Write-Verbose "Elapsed Time: $(($EndTime-$StartTime).TotalSeconds) Seconds" -Verbose
-    Write-Verbose "Elapsed Time: $(($EndTime-$StartTime).TotalMinutes) Minutes" -Verbose
+    Write-Verbose "Elapsed Time: $(($EndTime-$StartTime).TotalSeconds) Seconds"
+    Write-Verbose "Elapsed Time: $(($EndTime-$StartTime).TotalMinutes) Minutes"
 
     # Stop the transcript
     Stop-Transcript
 }
 else {
-    write-verbose "Path not found to json"
+    write-error "Path not found to json. Run Set-EUCMonitoring to get started."
 }
-
-# Set the old Verbose Preference back to original value
-$VerbosePreference = $OldVerbosePreference
 
 }
