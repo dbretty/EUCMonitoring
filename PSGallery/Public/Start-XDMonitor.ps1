@@ -63,81 +63,10 @@
         $WorkLoads = $MyJSONConfigFile.Citrix.Global.workloads
         $ControlUp = $MyJSONConfigFile.Citrix.Global.controlup
   
-<<<<<<< HEAD
-    # Web Data
-    $HTMLData = $MyJSONConfigFile.WebData.htmldatafile
-    $HTMLOutput = $MyJSONConfigFile.WebData.htmloutputfile
-    $RefreshDuration = $MyJSONConfigFile.WebData.refreshduration     
-    $ServerErrorFile = $MyJSONConfigFile.WebData.servererrorfile
-    $DesktopErrorFile = $MyJSONConfigFile.WebData.desktoperrorfile
-    $InfraErrorFile = $MyJSONConfigFile.WebData.infraerrorfile
-    $UpColour = $MyJSONConfigFile.WebData.UpColour
-    $DownColour = $MyJSONConfigFile.WebData.DownColour
-    $OutputLocation = $MyJSONConfigFile.WebData.outputlocation
-    $WorkerDonutStroke = $MyJSONConfigFile.WebData.WorkerDonutStroke
-    $WorkerDonutSize = $MyJSONConfigFile.WebData.workerdonutsize
-    $InfraDonutStroke = $MyJSONConfigFile.WebData.InfraDonutStroke
-    $InfraDonutSize = $MyJSONConfigFile.WebData.infradonutsize
-    $WorkerComponents = 1
-    $InfrastructureComponents = 0
-    $InfrastructureList = @()
-
-    # XenServer Data
-    $TestXenServer = $MyJSONConfigFile.Citrix.xenserver.test
-    $PoolMasters = $MyJSONConfigFile.Citrix.xenserver.poolmasters
-    $ConnectionPort = $MyJSONConfigFile.Citrix.xenserver.poolmasterport
-    $XenUserName = $MyJSONConfigFile.Citrix.xenserver.username
-    $XenPassword = $MyJSONConfigFile.Citrix.xenserver.password
-
-    # StoreFront Data
-    $TestStoreFront = $MyJSONConfigFile.Citrix.storefront.test
-    $StoreFrontServers = $MyJSONConfigFile.Citrix.storefront.storefrontservers
-    $StoreFrontPort = $MyJSONConfigFile.Citrix.storefront.storefrontport
-    $StoreFrontPath = $MyJSONConfigFile.Citrix.storefront.storefrontpath
-    $StoreFrontProtocol = $MyJSONConfigFile.Citrix.storefront.protocol
-
-    # Licensing Data
-    $TestLicensing = $MyJSONConfigFile.Citrix.licensing.test
-    $LicenseServers = $MyJSONConfigFile.Citrix.licensing.licenseservers
-    $VendorDaemonPort = $MyJSONConfigFile.Citrix.licensing.vendordaemonport
-    $LicensePort = $MyJSONConfigFile.Citrix.licensing.licenseport
-    $WebAdminPort = $MyJSONConfigFile.Citrix.licensing.webadminport
-    $SimpleLicensePort = $MyJSONConfigFile.Citrix.licensing.simplelicenseserviceport
-
-    # Director Data
-    $TestDirector = $MyJSONConfigFile.Citrix.director.test
-    $DirectorServers = $MyJSONConfigFile.Citrix.director.directorervers
-    $DirectorPort = $MyJSONConfigFile.Citrix.director.directorport
-    $DirectorPath = $MyJSONConfigFile.Citrix.director.directorpath
-    $DirectorProtocol = $MyJSONConfigFile.Citrix.director.protocol
-
-    # Controller Data
-    $TestController = $MyJSONConfigFile.Citrix.controllers.test
-    $ControllerServers = $MyJSONConfigFile.Citrix.controllers.controllerservers
-    $ControllerPort = $MyJSONConfigFile.Citrix.controllers.controllerport
-    $ControllerServices = $MyJSONConfigFile.Citrix.controllers.controllerservices
-
-    # Provisioning Server Data
-    $TestProvisioningServer = $MyJSONConfigFile.Citrix.ProvisioningServers.test
-    $ProvisioningServerFarm = $MyJSONConfigFile.Citrix.ProvisioningServers.ProvisioningServerFarm
-    $ProvisioningServerSite = $MyJSONConfigFile.Citrix.ProvisioningServers.ProvisioningServerSite
-    $ProvisioningServers = $MyJSONConfigFile.Citrix.ProvisioningServers.ProvisioningServers
-    $ProvisioningServerPort = $MyJSONConfigFile.Citrix.ProvisioningServers.ProvisioningServerport
-    $ProvisioningServerServices = $MyJSONConfigFile.Citrix.ProvisioningServers.ProvisioningServerServices
-
-    # NetScaler Data
-    $TestNetScaler = $MyJSONConfigFile.Citrix.netscalers.test
-    $NetScalers = $MyJSONConfigFile.Citrix.netscalers.netscalers
-    $NetScalerUserName = $MyJSONConfigFile.Citrix.netscalers.netscalerusername
-    $NetScalerPassword = $MyJSONConfigFile.Citrix.netscalers.netscalerpassword
-
-    # NetScaler Gateway Data
-    $TestNetScalerGateway = $MyJSONConfigFile.Citrix.netscalergateway.test
-    $NetScalerHostingGateway = $MyJSONConfigFile.Citrix.netscalergateway.netscalerhostinggateway
-=======
         # Web Data
         $HTMLData = $MyJSONConfigFile.WebData.htmldatafile
         $HTMLOutput = $MyJSONConfigFile.WebData.htmloutputfile
+        $RefreshDuration = $MyJSONConfigFile.WebData.refreshduration
         $ServerErrorFile = $MyJSONConfigFile.WebData.servererrorfile
         $DesktopErrorFile = $MyJSONConfigFile.WebData.desktoperrorfile
         $InfraErrorFile = $MyJSONConfigFile.WebData.infraerrorfile
@@ -207,7 +136,6 @@
         # NetScaler Gateway Data
         $TestNetScalerGateway = $MyJSONConfigFile.Citrix.netscalergateway.test
         $NetScalerHostingGateway = $MyJSONConfigFile.Citrix.netscalergateway.netscalerhostinggateway
->>>>>>> upstream/master
     
         # Citrix WEM Data
         $TestWEM = $MyJSONConfigFile.Citrix.WEM.test
@@ -867,13 +795,8 @@
             Write-Verbose "Deleted Donut Data File $FASServerData"
         }
   
-<<<<<<< HEAD
-    # Build the HTML output file
-    New-HTMLReport $HTMLOutput $OutputLocation $InfrastructureComponents $InfrastructureList $WorkLoads $CSSFile $RefreshDuration
-=======
         # Build the HTML output file
-        New-HTMLReport $HTMLOutput $OutputLocation $InfrastructureComponents $InfrastructureList $WorkLoads $CSSFile
->>>>>>> upstream/master
+        New-HTMLReport $HTMLOutput $OutputLocation $InfrastructureComponents $InfrastructureList $WorkLoads $CSSFile $RefreshDuration
 
         # Stop the timer and display the output
         $EndTime = (Get-Date)
