@@ -162,6 +162,12 @@
         $CCPort = $MyJSONConfigFile.Citrix.CC.CCPort
         $CCServices = $MyJSONConfigFile.Citrix.CC.CCServices
 
+        $TestEnvChecksXD = $MyJSONConfigFile.Citrix.EnvChecks.test
+        $EnvChecksXDCheckddc = $MyJSONConfigFile.Citrix.EnvChecks.ddccheck
+        $EnvChecksXDCheckdeliverygroup = $MyJSONConfigFile.Citrix.EnvChecks.deliverygroupcheck
+        $EnvChecksXDCheckcatalog = $MyJSONConfigFile.Citrix.EnvChecks.catalogcheck
+        $EnvChecksXDHypervisor = $MyJSONConfigFile.Citrix.EnvChecks.hypervisorcheck
+
         # Build HTML Output and Error File Full Path
         $ServerErrorFileFullPath = Join-Path -Path $OutputLocation -ChildPath $ServerErrorFile
         $DesktopErrorFileFullPath = Join-Path -Path $OutputLocation -ChildPath $DesktopErrorFile
@@ -801,34 +807,63 @@
             remove-item $FASServerData -Force
             Write-Verbose "Deleted Donut Data File $FASServerData"
         }
-  
+
+
         # Checking Cloud Connector Servers
         if ($TestCC -eq "yes") { 
-          # Increment Infrastructure Components
-          $InfrastructureComponents++
-          $InfrastructureList += "CC"
+            # Increment Infrastructure Components
+            $InfrastructureComponents++
+            $InfrastructureList += "CC"
 
-          Write-Verbose "Citrix Cloud Connector Server Testing enabled"
-          Write-Verbose "Building Citrix Cloud Connector Server Data Output Files"
-          $CCServerData = Join-Path -Path $OutputLocation -ChildPath "CCServer-data.txt"
+            Write-Verbose "Citrix Cloud Connector Server Testing enabled"
+            Write-Verbose "Building Citrix Cloud Connector Server Data Output Files"
+            $CCServerData = Join-Path -Path $OutputLocation -ChildPath "CCServer-data.txt"
 
-          # Build Donut File Paths for Citrix Cloud Connector Server
-          $CCDonut = Join-Path -Path $OutputLocation -ChildPath "CC.html"
+            # Build Donut File Paths for Citrix Cloud Connector Server
+            $CCDonut = Join-Path -Path $OutputLocation -ChildPath "CC.html"
 
-          # Remove Existing Data Files
-          if (test-path $CCServerData) {
-              Remove-Item $CCServerData
-          }
+            # Remove Existing Data Files
+            if (test-path $CCServerData) {
+                Remove-Item $CCServerData
+            }
 
-          # Test the Cloud Connector Server Infrastructure
-          Test-CC $CCServers $CCPort $CCServices $InfraErrorFileFullPath $CCServerData
+            # Test the Cloud Connector Server Infrastructure
+            Test-CC $CCServers $CCPort $CCServices $InfraErrorFileFullPath $CCServerData
 
-          Write-Verbose "Building Donut Files for Citrix Cloud Connector Servers"
-          Build-Donut $CCDonut $CCServerData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "CC"
+            Write-Verbose "Building Donut Files for Citrix Cloud Connector Servers"
+            Build-Donut $CCDonut $CCServerData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "CC"
 
-          # Removing Donut Data File
-          remove-item $CCServerData -Force
-          Write-Verbose "Deleted Donut Data File $CCServerData"
+            # Removing Donut Data File
+            remove-item $CCServerData -Force
+            Write-Verbose "Deleted Donut Data File $CCServerData"
+        }
+        
+        if ( ($TestEnvChecksXD -eq "yes") -and ($TestCC -eq "no")) {
+            # Increment Infrastructure Components
+            $InfrastructureComponents++
+            $InfrastructureList += "EnvChecks-XD"
+
+            Write-Verbose "Citrix Environmental Checks Testing enabled"
+            Write-Verbose "Building EnvCheck Data Output Files"
+            $EnvChecksXDData = Join-Path -Path $OutputLocation -ChildPath "envcheckxd-data.txt"
+
+            # Build Donut File Paths for Citrix Environmental Checks
+            $EnvCheckXDDonut = Join-Path -Path $OutputLocation -ChildPath "envcheckxd.html"
+
+            # Remove Existing Data Files
+            if (test-path $EnvCheckXDData) {
+                Remove-Item $EnvCheckXDData 
+            }
+
+            # Test the Citrix Environmental Checks
+            Test-EnvChecksXD $Broker $InfraErrorFileFullPath $EnvCheckXDData $EnvChecksXDCheckddc $EnvChecksXDCheckdeliverygroup $EnvChecksXDCheckcatalog $EnvChecksXDHypervisor
+
+            Write-Verbose "Building Donut Files for Citrix Environmental Checks"
+            New-Donut $EnvCheckXDDonut $EnvCheckXDData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "EnvChecks-XD"
+
+            # Removing Donut Data File
+            remove-item $EnvChecksXDData -Force
+            Write-Verbose "Deleted Donut Data File $EnvChecksXDData"
         }
 
         # Build the HTML output file

@@ -79,6 +79,13 @@
     "ProvisioningServerPort": "54321", - Provisioning Server Default Server Port 
     "ProvisioningServerServices": "BNPXE,BNTFTP,PvsApi,PVSTSB,soapserver,StreamService" - List of Services to test. See bottom of file Service reference list
     }
+    "EnvChecks": {
+        "test": "yes", - yes/no - Environment Checks, will not run if preferred Broker is Cloud Controller
+        "ddccheck": "yes", - yes/no - Delivery Controller Environment checks
+        "deliverygroupcheck": "yes" - yes/no - Delivery Group Environment Checks
+        "catalogcheck": "yes"- yes/no - Catalog Environment checks
+        "hypervisorcheck": "yes" - yes/no - Hypervisor Environment checks
+    }
 }
 
 Service reference List
