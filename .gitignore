@@ -29,4 +29,5 @@
 # OS generated files #
 ######################
 .DS_Store
+.vscode
 euc-monitoring.json

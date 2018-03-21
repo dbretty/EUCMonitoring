@@ -107,7 +107,7 @@
             "CCServers": "ccserver1.domain,ccserver2.domain",
             "CCPort": "80",
             "CCServices": "CitrixWorkspaceCloudADProvider,CitrixWorkspaceCloudAgentDiscovery,CitrixWorkspaceCloudAgentLogger,CitrixWorkspaceCloudAgentSystem,CitrixWorkspaceCloudAgentWatchDog,CitrixWorkspaceCloudCredentialProvider,CitrixWorkspaceCloudWebRelayProvider,CitrixConfigSyncService,CitrixHighAvailabilityService,Citrix NetScaler Cloud Gateway,XaXdCloudProxy,RemoteHCLServer,SessionManagerProxy"
-        }
+        },
         "EnvChecks": {
             "test": "yes",
             "ddccheck": "yes",
