@@ -31,7 +31,7 @@ function New-HtmlReport {
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$InfrastructureComponents,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$InfrastructureList,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$WorkerList,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$RootDirectory
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$CSSFile
     )
 
     # Generate HTML Output File
@@ -47,7 +47,7 @@ function New-HtmlReport {
 
     # Write CSS Style
     "<style>" | Out-File $HTMLOutputFileFull -Append
-    $CSSData = Get-Content "$RootDirectory\euc-monitor.css"
+    $CSSData = Get-Content $CSSFile
     $CSSData | Out-File $HTMLOutputFileFull -Append
     "</style>" | Out-File $HTMLOutputFileFull -Append
 

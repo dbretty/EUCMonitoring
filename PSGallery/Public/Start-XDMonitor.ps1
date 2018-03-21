@@ -27,19 +27,15 @@
 #>
 [cmdletbinding()]
     Param
-    (
-        [parameter(Mandatory = $false, ValueFromPipeline = $true)]$RootDirectory=(get-location),
-        [parameter(Mandatory = $false, ValueFromPipeline = $true)]$LogLocation = "${env:SystemRoot}" + "\Temp\euc-monitoring.log",
-        [parameter(Mandatory = $false, ValueFromPipeline = $true)]$JsonFile = "$rootdirectory\euc-monitoring.json"
+    (        
+        [parameter(Mandatory = $false, ValueFromPipeline = $true)]$JsonFile = ("$(get-location)\euc-monitor.json"),
+        [parameter(Mandatory = $false, ValueFromPipeline = $true)]$CSSFile = ("$(get-location)\euc-monitor.css"),
+        [parameter(Mandatory = $false, ValueFromPipeline = $true)]$LogFile = ("$(get-location)\euc-monitoring.log")
     )
 
 #if($RootDirectory -eq $null) {
 #    $RootDirectory = Get-ItemPropertyValue -Path "HKLM:\Software\EUCMonitoring" -Name "FileLocation"
 #}
-
-
-# Set Log file location
-$Log = $LogLocation
     
 # Read in the JSON File
 $MyConfigFileLocation = $jsonfile
@@ -52,7 +48,7 @@ if (test-path $MyConfigFileLocation) {
     $MyJSONConfigFile = Get-Content -Raw -Path $MyConfigFileLocation | ConvertFrom-Json
     
     # Start the Transcript
-    Start-Transcript $Log
+    Start-Transcript $LogFile
     
     # Read in the JSON Data
 
@@ -791,7 +787,7 @@ if (test-path $MyConfigFileLocation) {
     }
   
     # Build the HTML output file
-    New-HTMLReport $HTMLOutput $OutputLocation $InfrastructureComponents $InfrastructureList $WorkLoads $RootDirectory
+    New-HTMLReport $HTMLOutput $OutputLocation $InfrastructureComponents $InfrastructureList $WorkLoads $CSSFile
 
     # Stop the timer and display the output
     $EndTime = (Get-Date)
