@@ -18,7 +18,7 @@
         "Global": {
             "xdbrokerprimary": "xdprimary.domain.com",
             "xdbrokerfailover": "xdsecondary.domain.com",
-            "workloads": "server,desktop",
+            "workloads": ["server","desktop"],
             "controlup": "no"
         },
         "server": {
@@ -33,7 +33,7 @@
         },
         "xenserver": {
             "test": "yes",
-            "poolmasters": "pool_master_ip",
+            "poolmasters": ["pool_master_ip1","pool_master_ip2"],
             "poolmasterport": "80",
             "username": "root",
             "password": "password"
@@ -47,7 +47,7 @@
         },
         "licensing": {
             "test": "yes",
-            "licenseservers": "license.domain.com",
+            "licenseservers": ["license1.domain.com","license2.domain.com"],
             "vendordaemonport": "7279",
             "licenseport": "27000",
             "webadminport": "8082",
@@ -55,20 +55,20 @@
         },
         "director": {
             "test": "yes",            
-            "directorervers": "director.domain.com",
+            "directorervers": ["director1.domain.com","director2.domain.com"],
             "directorport": "80",
             "directorpath": "/Director/LogOn.aspx?cc=true",
             "protocol": "http"
         },
         "controllers": {
             "test": "yes",
-            "controllerservers": "controller.domain.com",
+            "controllerservers": ["controller1.domain.com","controller2.domain.com"],
             "controllerport": "80",
-            "controllerservices": "CitrixADIdentityService,CitrixAnalytics,CitrixAppLibrary"
+            "controllerservices": ["CitrixADIdentityService","CitrixAnalytics","CitrixAppLibrary"]
         },
         "netscalers": {
             "test": "yes",
-            "netscalers": "netscaler_ip",
+            "netscalers": ["netscaler_ip1","netscaler_ip2"],
             "netscalerusername": "nsroot",
             "netscalerpassword": "nsroot"
         },
@@ -80,33 +80,33 @@
             "test": "yes",
             "ProvisioningServerFarm": "pvs",
             "ProvisioningServerSite": "pvs_site",
-            "ProvisioningServers": "pvs.domain.com",
+            "ProvisioningServers": ["pvs1.domain.com","pvs2.domain.com"],
             "ProvisioningServerPort": "54321",
-            "ProvisioningServerServices": "BNPXE,BNTFTP,PvsApi,PVSTSB,soapserver,StreamService"
+            "ProvisioningServerServices": ["BNPXE","BNTFTP","PvsApi","PVSTSB","soapserver","StreamService"]
         },
         "WEM": {
             "test": "yes",
-            "WEMServers": "wembroker.domain.com",
+            "WEMServers": ["wembroker1.domain.com","wembroker2.domain.com"],
             "WEMAgentPort": "8286",
-            "WEMServices": "Norskale Infrastructure Service"
+            "WEMServices": ["Norskale Infrastructure Service"]
         },
         "UPS": {
             "test": "yes",
             "UPSServers": "upsserver.domain.com",
             "UPSPort": "7229",
-            "UPSServices": "UpSvc,CitrixXTEServer"
+            "UPSServices": ["UpSvc","CitrixXTEServer"]
         },
         "FAS": {
             "test": "yes",
-            "FASServers": "fasserver.domain.com",
+            "FASServers": ["fasserver1.domain.com","fasserver2.domain.com"],
             "FASPort": "135",
             "FASServices": "CitrixFederatedAuthenticationService"
          },   
          "CC": {
             "test": "yes",
-            "CCServers": "ccserver1.domain,ccserver2.domain",
+            "CCServers": ["ccserver1.domain","ccserver2.domain"],
             "CCPort": "80",
-            "CCServices": "CitrixWorkspaceCloudADProvider,CitrixWorkspaceCloudAgentDiscovery,CitrixWorkspaceCloudAgentLogger,CitrixWorkspaceCloudAgentSystem,CitrixWorkspaceCloudAgentWatchDog,CitrixWorkspaceCloudCredentialProvider,CitrixWorkspaceCloudWebRelayProvider,CitrixConfigSyncService,CitrixHighAvailabilityService,Citrix NetScaler Cloud Gateway,XaXdCloudProxy,RemoteHCLServer,SessionManagerProxy"
+            "CCServices": ["CitrixWorkspaceCloudADProvider","CitrixWorkspaceCloudAgentDiscovery","CitrixWorkspaceCloudAgentLogger","CitrixWorkspaceCloudAgentSystem","CitrixWorkspaceCloudAgentWatchDog","CitrixWorkspaceCloudCredentialProvider","CitrixWorkspaceCloudWebRelayProvider","CitrixConfigSyncService","CitrixHighAvailabilityService","Citrix NetScaler Cloud Gateway","XaXdCloudProxy","RemoteHCLServer","SessionManagerProxy"]
         },
         "EnvChecks": {
             "test": "yes",

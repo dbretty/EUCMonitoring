@@ -42,8 +42,6 @@ function Test-Director {
     $DirectorDown = 0
     Write-Verbose "Variables and Arrays Initalized"
 
-    # Get Director Server Comma Delimited List Port and Director Path
-    $DirectorServers = $DirectorServers.Split(",")
     Write-Verbose "Read in Director Server List Port and Director Path"
     Write-Verbose "Director Servers: $DirectorServers"
     Write-Verbose "Director Port: $DirectorPortString" 

@@ -247,8 +247,6 @@
         }
         Write-Verbose "Configured XenDesktop Broker for Connectivity: $Broker"
 
-        # Split The Workloads Into An Array and Loop Script Through Them
-        $WorkLoadArray = $WorkLoads -Split ","
         foreach ($Workload in $WorkLoadArray) {
         
             # Increment Worker Components

@@ -42,9 +42,6 @@ function Test-FAS {
     $FASServerDown = 0
     Write-Verbose "Variables and Arrays Initalized"
 
-    # Get FAS Server Comma Delimited List 
-    $FASServers = $FASServers.Split(",")
-    $FASServices = $FASServices.Split(",")
     Write-Verbose "Read in FAS Details"
     Write-Verbose "FAS Servers: $FASServers"
     Write-Verbose "FAS Ports: $FASPortString" 

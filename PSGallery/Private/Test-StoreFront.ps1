@@ -43,8 +43,6 @@ function Test-StoreFront {
     $StoreFrontDown = 0
     Write-Verbose "Variables and Arrays Initalized"
 
-    # Get StoreFront Server Comma Delimited List Port and Store Path
-    $StoreFrontServers = $StoreFrontServers.Split(",")
     Write-Verbose "Read in StoreFront Server List Port and StoreFront Path"
     Write-Verbose "StoreFront Servers: $StoreFrontServers"
     Write-Verbose "StoreFront Port: $StoreFrontPortString" 

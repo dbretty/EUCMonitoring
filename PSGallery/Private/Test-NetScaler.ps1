@@ -44,9 +44,8 @@ function Test-NetScaler {
     $vServerDown = 0
     Write-Verbose "Variables and Arrays Initalized"
 
-    # Get NetScaler List from Registry
+    # Get NetScaler List
     Write-Verbose "Read NetScalers"
-    $NetScalers = $NetScalers.Split(",")
 
     # Loop through NetScalers pulled from Registry
     Write-Verbose "Looping through NetScalers and running monitoring checks"

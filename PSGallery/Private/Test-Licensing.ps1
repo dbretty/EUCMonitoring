@@ -48,8 +48,6 @@ function Test-Licensing {
     $LicenseServerDown = 0
     Write-Verbose "Variables and Arrays Initalized"
 
-    # Get License Server Comma Delimited List and Vendor Daemon Port from Registry
-    $LicenseServers = $LicenseServers.Split(",")
     Write-Verbose "Read in License Server List and Vendor Daemon Ports"
     Write-Verbose "License Servers: $LicenseServers"
     Write-Verbose "Vendor Daemon Port: $VendorDaemonPortString"
