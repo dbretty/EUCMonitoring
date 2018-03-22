@@ -100,7 +100,7 @@
             "test": "yes",
             "FASServers": ["fasserver1.domain.com","fasserver2.domain.com"],
             "FASPort": "135",
-            "FASServices": "CitrixFederatedAuthenticationService"
+            "FASServices": ["CitrixFederatedAuthenticationService"]
          },   
          "CC": {
             "test": "yes",
