@@ -45,9 +45,6 @@ function Test-Controller {
     $ControllerDown = 0
     Write-Verbose "Variables and Arrays Initalized"
 
-    # Get Controller Server Comma Delimited List 
-    $Controllers = $Controllers.Split(",")
-    $ControllerServices = $ControllerServices.Split(",")
     Write-Verbose "Read in Controller List"
     Write-Verbose "Controllers: $Controllers"
     Write-Verbose "Controller Port: $ControllerPortString" 

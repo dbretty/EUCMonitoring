@@ -43,9 +43,6 @@ function Test-UPS {
     $UPSServerDown = 0
     Write-Verbose "Variables and Arrays Initalized"
 
-    # Get UPS Server Comma Delimited List 
-    $UPSServers = $UPSServers.Split(",")
-    $UPSServices = $UPSServices.Split(",")
     Write-Verbose "Read in UPS Details"
     Write-Verbose "UPS Servers: $UPSServers"
     Write-Verbose "UPS Ports: $UPSPortString" 

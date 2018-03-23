@@ -80,7 +80,6 @@ function New-HtmlReport {
 
     # Work out the column width for Infrastructure
     $ColumnPercent = 100 / [int]$InfrastructureComponents
-    #$InfrastructureList = $InfrastructureList.Split(",")
     foreach ($InfService in $InfrastructureList) {
         Write-Verbose "Getting Donut Data for $InfService"
 
@@ -112,7 +111,6 @@ function New-HtmlReport {
     "<br>" | Out-File $HTMLOutputFileFull -Append
 
     # Start the Worker Donur Build
-    $WorkerList = $WorkerList.Split(",")
     $WorkerCount = ($WorkerList | Measure-Object).Count
 
     # Work out column sizes

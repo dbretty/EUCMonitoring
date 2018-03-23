@@ -59,7 +59,7 @@ function Test-XenServer {
         Write-Verbose "Variables and Arrays Initalized"
 
         # Get XenServer Comma Delimited List and Management Port
-        $XenServers = $PoolMasters.Split(",")
+        $XenServers = $PoolMasters
         Write-Verbose "Read in XenServer Pool Masters and Management Ports"
         Write-Verbose "XenServer Pool Masters: $XenServers"
         Write-Verbose "Management Port: $ConnectionPort"
