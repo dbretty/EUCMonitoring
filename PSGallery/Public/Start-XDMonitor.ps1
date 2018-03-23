@@ -830,7 +830,7 @@ function Start-XDMonitor {
             Test-CC $CCServers $CCPort $CCServices $InfraErrorFileFullPath $CCServerData
 
             Write-Verbose "Building Donut Files for Citrix Cloud Connector Servers"
-            Build-Donut $CCDonut $CCServerData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "CC"
+            New-Donut $CCDonut $CCServerData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "CC"
 
             # Removing Donut Data File
             remove-item $CCServerData -Force
