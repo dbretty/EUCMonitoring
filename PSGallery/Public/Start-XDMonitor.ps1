@@ -1,4 +1,4 @@
-﻿function Start-XDMonitor {
+function Start-XDMonitor {
     <#
 .SYNOPSIS
     Monitors the Server Workers
@@ -247,7 +247,7 @@
         }
         Write-Verbose "Configured XenDesktop Broker for Connectivity: $Broker"
 
-        foreach ($Workload in $WorkLoadArray) {
+        foreach ($Workload in $WorkLoads) {
         
             # Increment Worker Components
             $WorkerComponents++
@@ -840,7 +840,7 @@
         if ( ($TestEnvChecksXD -eq "yes") -and ($TestCC -eq "no")) {
             # Increment Infrastructure Components
             $InfrastructureComponents++
-            $InfrastructureList += "EnvChecks-XD"
+            $InfrastructureList += "EnvCheckXD"
 
             Write-Verbose "Citrix Environmental Checks Testing enabled"
             Write-Verbose "Building EnvCheck Data Output Files"
@@ -850,15 +850,15 @@
             $EnvCheckXDDonut = Join-Path -Path $OutputLocation -ChildPath "envcheckxd.html"
 
             # Remove Existing Data Files
-            if (test-path $EnvCheckXDData) {
-                Remove-Item $EnvCheckXDData 
+            if (test-path $EnvChecksXDData) {
+                Remove-Item $EnvChecksXDData 
             }
 
             # Test the Citrix Environmental Checks
-            Test-EnvChecksXD $Broker $InfraErrorFileFullPath $EnvCheckXDData $EnvChecksXDCheckddc $EnvChecksXDCheckdeliverygroup $EnvChecksXDCheckcatalog $EnvChecksXDHypervisor
+            Test-EnvChecksXD $Broker $InfraErrorFileFullPath $EnvChecksXDData $EnvChecksXDCheckddc $EnvChecksXDCheckdeliverygroup $EnvChecksXDCheckcatalog $EnvChecksXDHypervisor
 
             Write-Verbose "Building Donut Files for Citrix Environmental Checks"
-            New-Donut $EnvCheckXDDonut $EnvCheckXDData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "EnvChecks-XD"
+            New-Donut $EnvCheckXDDonut $EnvChecksXDData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "EnvChecks"
 
             # Removing Donut Data File
             remove-item $EnvChecksXDData -Force
