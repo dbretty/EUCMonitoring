@@ -98,8 +98,8 @@ function Test-SQL {
             }
             else {
                 # SQL Server Port is down - mark down, error log and increment down count
-                Write-Verbose "$SQLServer LDAP Port is down - Port - $SQLPort"
-                "$SQLServer Port is down - Port - $SQPPort" | Out-File $ErrorFile -Append
+                Write-Verbose "$SQLServer SQL Port is down - Port - $SQLPortString"
+                "$SQLServer Port is down - Port - $SQLPortString" | Out-File $ErrorFile -Append
                 $SQLServerDown++
             }
 

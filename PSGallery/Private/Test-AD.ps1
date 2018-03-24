@@ -60,7 +60,7 @@ function Test-AD {
             if ((Test-NetConnection $ADServer $ADPortString).open -eq "True") {
 
                 # AD Server port is up and running
-                Write-Verbose "$ADServer LDAP Port is up: Port - $ADLDAPPort"
+                Write-Verbose "$ADServer LDAP Port is up: Port - $ADPortString"
 
                 # Check all critical services are running on the AD Server
                 # Initalize Pre loop variables and set Clean Run Services to Yes
