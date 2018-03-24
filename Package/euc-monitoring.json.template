@@ -14,6 +14,20 @@
         "Infradonutsize": 160,
         "infraerrorfile": "infra-errors.txt"
     },
+    "Microsoft": {
+        "AD": {
+            "test": "yes",
+            "ADServers": ["dc.domain.com"],
+            "ADLDAPPort": "389",
+            "ADServices": ["Netlogon","ADWS","NTDS"]
+        },
+        "SQL": {
+            "test": "yes",
+            "SQLServers": ["sql.domain.com"],
+            "SQLPort": "1433",
+            "SQLServices": ["MSSQLServer"]
+        }
+    },
     "Citrix": {
         "Global": {
             "xdbrokerprimary": "xdprimary.domain.com",
@@ -55,7 +69,7 @@
         },
         "director": {
             "test": "yes",            
-            "directorervers": ["director1.domain.com","director2.domain.com"],
+            "directorservers": ["director1.domain.com","director2.domain.com"],
             "directorport": "80",
             "directorpath": "/Director/LogOn.aspx?cc=true",
             "protocol": "http"
