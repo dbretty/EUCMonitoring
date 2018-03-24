@@ -899,7 +899,7 @@ function Start-XDMonitor {
             Test-AD $ADServers $ADLDAPPort $ADServices $InfraErrorFileFullPath $ADServerData
 
             Write-Verbose "Building Donut Files for Active Directory"
-            Build-Donut $ADDonut $ADServerData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "AD"
+            New-Donut $ADDonut $ADServerData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "AD"
 
             # Removing Donut Data File
             remove-item $ADServerData -Force
@@ -928,7 +928,7 @@ function Start-XDMonitor {
             Test-SQL $SQLServers $SQLPort $SQLServices $InfraErrorFileFullPath $SQLServerData
     
             Write-Verbose "Building Donut Files for SQL"
-            Build-Donut $SQLDonut $SQLServerData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "SQL"
+            New-Donut $SQLDonut $SQLServerData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "SQL"
     
             # Removing Donut Data File
             remove-item $SQLServerData -Force

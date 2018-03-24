@@ -78,7 +78,7 @@
             "test": "yes",
             "controllerservers": ["controller1.domain.com","controller2.domain.com"],
             "controllerport": "80",
-            "controllerservices": ["CitrixADIdentityService","CitrixAnalytics","CitrixAppLibrary"]
+            "controllerservices": ["CitrixBrokerService","CitrixHighAvailabilityService","CitrixConfigSyncService","CitrixConfigurationService","CitrixConfigurationLogging","CitrixDelegatedAdmin","CitrixADIdentityService","CitrixMachineCreationService","CitrixHostService","CitrixEnvTest","CitrixMonitor","CitrixAnalytics","CitrixAppLibrary","CitrixOrchestration"]
         },
         "netscalers": {
             "test": "yes",

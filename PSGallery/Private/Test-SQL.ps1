@@ -43,9 +43,6 @@ function Test-SQL {
     $SQLServerDown = 0
     Write-Verbose "Variables and Arrays Initalized"
 
-    # Get SQL Server Comma Delimited List 
-    $SQLServers = $SQLServers.Split(",")
-    $SQLServices = $SQLServices.Split(",")
     Write-Verbose "Read in SQL Details"
     Write-Verbose "SQL Servers: $SQLServers"
     Write-Verbose "SQL Ports: $SQLPortString" 
@@ -72,7 +69,7 @@ function Test-SQL {
 
                 # Check Each Service for a Running State
                 foreach ($Service in $SQLServices) {
-                    $CurrentServiceStatus = Check-Service $SQLServer $Service
+                    $CurrentServiceStatus = Test-Service $SQLServer $Service
                     If ($CurrentServiceStatus -ne "Running") {
                         # If the Service is not running set ServicesUp to No and Append The Service with an error to the error description
                         if ($ServiceError -eq "") {
