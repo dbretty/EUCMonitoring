@@ -43,9 +43,6 @@ function Test-ProvisioningServer {
     $ProvisioningServerDown = 0
     Write-Verbose "Variables and Arrays Initalized"
 
-    # Get Provisioning Server Comma Delimited List 
-    $ProvisioningServers = $ProvisioningServers.Split(",")
-    $ProvisioningServerServices = $ProvisioningServerServices.Split(",")
     Write-Verbose "Read in Provisioning Server Details"
     Write-Verbose "Provisioning Server Farm: $ProvisioningServerFarm"
     Write-Verbose "Provisioning Server Site: $ProvisioningServerSite"

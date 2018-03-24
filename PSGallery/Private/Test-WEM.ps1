@@ -43,9 +43,6 @@ function Test-WEM {
     $WEMServerDown = 0
     Write-Verbose "Variables and Arrays Initalized"
 
-    # Get WEM Server Comma Delimited List 
-    $WEMServers = $WEMServers.Split(",")
-    $WEMServices = $WEMServices.Split(",")
     Write-Verbose "Read in WEM Details"
     Write-Verbose "WEM Servers: $WEMServers"
     Write-Verbose "WEM Ports: $WEMAgentPortString" 

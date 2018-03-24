@@ -44,8 +44,6 @@ function Test-CC {
     Write-Verbose "Variables and Arrays Initalized"
 
     # Get Cloud Connector Server Comma Delimited List 
-    $CCServers = $CCServers.Split(",")
-    $CCServices = $CCServices.Split(",")
     Write-Verbose "Read in Cloud Connector Details"
     Write-Verbose "Cloud Connector Servers: $CCServers"
     Write-Verbose "Cloud Connector Ports: $CCPortString" 
