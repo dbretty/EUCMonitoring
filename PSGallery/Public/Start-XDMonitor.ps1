@@ -21,6 +21,7 @@ function Start-XDMonitor {
     James Kindon            1.3             17/03/2018          Added WEM, UPS and FAS Modules
     David Brett             1.4             19/03/2018          Added the ability to pull the files location from the registry
     David Wilkinson         1.4.1           19/03/2018          Added Cloud Connector Module
+    David Brett             1.5             26/03/2018          Prep For SQL and AD Monitoring
 .PARAMETER JsonFile
     Path to JSON settings file
 .PARAMETER CSSFile
