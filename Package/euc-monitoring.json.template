@@ -15,6 +15,9 @@
         "infraerrorfile": "infra-errors.txt"
     },
     "Microsoft": {
+        "Global: {
+            "test": "yes"
+        }
         "AD": {
             "test": "yes",
             "ADServers": ["dc.domain.com"],
@@ -30,6 +33,7 @@
     },
     "Citrix": {
         "Global": {
+            "test": "yes",
             "xdbrokerprimary": "xdprimary.domain.com",
             "xdbrokerfailover": "xdsecondary.domain.com",
             "workloads": ["server","desktop"],
