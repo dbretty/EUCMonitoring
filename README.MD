@@ -1,10 +1,12 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/2yb4ai0n72nrsm2x/branch/master?retina=true)](https://ci.appveyor.com/project/dbretty/eucmonitoring/branch/master)
+
 # EUC Platform Monitoring Tool
 
 ## Project Desription
 
-This is a [EUC monitoring platform](http://bretty.me.uk/free-citrix-xendesktop-7-monitoring-platform/) that is based on Powershell and FREE! It will check all the key components of your End User Compute Estate and give you a visual dashboard as to the current state. It is currently focussed on Citrix but will eventually be branched out to cover VMware and Misrosoft Technologies.
+This is a [EUC monitoring platform](http://bretty.me.uk/free-citrix-xendesktop-7-monitoring-platform/) that is based on Powershell and FREE! It will check all the key components of your End User Compute Estate and give you a visual dashboard as to the current state. It is currently focussed on Citrix but will eventually be branched out to cover VMware and Microsoft Technologies.
 
-![](https://raw.githubusercontent.com/dbretty/xendesktop-7x-monitor/master/img/overview.png)
+![](https://raw.githubusercontent.com/dbretty/eucmonitoring/master/img/overview.png)
 
 ## Motivation
 

@@ -1,4 +1,4 @@
-﻿function Start-XDMonitor {
+function Start-XDMonitor {
     <#
 .SYNOPSIS
     Monitors the Server Workers
@@ -21,6 +21,7 @@
     James Kindon            1.3             17/03/2018          Added WEM, UPS and FAS Modules
     David Brett             1.4             19/03/2018          Added the ability to pull the files location from the registry
     David Wilkinson         1.4.1           19/03/2018          Added Cloud Connector Module
+    David Brett             1.5             26/03/2018          Prep For SQL and AD Monitoring
 .PARAMETER JsonFile
     Path to JSON settings file
 .PARAMETER CSSFile
@@ -107,7 +108,7 @@
 
         # Director Data
         $TestDirector = $MyJSONConfigFile.Citrix.director.test
-        $DirectorServers = $MyJSONConfigFile.Citrix.director.directorervers
+        $DirectorServers = $MyJSONConfigFile.Citrix.director.directorservers
         $DirectorPort = $MyJSONConfigFile.Citrix.director.directorport
         $DirectorPath = $MyJSONConfigFile.Citrix.director.directorpath
         $DirectorProtocol = $MyJSONConfigFile.Citrix.director.protocol
@@ -169,6 +170,18 @@
         $EnvChecksXDCheckcatalog = $MyJSONConfigFile.Citrix.EnvChecks.catalogcheck
         $EnvChecksXDHypervisor = $MyJSONConfigFile.Citrix.EnvChecks.hypervisorcheck
 
+        # AD Data
+        $TestAD = $MyJSONConfigFile.Microsoft.AD.test
+        $ADServers = $MyJSONConfigFile.Microsoft.AD.ADServers
+        $ADLDAPPort = $MyJSONConfigFile.Microsoft.AD.ADLDAPPort
+        $ADServices = $MyJSONConfigFile.Microsoft.AD.ADServices
+
+        # SQL Data
+        $TestSQL = $MyJSONConfigFile.Microsoft.SQL.test
+        $SQLServers = $MyJSONConfigFile.Microsoft.SQL.SQLServers
+        $SQLPort = $MyJSONConfigFile.Microsoft.SQL.SQLPort
+        $SQLServices = $MyJSONConfigFile.Microsoft.SQL.SQLServices
+
         # Build HTML Output and Error File Full Path
         $ServerErrorFileFullPath = Join-Path -Path $OutputLocation -ChildPath $ServerErrorFile
         $DesktopErrorFileFullPath = Join-Path -Path $OutputLocation -ChildPath $DesktopErrorFile
@@ -213,7 +226,7 @@
         }
 
         # Display the XenDesktop Brokers Passed In
-        Write-Verbose "XenDexktop Primary Broker $XDBrokerPrimary"
+        Write-Verbose "XenDesktop Primary Broker $XDBrokerPrimary"
         Write-Verbose "XenDesktop Failover Broker $XDBrokerFailover"
 
         # Load the Citrix Broker Powershell SDK
@@ -247,9 +260,7 @@
         }
         Write-Verbose "Configured XenDesktop Broker for Connectivity: $Broker"
 
-        # Split The Workloads Into An Array and Loop Script Through Them
-        $WorkLoadArray = $WorkLoads -Split ","
-        foreach ($Workload in $WorkLoadArray) {
+        foreach ($Workload in $WorkLoads) {
         
             # Increment Worker Components
             $WorkerComponents++
@@ -737,7 +748,7 @@
 
             # Remove Existing Data Files
             if (test-path $WEMServerData) {
-                Remove-Item $PWEMServerData
+                Remove-Item $WEMServerData
             }
 
             # Test the Workspace Environment Management Infrastructure
@@ -832,7 +843,7 @@
             Test-CC $CCServers $CCPort $CCServices $InfraErrorFileFullPath $CCServerData
 
             Write-Verbose "Building Donut Files for Citrix Cloud Connector Servers"
-            Build-Donut $CCDonut $CCServerData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "CC"
+            New-Donut $CCDonut $CCServerData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "CC"
 
             # Removing Donut Data File
             remove-item $CCServerData -Force
@@ -842,7 +853,7 @@
         if ( ($TestEnvChecksXD -eq "yes") -and ($TestCC -eq "no")) {
             # Increment Infrastructure Components
             $InfrastructureComponents++
-            $InfrastructureList += "EnvChecks-XD"
+            $InfrastructureList += "EnvCheckXD"
 
             Write-Verbose "Citrix Environmental Checks Testing enabled"
             Write-Verbose "Building EnvCheck Data Output Files"
@@ -852,21 +863,79 @@
             $EnvCheckXDDonut = Join-Path -Path $OutputLocation -ChildPath "envcheckxd.html"
 
             # Remove Existing Data Files
-            if (test-path $EnvCheckXDData) {
-                Remove-Item $EnvCheckXDData 
+            if (test-path $EnvChecksXDData) {
+                Remove-Item $EnvChecksXDData 
             }
 
             # Test the Citrix Environmental Checks
-            Test-EnvChecksXD $Broker $InfraErrorFileFullPath $EnvCheckXDData $EnvChecksXDCheckddc $EnvChecksXDCheckdeliverygroup $EnvChecksXDCheckcatalog $EnvChecksXDHypervisor
+            Test-EnvChecksXD $Broker $InfraErrorFileFullPath $EnvChecksXDData $EnvChecksXDCheckddc $EnvChecksXDCheckdeliverygroup $EnvChecksXDCheckcatalog $EnvChecksXDHypervisor
 
             Write-Verbose "Building Donut Files for Citrix Environmental Checks"
-            New-Donut $EnvCheckXDDonut $EnvCheckXDData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "EnvChecks-XD"
+            New-Donut $EnvCheckXDDonut $EnvChecksXDData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "EnvChecks"
 
             # Removing Donut Data File
             remove-item $EnvChecksXDData -Force
             Write-Verbose "Deleted Donut Data File $EnvChecksXDData"
         }
 
+        # Checking Active Directory Servers
+        if ($TestAD -eq "yes") {
+            # Increment Infrastructure Components
+            $InfrastructureComponents++
+            $InfrastructureList += "AD"
+
+            Write-Verbose "Active Directory Server Testing enabled"
+            Write-Verbose "Building Active Directory Server Data Output Files"
+            $ADServerData = Join-Path -Path $OutputLocation -ChildPath "AD-data.txt"
+
+            # Build Donut File Paths for Active Directory
+            $ADDonut = Join-Path -Path $OutputLocation -ChildPath "AD.html"
+
+            # Remove Existing Data Files
+            if (test-path $ADServerData) {
+                Remove-Item $ADServerData
+            }
+
+            # Test Active Directory Infrastructure
+            Test-AD $ADServers $ADLDAPPort $ADServices $InfraErrorFileFullPath $ADServerData
+
+            Write-Verbose "Building Donut Files for Active Directory"
+            New-Donut $ADDonut $ADServerData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "AD"
+
+            # Removing Donut Data File
+            remove-item $ADServerData -Force
+            Write-Verbose "Deleted Donut Data File $ADServerData"
+        }
+
+        # Checking SQL Servers
+        if ($TestSQL -eq "yes") {
+            # Increment Infrastructure Components
+            $InfrastructureComponents++
+            $InfrastructureList += "SQL"
+    
+            Write-Verbose "SQL Server Testing enabled"
+            Write-Verbose "Building SQL Server Data Output Files"
+            $SQLServerData = Join-Path -Path $OutputLocation -ChildPath "SQL-data.txt"
+    
+            # Build Donut File Paths for SQL
+            $SQLDonut = Join-Path -Path $OutputLocation -ChildPath "SQL.html"
+    
+            # Remove Existing Data Files
+            if (test-path $SQLServerData) {
+                Remove-Item $SQLServerData
+            }
+    
+            # Test SQL Infrastructure
+            Test-SQL $SQLServers $SQLPort $SQLServices $InfraErrorFileFullPath $SQLServerData
+    
+            Write-Verbose "Building Donut Files for SQL"
+            New-Donut $SQLDonut $SQLServerData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "SQL"
+    
+            # Removing Donut Data File
+            remove-item $SQLServerData -Force
+            Write-Verbose "Deleted Donut Data File $SQLServerData"
+        }    
+        
         # Build the HTML output file
         New-HTMLReport $HTMLOutput $OutputLocation $InfrastructureComponents $InfrastructureList $WorkLoads $CSSFile $RefreshDuration
 

@@ -42,13 +42,13 @@ function Test-XenServer {
     $UnsecurePassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
 
     # Import XenServer SDK
+    import-module Xen*
     $xenTest = get-module xen*
     if ($null -eq $xentest) {
         write-verbose "XenServer checks are enabled but no XenServer SDK Found"
         "XenServer checks are enabled but no XenServer SDK Found" | Out-File $ErrorFile -Append
     }
     else {
-        import-module Xen*
         Write-Verbose "XenServer SDK Imported Sucessfully"
 
         # Initialize Arrays and Variables
@@ -59,7 +59,7 @@ function Test-XenServer {
         Write-Verbose "Variables and Arrays Initalized"
 
         # Get XenServer Comma Delimited List and Management Port
-        $XenServers = $PoolMasters.Split(",")
+        $XenServers = $PoolMasters
         Write-Verbose "Read in XenServer Pool Masters and Management Ports"
         Write-Verbose "XenServer Pool Masters: $XenServers"
         Write-Verbose "Management Port: $ConnectionPort"
