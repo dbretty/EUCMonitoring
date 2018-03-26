@@ -34,7 +34,7 @@ function New-EUCMonitoringConfig {
     )
 
     Write-Verbose "New-EUCMonitoringConfig Parameter Initialization"
-    if ($MonitorPath -eq $null) {
+    if ($null -eq $MonitorPath) {
         $MonitorPath = "$(get-location)"
     }
             
@@ -48,7 +48,7 @@ function New-EUCMonitoringConfig {
         Return 
     }
 
-    if ($OutFile -eq $null) {
+    if ($null -eq $OutFile) {
         $OutFile = "$($MonitorPath)\euc-monitoring.json"
     }
     Write-Verbose "OutFile set to $($Outfile)"
@@ -61,6 +61,9 @@ function New-EUCMonitoringConfig {
         }
     }
     
+
+    Write-Verbose "Using default output location of $($MyJSONConfig.WebData.outputlocation)"
+    Write-Verbose "Using default html output file of $($MyJSONConfig.WebData.htmloutputfile)"
     
     <#
     This is the actual start of the tests.  I'd like it to validate each section for testiing, 
@@ -103,6 +106,8 @@ function New-EUCMonitoringConfig {
     ConvertTo-Json $MyJSONConfig -Depth 4 | Out-File $OutFile
 
     # This is outputting arrays as space delimited 
+    Write-Verbose "All values can be further customized at $($Outfile)"
+    Write-Verbose "Done."
 }
 
 
