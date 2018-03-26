@@ -31,7 +31,7 @@ function Test-Licensing {
 .EXAMPLE
     None Required
 #> 
-
+[CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High")]
     Param
     (
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$LicenseServers,
@@ -39,13 +39,16 @@ function Test-Licensing {
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$LicensePortString,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$WebAdminPortString,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$SimpleLicenseServicePortString,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ErrorFile,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$OutputFile
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ErrorFile
 
     )
     # Initialize Arrays and Variables
     $LicenseServerUp = 0
     $LicenseServerDown = 0
+
+    #Create array with results
+    $results = @()
+
     Write-Verbose "Variables and Arrays Initalized"
 
     Write-Verbose "Read in License Server List and Vendor Daemon Ports"
@@ -57,62 +60,83 @@ function Test-Licensing {
 
     # Loop through License Servers 
     Write-Verbose "Looping through License Servers and running monitoring checks"
-    foreach ($LicenseServer in $LicenseServers) { 
+    foreach ($LicenseServer in $LicenseServers) {
+    #Tests
+    $ping = $false
+    $daemonport = $false
+    $LicensePort = $false
+    $WebAdminPort = $false
+    $SimpleLicPort = $false  
 
-        # If License Server is UP then log to Console
-        if ((Connect-Server $LicenseServer) -eq "Successful") {
-            Write-Verbose "$LicenseServer is up"
-
-            # If License Server Vendor Daemon Port is UP log to Console 
-            if ((Test-NetConnection $LicenseServer $VendorDaemonPortString).open -eq "True") {
-                Write-Verbose "$LicenseServer Vendor Daemon Port is up: Port - $VendorDaemonPortString"
-                
-                # If License Server License Port is UP log to Console 
-                if ((Test-NetConnection $LicenseServer $LicensePortString).open -eq "True") {
-                    Write-Verbose "$LicenseServer License Port is up: Port - $LicensePortString"
-                    
-                    # If License Server Web Admin is UP log to Console 
-                    if ((Test-NetConnection $LicenseServer $WebAdminPortString).open -eq "True") {
-                        Write-Verbose "$LicenseServer Web Admin is up: Port - $WebAdminPortString"
-                        
-                        # If License Server Simple License is UP log to Console 
-                        if ((Test-NetConnection $LicenseServer $SimpleLicenseServicePortString).open -eq "True") {
-                            Write-Verbose "$LicenseServer Simple License Port is up: Port - $SimpleLicenseServicePortString"
-                            $LicenseServerUp++
-                        }
-                        else {
-                            Write-Verbose "$LicenseServer Simple License ($SimpleLicenseServicePortString) is down"
-                            "$LicenseServer Simple License ($SimpleLicenseServicePortString) is down"  | Out-File $ErrorFile -Append
-                            $LicenseServerDown++
-                        }
+       # If License Server is UP then log to Console
+       if ((Connect-Server $LicenseServer) -eq "Successful") {
+        Write-Verbose "$LicenseServer is up"
+        $ping = $true
+        # If License Server Vendor Daemon Port is UP log to Console 
+        if ((Test-NetConnection $LicenseServer $VendorDaemonPortString).open -eq "True") {
+            Write-Verbose "$LicenseServer Vendor Daemon Port is up: Port - $VendorDaemonPortString"
+            $DaemonPort = $true
+            # If License Server License Port is UP log to Console 
+            if ((Test-NetConnection $LicenseServer $LicensePortString).open -eq "True") {
+                Write-Verbose "$LicenseServer License Port is up: Port - $LicensePortString"
+                $LicensePort = $true
+                # If License Server Web Admin is UP log to Console 
+                if ((Test-NetConnection $LicenseServer $WebAdminPortString).open -eq "True") {
+                    Write-Verbose "$LicenseServer Web Admin is up: Port - $WebAdminPortString"
+                    $WebAdminPort = $true
+                    # If License Server Simple License is UP log to Console 
+                    if ((Test-NetConnection $LicenseServer $SimpleLicenseServicePortString).open -eq "True") {
+                        Write-Verbose "$LicenseServer Simple License Port is up: Port - $SimpleLicenseServicePortString"
+                        #$LicenseServerUp++
+                        $SimpleLicPort = $true
                     }
                     else {
-                        Write-Verbose "$LicenseServer Web Admin ($WebAdminPortString) is down"
-                        "$LicenseServer Web Admin ($WebAdminPortString) is down"  | Out-File $ErrorFile -Append
-                        $LicenseServerDown++
+                        Write-Verbose "$LicenseServer Simple License ($SimpleLicenseServicePortString) is down"
+                        "$LicenseServer Simple License ($SimpleLicenseServicePortString) is down"  | Out-File $ErrorFile -Append
+                        #$LicenseServerDown++
+                        $SimpleLicPort = $false
                     }
                 }
                 else {
-                    Write-Verbose "$LicenseServer License Port ($LicensePortString) is down"
-                    "$LicenseServer License Port ($LicensePortString) is down"  | Out-File $ErrorFile -Append
-                    $LicenseServerDown++
+                    Write-Verbose "$LicenseServer Web Admin ($WebAdminPortString) is down"
+                    "$LicenseServer Web Admin ($WebAdminPortString) is down"  | Out-File $ErrorFile -Append
+                    #$LicenseServerDown++
+                    $WebAdminPort = $false
                 }
             }
             else {
-                Write-Verbose "$LicenseServer Vendor Daemon Port ($VendorDaemonPortString) is down"
-                "$LicenseServer Vendor Daemon Port ($VendorDaemonPortString) is down"  | Out-File $ErrorFile -Append
-                $LicenseServerDown++
+                Write-Verbose "$LicenseServer License Port ($LicensePortString) is down"
+                "$LicenseServer License Port ($LicensePortString) is down"  | Out-File $ErrorFile -Append
+                #$LicenseServerDown++
+                $LicensePort = $false
             }
         }
         else {
-            Write-Verbose "$LicenseServer is down" 
-            "$LicenseServer is down"  | Out-File $ErrorFile -Append
-            $LicenseServerDown++
+            Write-Verbose "$LicenseServer Vendor Daemon Port ($VendorDaemonPortString) is down"
+            "$LicenseServer Vendor Daemon Port ($VendorDaemonPortString) is down"  | Out-File $ErrorFile -Append
+            #$LicenseServerDown++
+            $DaemonPort = $false
         }
     }
-	
-    # Write Data to Output File
-    Write-Verbose "Writing License Server Data to output file"
-    "licensing,$LicenseServerUp,$LicenseServerDown" | Out-File $OutputFile
-	
+    else {
+        Write-Verbose "$LicenseServer is down" 
+        "$LicenseServer is down"  | Out-File $ErrorFile -Append
+        #$LicenseServerDown++
+        $ping = $false
+    }
+
+#add results to array
+$results += [PSCustomObject]@{
+    'Server' = $LicenseServer
+    'daemonport' = $daemonport
+    'LicensePort' = $LicensePort
+    'WebAdminPort' = $WebAdminPort
+    'SimpleLicPort' = $SimpleLicPort
+}
+
+# Write Data to Output File
+#Write-Verbose "Writing License Server Data to output file"
+#"licensing,$LicenseServerUp,$LicenseServerDown" | Out-File $OutputFile
+    }
+    return $results
 }

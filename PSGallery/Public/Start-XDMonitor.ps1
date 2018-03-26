@@ -28,8 +28,18 @@ function Start-XDMonitor {
     Path to CSS file for HTML output
 .PARAMETER LogFile
     Path to log output file
+.PARAMETER OutputToVar
+    Outputs to variable VS HTML
 .EXAMPLE
-    None Required
+    Start-XDMonitor
+    Locates euc-monitoring.json, euc-monitoring.css and euc-monitoring.log within the same directory as run command and outputs to html 
+.EXAMPLE
+    Start-XDMonitor -JsonFile ".\mysettings.json" -LogFile ".\mylog.txt" -CSSFile ".\euc-monitor.css" -Verbose 
+    Uses parameters for file paths and outputs to HTML found in JSON
+.EXAMPLE
+    Start-XDMonitor -outputtovar
+    Locates euc-monitoring.json, euc-monitoring.css and euc-monitoring.log within the same directory as run command and outputs results
+
 #>
     [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High")]
     
@@ -37,7 +47,8 @@ function Start-XDMonitor {
     (        
         [parameter(Mandatory = $false, ValueFromPipeline = $true)]$JsonFile = ("$(get-location)\euc-monitoring.json"),
         [parameter(Mandatory = $false, ValueFromPipeline = $true)]$CSSFile = ("$(get-location)\euc-monitoring.css"),
-        [parameter(Mandatory = $false, ValueFromPipeline = $true)]$LogFile = ("$(get-location)\euc-monitoring.log")
+        [parameter(Mandatory = $false, ValueFromPipeline = $true)]$LogFile = ("$(get-location)\euc-monitoring.log"),
+        [parameter(Mandatory = $false, ValueFromPipeline = $true)][switch]$outputtovar
     )
 
     #if($RootDirectory -eq $null) {
@@ -192,6 +203,9 @@ function Start-XDMonitor {
         Write-Verbose "HTML Error File - $InfraErrorFileFullPath"
         Write-Verbose "HTML Output File - $HTMLFileFullPath"
 
+        #Custom PS object
+        $results = [pscustomobject]@{}
+
         # Test the output location and create if not there or clean up old data if exists
         Write-Verbose "Testing Output File Location $OutputLocation"
         If ((Test-Path $OutputLocation) -eq $False) {
@@ -201,7 +215,7 @@ function Start-XDMonitor {
             }
             Catch {
                 Write-Error "Could Not Create Output Directory $OutputLocation Quitting"
-                Exit
+                break
             } 
         }
         else {
@@ -236,7 +250,7 @@ function Start-XDMonitor {
         if ($null -eq $ctxsnap) {
             Write-error "XenDesktop Powershell Snapin Load Failed - No XenDesktop Brokering SDK Found"
             Write-error "Cannot Load XenDesktop Powershell SDK"
-            Exit
+            break
         }
         else {
             Write-Verbose "XenDesktop Powershell SDK Snapin Loaded"
@@ -255,7 +269,7 @@ function Start-XDMonitor {
                 # Remove Global Functions File
                 remove-module xendesktop-monitor-global
                 Write-error "Cannot Connect to XenDesktop Brokers $XDBrokerPrimary or $XDBrokerFailover"
-                Exit
+                break
             }
         }
         Write-Verbose "Configured XenDesktop Broker for Connectivity: $Broker"
@@ -468,47 +482,49 @@ function Start-XDMonitor {
             $InfrastructureList += "xenserverhost"
 
             Write-Verbose "XenServer Testing enabled"
-            Write-Verbose "Building XenServer Data Output Files"
-            $XenServerData = Join-Path -Path $OutputLocation -ChildPath "xenserver-data.txt"
+            #Write-Verbose "Building XenServer Data Output Files"
+            #$XenServerData = Join-Path -Path $OutputLocation -ChildPath "xenserver-data.txt"
 
             # Build 2 Donut File Paths for XenServer Host and Pools
-            $PoolFileName = Join-Path -Path $OutputLocation -ChildPath "xenserverpool.txt"
-            $HostFileName = Join-Path -Path $OutputLocation -ChildPath "xenserverhost.txt"
-            $PoolFileDonut = Join-Path -Path $OutputLocation -ChildPath "xenserverpool.html"
-            $HostFileDonut = Join-Path -Path $OutputLocation -ChildPath "xenserverhost.html"
+            #$PoolFileName = Join-Path -Path $OutputLocation -ChildPath "xenserverpool.txt"
+            #$HostFileName = Join-Path -Path $OutputLocation -ChildPath "xenserverhost.txt"
+            #$PoolFileDonut = Join-Path -Path $OutputLocation -ChildPath "xenserverpool.html"
+            #$HostFileDonut = Join-Path -Path $OutputLocation -ChildPath "xenserverhost.html"
 
             # Remove Existing Data Files
-            if (test-path $XenServerData) {
-                Remove-Item $XenServerData
-            }
+            #if (test-path $XenServerData) {
+            #    Remove-Item $XenServerData
+            #}
 
             # Test the XenServer Infrastructure
-            Test-XenServer $PoolMasters $ConnectionPort $InfraErrorFileFullPath $XenServerData $XenUserName $XenPassword
+            $results|Add-Member -Name "XenServer" -Value (Test-XenServer -poolmasters $PoolMasters -connectionport $ConnectionPort -errorfile $InfraErrorFileFullPath -xenusername $XenUserName -xenpassword $XenPassword) -MemberType "NoteProperty"
+            
 
             # Split output file into 2 html data files
-            $XenData = Get-Content $XenServerData
-            foreach ($Line in $XenData) {
-                $LineData = $Line -Split ","
-                $FileName = $LineData[0]
-                [int]$Good = $LineData[1]
-                [int]$Bad = $LineData[2]
+            #$XenData = Get-Content $XenServerData
+            #foreach ($Line in $XenData) {
+            #    $LineData = $Line -Split ","
+            #    $FileName = $LineData[0]
+            #    [int]$Good = $LineData[1]
+            #    [int]$Bad = $LineData[2]
 
-                $NewFileName = Join-Path -Path $OutputLocation -ChildPath "$Filename.txt"
+            #    $NewFileName = Join-Path -Path $OutputLocation -ChildPath "$Filename.txt"
 
-                "$FileName,$Good,$Bad" | Out-File $NewFileName
-            }
+            #    "$FileName,$Good,$Bad" | Out-File $NewFileName
+            #}
 
-            Write-Verbose "Building Donut Files for XenServers Hosts and Pools"
-            New-Donut $PoolFileDonut $PoolFileName $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "Pools"
-            New-Donut $HostFileDonut $HostFileName $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "Hosts"
+            #Write-Verbose "Building Donut Files for XenServers Hosts and Pools"
+            #New-Donut $PoolFileDonut $PoolFileName $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "Pools"
+            #New-Donut $HostFileDonut $HostFileName $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "Hosts"
 
             # Removing Donut Data File
-            remove-item $PoolFileName -Force
-            Write-Verbose "Deleted Donut Data File $PoolFileName"
-            remove-item $HostFileName -Force
-            Write-Verbose "Deleted Donut Data File $HostFileName"
-            remove-item $XenServerData -Force
-            Write-Verbose "Deleted Donut Data File $XenServerData"
+            #remove-item $PoolFileName -Force
+            #Write-Verbose "Deleted Donut Data File $PoolFileName"
+            #remove-item $HostFileName -Force
+            #Write-Verbose "Deleted Donut Data File $HostFileName"
+            #remove-item $XenServerData -Force
+            #Write-Verbose "Deleted Donut Data File $XenServerData"
+        
         }
 
         # Checking Licensing
@@ -518,26 +534,26 @@ function Start-XDMonitor {
             $InfrastructureList += "licensing"
 
             Write-Verbose "Citrix Licensing Testing enabled"
-            Write-Verbose "Building Citrix Licensing Data Output Files"
-            $LicensingData = Join-Path -Path $OutputLocation -ChildPath "license-data.txt"
+            #Write-Verbose "Building Citrix Licensing Data Output Files"
+            #$LicensingData = Join-Path -Path $OutputLocation -ChildPath "license-data.txt"
 
             # Build Donut File Paths for Licensing
-            $LicensingDonut = Join-Path -Path $OutputLocation -ChildPath "licensing.html"
+            #$LicensingDonut = Join-Path -Path $OutputLocation -ChildPath "licensing.html"
 
             # Remove Existing Data Files
-            if (test-path $LicensingData) {
-                Remove-Item $LicensingData
-            }
+            #if (test-path $LicensingData) {
+            #    Remove-Item $LicensingData
+            #}
 
             # Test the Licensing Infrastructure
-            Test-Licensing $LicenseServers $VendorDaemonPort $LicensePort $WebAdminPort $SimpleLicensePort $InfraErrorFileFullPath $LicensingData
+            $results |Add-Member -Name "Licensing" -Value (Test-Licensing -licenseservers $LicenseServers -VendorDaemonPortString $VendorDaemonPort -licenseportstring $LicensePort -webadminportstring $WebAdminPort -SimpleLicenseServicePortString $SimpleLicensePort -errorfile $InfraErrorFileFullPath) -MemberType "NoteProperty"
 
-            Write-Verbose "Building Donut Files for Licensing"
-            New-Donut $LicensingDonut $LicensingData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "Licensing"
+            #Write-Verbose "Building Donut Files for Licensing"
+            #New-Donut $LicensingDonut $LicensingData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "Licensing"
 
             # Removing Donut Data File
-            remove-item $LicensingData -Force
-            Write-Verbose "Deleted Donut Data File $LicensingData"
+            #remove-item $LicensingData -Force
+            #Write-Verbose "Deleted Donut Data File $LicensingData"
         }
   
         # Checking StoreFront
@@ -820,7 +836,6 @@ function Start-XDMonitor {
             Write-Verbose "Deleted Donut Data File $FASServerData"
         }
 
-
         # Checking Cloud Connector Servers
         if ($TestCC -eq "yes") { 
             # Increment Infrastructure Components
@@ -935,10 +950,17 @@ function Start-XDMonitor {
             remove-item $SQLServerData -Force
             Write-Verbose "Deleted Donut Data File $SQLServerData"
         }    
-        
+               
+        if ($outputvar)
+        {
+            return $results
+        }
+        else {
         # Build the HTML output file
+        #THIS DOESN"T ACTUALLY WORK YET
         New-HTMLReport $HTMLOutput $OutputLocation $InfrastructureComponents $InfrastructureList $WorkLoads $CSSFile $RefreshDuration
-
+        }
+        
         # Stop the timer and display the output
         $EndTime = (Get-Date)
         Write-Verbose "Elapsed Time: $(($EndTime-$StartTime).TotalSeconds) Seconds"
@@ -951,4 +973,5 @@ function Start-XDMonitor {
         write-error "Path not found to json. Run Set-EUCMonitoring to get started."
     }
 
-}
+    }
+
