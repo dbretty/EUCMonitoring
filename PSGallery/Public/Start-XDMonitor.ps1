@@ -108,7 +108,7 @@ function Start-XDMonitor {
 
         # Director Data
         $TestDirector = $MyJSONConfigFile.Citrix.director.test
-        $DirectorServers = $MyJSONConfigFile.Citrix.director.directorervers
+        $DirectorServers = $MyJSONConfigFile.Citrix.director.directorservers
         $DirectorPort = $MyJSONConfigFile.Citrix.director.directorport
         $DirectorPath = $MyJSONConfigFile.Citrix.director.directorpath
         $DirectorProtocol = $MyJSONConfigFile.Citrix.director.protocol
@@ -170,6 +170,18 @@ function Start-XDMonitor {
         $EnvChecksXDCheckcatalog = $MyJSONConfigFile.Citrix.EnvChecks.catalogcheck
         $EnvChecksXDHypervisor = $MyJSONConfigFile.Citrix.EnvChecks.hypervisorcheck
 
+        # AD Data
+        $TestAD = $MyJSONConfigFile.Microsoft.AD.test
+        $ADServers = $MyJSONConfigFile.Microsoft.AD.ADServers
+        $ADLDAPPort = $MyJSONConfigFile.Microsoft.AD.ADLDAPPort
+        $ADServices = $MyJSONConfigFile.Microsoft.AD.ADServices
+
+        # SQL Data
+        $TestSQL = $MyJSONConfigFile.Microsoft.SQL.test
+        $SQLServers = $MyJSONConfigFile.Microsoft.SQL.SQLServers
+        $SQLPort = $MyJSONConfigFile.Microsoft.SQL.SQLPort
+        $SQLServices = $MyJSONConfigFile.Microsoft.SQL.SQLServices
+
         # Build HTML Output and Error File Full Path
         $ServerErrorFileFullPath = Join-Path -Path $OutputLocation -ChildPath $ServerErrorFile
         $DesktopErrorFileFullPath = Join-Path -Path $OutputLocation -ChildPath $DesktopErrorFile
@@ -214,7 +226,7 @@ function Start-XDMonitor {
         }
 
         # Display the XenDesktop Brokers Passed In
-        Write-Verbose "XenDexktop Primary Broker $XDBrokerPrimary"
+        Write-Verbose "XenDesktop Primary Broker $XDBrokerPrimary"
         Write-Verbose "XenDesktop Failover Broker $XDBrokerFailover"
 
         # Load the Citrix Broker Powershell SDK
@@ -736,7 +748,7 @@ function Start-XDMonitor {
 
             # Remove Existing Data Files
             if (test-path $WEMServerData) {
-                Remove-Item $PWEMServerData
+                Remove-Item $WEMServerData
             }
 
             # Test the Workspace Environment Management Infrastructure
@@ -866,6 +878,64 @@ function Start-XDMonitor {
             Write-Verbose "Deleted Donut Data File $EnvChecksXDData"
         }
 
+        # Checking Active Directory Servers
+        if ($TestAD -eq "yes") {
+            # Increment Infrastructure Components
+            $InfrastructureComponents++
+            $InfrastructureList += "AD"
+
+            Write-Verbose "Active Directory Server Testing enabled"
+            Write-Verbose "Building Active Directory Server Data Output Files"
+            $ADServerData = Join-Path -Path $OutputLocation -ChildPath "AD-data.txt"
+
+            # Build Donut File Paths for Active Directory
+            $ADDonut = Join-Path -Path $OutputLocation -ChildPath "AD.html"
+
+            # Remove Existing Data Files
+            if (test-path $ADServerData) {
+                Remove-Item $ADServerData
+            }
+
+            # Test Active Directory Infrastructure
+            Test-AD $ADServers $ADLDAPPort $ADServices $InfraErrorFileFullPath $ADServerData
+
+            Write-Verbose "Building Donut Files for Active Directory"
+            New-Donut $ADDonut $ADServerData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "AD"
+
+            # Removing Donut Data File
+            remove-item $ADServerData -Force
+            Write-Verbose "Deleted Donut Data File $ADServerData"
+        }
+
+        # Checking SQL Servers
+        if ($TestSQL -eq "yes") {
+            # Increment Infrastructure Components
+            $InfrastructureComponents++
+            $InfrastructureList += "SQL"
+    
+            Write-Verbose "SQL Server Testing enabled"
+            Write-Verbose "Building SQL Server Data Output Files"
+            $SQLServerData = Join-Path -Path $OutputLocation -ChildPath "SQL-data.txt"
+    
+            # Build Donut File Paths for SQL
+            $SQLDonut = Join-Path -Path $OutputLocation -ChildPath "SQL.html"
+    
+            # Remove Existing Data Files
+            if (test-path $SQLServerData) {
+                Remove-Item $SQLServerData
+            }
+    
+            # Test SQL Infrastructure
+            Test-SQL $SQLServers $SQLPort $SQLServices $InfraErrorFileFullPath $SQLServerData
+    
+            Write-Verbose "Building Donut Files for SQL"
+            New-Donut $SQLDonut $SQLServerData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "SQL"
+    
+            # Removing Donut Data File
+            remove-item $SQLServerData -Force
+            Write-Verbose "Deleted Donut Data File $SQLServerData"
+        }    
+        
         # Build the HTML output file
         New-HTMLReport $HTMLOutput $OutputLocation $InfrastructureComponents $InfrastructureList $WorkLoads $CSSFile $RefreshDuration
 
