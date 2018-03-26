@@ -63,8 +63,10 @@ function New-EUCMonitoringConfig {
     
     
     <#
-    This is the actual start of the tests.  I'd like to verify connectivity to each host being tested, as
-    well as validate that each section wants to be tested.  
+    This is the actual start of the tests.  I'd like it to validate each section for testiing, 
+    verify basic connectivity to each host being tested, and leave the default values alone.  
+    
+    This is a quick config, so we should be having reasonable defaults. 
     #>
     $XDBrokerPrimary = Read-host -Prompt "Primary XenDesktop Broker"
     while ((Connect-Server $XDBrokerPrimary) -ne "Successful") {  
@@ -72,10 +74,25 @@ function New-EUCMonitoringConfig {
     } 
     $MyJSONConfig.Citrix.Global.XDBrokerPrimary = $XDBrokerPrimary
 
+    # ....
+
     $TestLicensing = Read-Host -Prompt "Would you like to test Licensing (yes/no)"
-    if ($TestLicensing -match "y") { $TestLicensing = "yes" }
-    else { $TestLicensing = "no"}
-    $MyJSONConfig.Citrix.Licensing.TestLicensing 
+    if ($TestLicensing -match "y") { 
+        $MyJSONConfig.Citrix.licensing.test = "yes" 
+        Write-Verbose ""
+        $LicenseServers = Read-host -Prompt "License Servers (comma separated)"
+        $LicenseServers = @($LicenseServers.Split(','))
+
+        foreach ($licenseserver in $licenseservers) { 
+            if ((Connect-Server $licenseserver) -ne "Successful") {  
+                $LicenseServers = Read-Host -Prompt "Unable to connect to $XDBrokerPrimary. Please enter a valid hostname (Ctrl-C to quit)"
+                $LicenseServers = @($LicenseServers.Split(','))
+            } 
+        }
+        $MyJSONConfig.Citrix.licensing.licenseServers = $LicenseServers
+    }
+    else { $MyJSONConfig.Citrix.licensing.test = "no" }
+    
 
     # Just a final confirmation so that we will fully run through the configuration before deleting someone's files. 
     if ( (test-path $OutFile) -and ($Force -eq $true) ) {  
