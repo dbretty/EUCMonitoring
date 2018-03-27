@@ -62,7 +62,7 @@ function Start-XDMonitor {
         # Read in the JSON Data
 
         # Global Variables
-        $XDTest = $MyJSONConfigFile.Citrix.Global.test # Placeholder value. Currently assumed true. 
+#        $XDTest = $MyJSONConfigFile.Citrix.Global.test # Placeholder value. Currently assumed true. 
         $XDBrokerPrimary = $MyJSONConfigFile.Citrix.Global.xdbrokerprimary
         $XDBrokerFailover = $MyJSONConfigFile.Citrix.Global.xdbrokerfailover
         $WorkLoads = $MyJSONConfigFile.Citrix.Global.workloads
