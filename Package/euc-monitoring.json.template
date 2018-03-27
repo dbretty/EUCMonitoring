@@ -17,7 +17,7 @@
     "Microsoft": {
         "Global: {
             "test": "yes"
-        }
+        },
         "AD": {
             "test": "yes",
             "ADServers": ["dc.domain.com"],
