@@ -393,7 +393,7 @@ function New-EUCMonitoringConfig {
             }    
             <# If not... #>
             else {
-                $ADServers = (Read-host -Prompt 'Please specify which Domain Controllers (comma separated)'.Replace(' ','')
+                $ADServers = (Read-host -Prompt 'Please specify which Domain Controllers (comma separated)').Replace(' ', '')
                 $ADServers = @($ADServers.Split(','))
 
                 foreach ($ADServer in $ADServers) { 
