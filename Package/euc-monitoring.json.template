@@ -16,7 +16,7 @@
     },
     "Microsoft": {
         "Global": {
-            "test": "yes"
+            "test": "no"
         },
         "AD": {
             "test": "no",
