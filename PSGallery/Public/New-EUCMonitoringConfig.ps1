@@ -196,7 +196,7 @@ function New-EUCMonitoringConfig {
         if ($TestController -match "y") { 
             $MyJSONConfig.Citrix.Controllers.Test = "yes" 
             Write-Verbose "Enabling Citrix Controller monitoring."
-            $ControllerServers = (Read-host -Prompt 'Please specify which Citrix Director Servers (comma separated)').Replace(' ','')
+            $ControllerServers = (Read-host -Prompt 'Please specify which Citrix Controllers (comma separated)').Replace(' ','')
             $ControllerServers = @($ControllerServers.Split(','))
 
             foreach ($ControllerServer in $ControllerServers) { 
@@ -244,7 +244,7 @@ function New-EUCMonitoringConfig {
                 if ($Response -notmatch "y") { return }
             } 
             
-            $MyJSONConfig.Citrix.NetscalerGateways.NetscalerHostingGateway = $NetscalerGateway
+            $MyJSONConfig.Citrix.NetscalerGateway.NetscalerHostingGateway = $NetscalerGateway
             Write-Verbose "Citrix Netscaler Gateway monitoring configured using default values."
         }
         else { $MyJSONConfig.Citrix.NetscalerGateway.test = "no" }
