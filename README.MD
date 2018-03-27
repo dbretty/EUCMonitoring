@@ -63,9 +63,10 @@ Find-Module EUCMonitoring
 5. If manually configuring, go to that directory and rename the **euc-monitoring.json.template** file to **euc-monitoring.json**
 6. Edit the json file to reflect your environment.  You can always regenerate a new json file with
 
-        ```text
-        New-EUCMonitoringConfig C:\Monitoring 
-        ```
+```text
+New-EUCMonitoringConfig C:\Monitoring 
+```
+
 7. Finally run the following command pointing to the directory that holds the needed files
 
 ```text
