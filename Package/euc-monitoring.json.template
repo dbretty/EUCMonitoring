@@ -15,7 +15,7 @@
         "infraerrorfile": "infra-errors.txt"
     },
     "Microsoft": {
-        "Global: {
+        "Global": {
             "test": "yes"
         },
         "AD": {
