@@ -18,6 +18,7 @@
     .CHANGE CONTROL
         Name                    Version         Date                Change Detail
         David Brett             1.0             19/03/2018          Script Creation
+        Adam Yarborough         1.1             27/03/2018          Feature Request: Add Quick Config https://git.io/vxz4I
     .PARAMETER MonitoringPath
         Folder path to download files needed for monitoring process
     .EXAMPLE
@@ -58,6 +59,7 @@
             }
         }
     
+        # Feature Request: Add Quick Config https://git.io/vxz4I
         if ($QuickConfig -eq $true) {
             New-EUCMonitoringConfig -MonitorPath $MonitoringPath 
         }
