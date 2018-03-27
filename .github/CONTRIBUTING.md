@@ -1,5 +1,5 @@
 # How to contribute
-Contributions to this **CTXXD-REPLICATE** are highly encouraged and desired. Below are some guidelines that will help make the process as smooth as possible.
+Contributions to **EUCMONITORING** are highly encouraged and desired. Below are some guidelines that will help make the process as smooth as possible.
 
 # Getting Started
 * Make sure you have a [GitHub account](https://github.com/signup/free)
@@ -31,8 +31,6 @@ I want to know what you think is missing from this module and how it can be made
 * Make sure you have added all the necessary Pester tests for your changes.
 * Run _all_ PESTER tests in the module to assure nothing else was accidentally broken.
 * PS1 files must contain only one function
-* Functions should have -XD naming convention included
-* Feel free to include author info in the comments
 
 # Documentation 
 I am infallible and as such my documenation needs no corectoin. In the highly
