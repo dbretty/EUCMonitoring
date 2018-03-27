@@ -205,7 +205,7 @@ function New-EUCMonitoringConfig {
                     if ($Response -notmatch "y") { return }
                 } 
             }
-            $MyJSONConfig.Citrix.Controller.ControllerServers = $ControllerServers
+            $MyJSONConfig.Citrix.Controllers.ControllerServers = $ControllerServers
             Write-Verbose "Citrix Controller monitoring configured using default values."
         }
         else { $MyJSONConfig.Citrix.Controllers.test = "no" }
@@ -276,7 +276,7 @@ function New-EUCMonitoringConfig {
         if ($TestWEM -match "y") { 
             $MyJSONConfig.Citrix.WEM.Test = "yes" 
             Write-Verbose "Enabling Citrix WEM Server monitoring."
-            $WEMServers = (Read-host -Prompt 'Please specify which Citrix Director Servers (comma separated)').Replace(' ','')
+            $WEMServers = (Read-host -Prompt 'Please specify which Citrix WEM Servers (comma separated)').Replace(' ','')
             $WEMServers = @($WEMServers.Split(','))
 
             foreach ($WEMServer in $WEMServers) { 
@@ -296,10 +296,10 @@ function New-EUCMonitoringConfig {
         if ($TestUPS -match "y") { 
             $MyJSONConfig.Citrix.UPS.Test = "yes" 
             Write-Verbose "Enabling Citrix UPS Server monitoring."
-            $UPSServers = (Read-host -Prompt 'Please specify which Citrix Director Servers (comma separated)').Replace(' ','')
+            $UPSServers = (Read-host -Prompt 'Please specify which Citrix UPS Servers (comma separated)').Replace(' ','')
             $UPSServers = @($UPSServers.Split(','))
 
-            foreach ($UPSServer in $UPServers) { 
+            foreach ($UPSServer in $UPSServers) { 
                 if ((Connect-Server $UPSServer) -ne "Successful") {  
                     $Response = Read-Host -Prompt "Unable to connect to $UPSServer. Do you want to continue (yes/no)"
                     if ($Response -notmatch "y") { return }
@@ -316,7 +316,7 @@ function New-EUCMonitoringConfig {
         if ($TestFAS -match "y") { 
             $MyJSONConfig.Citrix.FAS.Test = "yes" 
             Write-Verbose "Enabling Citrix FAS Server monitoring."
-            $FASServers = (Read-host -Prompt 'Please specify which Citrix Director Servers (comma separated)').Replace(' ','')
+            $FASServers = (Read-host -Prompt 'Please specify which Citrix FAS Servers (comma separated)').Replace(' ','')
             $FASServers = @($FASServers.Split(','))
 
             foreach ($FASServer in $FAServers) { 
@@ -412,12 +412,12 @@ function New-EUCMonitoringConfig {
         # Microsoft / SQL
         $TestSQL = Read-Host -Prompt 'Would you like to monitor Microsoft MSSQL Servers (yes/no)'
         if ($TestSQL -match "y") { 
-            $MyJSONConfig.Citrix.SQL.Test = "yes" 
+            $MyJSONConfig.Microsoft.SQL.Test = "yes" 
             Write-Verbose "Enabling Microsoft MSSQL monitoring."
             $SQLServers = (Read-host -Prompt 'Please specify which MSSQL Servers (comma separated)').Replace(' ','')
             $SQLServers = @($SQLServers.Split(','))
 
-            foreach ($SQLServer in $SQLervers) { 
+            foreach ($SQLServer in $SQLServers) { 
                 if ((Connect-Server $SQLServer) -ne "Successful") {  
                     $Response = Read-Host -Prompt "Unable to connect to $SQLServer. Do you want to continue (yes/no)"
                     if ($Response -notmatch "y") { return }
