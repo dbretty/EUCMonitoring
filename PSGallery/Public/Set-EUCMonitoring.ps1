@@ -4,8 +4,10 @@
         Sets up the EUC Monitoring Platform
     .DESCRIPTION
         Sets up the EUC Monitoring Platform
-    .PARAMETER
-        None
+    .PARAMETER MonitoringPath
+        Determines the 
+    .PARAMETER QuickConfig
+        Interactive JSON file creation based on default values
     .INPUTS
         None
     .OUTPUTS
@@ -16,6 +18,7 @@
     .CHANGE CONTROL
         Name                    Version         Date                Change Detail
         David Brett             1.0             19/03/2018          Script Creation
+        Adam Yarborough         1.1             27/03/2018          Feature Request: Add Quick Config https://git.io/vxz4I
     .PARAMETER MonitoringPath
         Folder path to download files needed for monitoring process
     .EXAMPLE
@@ -25,7 +28,8 @@
         
         Param
         (
-            [parameter(Mandatory = $false, ValueFromPipeline = $true)]$MonitoringPath = (get-location) #gets current directory location
+            [parameter(Mandatory = $false, ValueFromPipeline = $true)]$MonitoringPath = (get-location), #gets current directory location
+            [parameter(Mandatory = $false, ValueFromPipeline = $true)][switch]$QuickConfig # Determines if they need a walkthrough. 
         )
     
     
@@ -55,4 +59,8 @@
             }
         }
     
+        # Feature Request: Add Quick Config https://git.io/vxz4I
+        if ($QuickConfig -eq $true) {
+            New-EUCMonitoringConfig -MonitorPath $MonitoringPath 
+        }
     }

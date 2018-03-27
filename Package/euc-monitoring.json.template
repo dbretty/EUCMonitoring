@@ -15,14 +15,17 @@
         "infraerrorfile": "infra-errors.txt"
     },
     "Microsoft": {
+        "Global": {
+            "test": "no"
+        },
         "AD": {
-            "test": "yes",
+            "test": "no",
             "ADServers": ["dc.domain.com"],
             "ADLDAPPort": "389",
             "ADServices": ["Netlogon","ADWS","NTDS"]
         },
         "SQL": {
-            "test": "yes",
+            "test": "no",
             "SQLServers": ["sql.domain.com"],
             "SQLPort": "1433",
             "SQLServices": ["MSSQLServer"]
@@ -30,6 +33,7 @@
     },
     "Citrix": {
         "Global": {
+            "test": "no",
             "xdbrokerprimary": "xdprimary.domain.com",
             "xdbrokerfailover": "xdsecondary.domain.com",
             "workloads": ["server","desktop"],
@@ -46,21 +50,21 @@
             "highload": 8000
         },
         "xenserver": {
-            "test": "yes",
+            "test": "no",
             "poolmasters": ["pool_master_ip1","pool_master_ip2"],
             "poolmasterport": "80",
             "username": "root",
             "password": "password"
         },
         "storefront": {
-            "test": "yes",
+            "test": "no",
             "storefrontservers": "storefront.domain.com",
             "storefrontport": "80",
             "storefrontpath": "/citrix/storeweb",
             "protocol": "http"
         },
         "licensing": {
-            "test": "yes",
+            "test": "no",
             "licenseservers": ["license1.domain.com","license2.domain.com"],
             "vendordaemonport": "7279",
             "licenseport": "27000",
@@ -68,30 +72,30 @@
             "simplelicenseserviceport": "8083"
         },
         "director": {
-            "test": "yes",            
+            "test": "no",            
             "directorservers": ["director1.domain.com","director2.domain.com"],
             "directorport": "80",
             "directorpath": "/Director/LogOn.aspx?cc=true",
             "protocol": "http"
         },
         "controllers": {
-            "test": "yes",
+            "test": "no",
             "controllerservers": ["controller1.domain.com","controller2.domain.com"],
             "controllerport": "80",
             "controllerservices": ["CitrixBrokerService","CitrixHighAvailabilityService","CitrixConfigSyncService","CitrixConfigurationService","CitrixConfigurationLogging","CitrixDelegatedAdmin","CitrixADIdentityService","CitrixMachineCreationService","CitrixHostService","CitrixEnvTest","CitrixMonitor","CitrixAnalytics","CitrixAppLibrary","CitrixOrchestration"]
         },
         "netscalers": {
-            "test": "yes",
+            "test": "no",
             "netscalers": ["netscaler_ip1","netscaler_ip2"],
             "netscalerusername": "nsroot",
             "netscalerpassword": "nsroot"
         },
         "netscalergateway": {
-            "test": "yes",
+            "test": "no",
             "netscalerhostinggateway": "netscaler_gateway_ip"
         },
         "ProvisioningServers": {
-            "test": "yes",
+            "test": "no",
             "ProvisioningServerFarm": "pvs",
             "ProvisioningServerSite": "pvs_site",
             "ProvisioningServers": ["pvs1.domain.com","pvs2.domain.com"],
@@ -99,31 +103,31 @@
             "ProvisioningServerServices": ["BNPXE","BNTFTP","PvsApi","PVSTSB","soapserver","StreamService"]
         },
         "WEM": {
-            "test": "yes",
+            "test": "no",
             "WEMServers": ["wembroker1.domain.com","wembroker2.domain.com"],
             "WEMAgentPort": "8286",
             "WEMServices": ["Norskale Infrastructure Service"]
         },
         "UPS": {
-            "test": "yes",
+            "test": "no",
             "UPSServers": "upsserver.domain.com",
             "UPSPort": "7229",
             "UPSServices": ["UpSvc","CitrixXTEServer"]
         },
         "FAS": {
-            "test": "yes",
+            "test": "no",
             "FASServers": ["fasserver1.domain.com","fasserver2.domain.com"],
             "FASPort": "135",
             "FASServices": ["CitrixFederatedAuthenticationService"]
          },   
          "CC": {
-            "test": "yes",
+            "test": "no",
             "CCServers": ["ccserver1.domain","ccserver2.domain"],
             "CCPort": "80",
             "CCServices": ["CitrixWorkspaceCloudADProvider","CitrixWorkspaceCloudAgentDiscovery","CitrixWorkspaceCloudAgentLogger","CitrixWorkspaceCloudAgentSystem","CitrixWorkspaceCloudAgentWatchDog","CitrixWorkspaceCloudCredentialProvider","CitrixWorkspaceCloudWebRelayProvider","CitrixConfigSyncService","CitrixHighAvailabilityService","Citrix NetScaler Cloud Gateway","XaXdCloudProxy","RemoteHCLServer","SessionManagerProxy"]
         },
         "EnvChecks": {
-            "test": "yes",
+            "test": "no",
             "ddccheck": "yes",
             "deliverygroupcheck": "yes",
             "catalogcheck": "yes",
