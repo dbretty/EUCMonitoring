@@ -112,7 +112,7 @@ function New-EUCMonitoringConfig {
             $MyJSONConfig.Citrix.Xenserver.test = "yes" 
             Write-Verbose "Enabling Citrix Xenserver monitoring."
 
-            $Poolmasters = (Read-host -Prompt 'Please specify which XenServer pool masters (comma separated)').Trim(' ')
+            $Poolmasters = (Read-host -Prompt 'Please specify which XenServer pool masters (comma separated)').Replace(' ','')
             $Poolmasters = @($Poolmasters.Split(','))
 
             foreach ($Poolmaster in $Poolmasters) { 
@@ -136,7 +136,7 @@ function New-EUCMonitoringConfig {
             $MyJSONConfig.Citrix.Storefront.test = "yes" 
             Write-Verbose "Enabling Citrix Storefront monitoring"
 
-            $StoreFrontServers = (Read-host -Prompt 'Please specify which Citrix Storefront servers (comma separated)').Trim(' ')
+            $StoreFrontServers = (Read-host -Prompt 'Please specify which Citrix Storefront servers (comma separated)').Replace(' ','')
             $StoreFrontServers = @($StoreFrontServers.Split(','))
 
             foreach ($StoreFrontServer in $StoreFrontServers) { 
@@ -156,7 +156,7 @@ function New-EUCMonitoringConfig {
         if ($TestLicensing -match "y") { 
             $MyJSONConfig.Citrix.Licensing.test = "yes" 
             Write-Verbose "Enabling Citrix Licensing Monitoring."
-            $LicenseServers = (Read-host -Prompt 'Please specify which Citrix License Servers (comma separated)').Trim(' ')
+            $LicenseServers = (Read-host -Prompt 'Please specify which Citrix License Servers (comma separated)').Replace(' ','')
             $LicenseServers = @($LicenseServers.Split(','))
 
             foreach ($Licenseserver in $LicenseServers) { 
@@ -176,7 +176,7 @@ function New-EUCMonitoringConfig {
         if ($TestDirector -match "y") { 
             $MyJSONConfig.Citrix.Director.Test = "yes" 
             Write-Verbose "Enabling Citrix Director monitoring."
-            $DirectorServers = (Read-host -Prompt 'Please specify which Citrix Director Servers (comma separated)').Trim(' ')
+            $DirectorServers = (Read-host -Prompt 'Please specify which Citrix Director Servers (comma separated)').Replace(' ','')
             $DirectorServers = @($DirectorServers.Split(','))
 
             foreach ($DirectorServer in $DirectorServers) { 
@@ -196,7 +196,7 @@ function New-EUCMonitoringConfig {
         if ($TestController -match "y") { 
             $MyJSONConfig.Citrix.Controllers.Test = "yes" 
             Write-Verbose "Enabling Citrix Controller monitoring."
-            $ControllerServers = (Read-host -Prompt 'Please specify which Citrix Director Servers (comma separated)').Trim(' ')
+            $ControllerServers = (Read-host -Prompt 'Please specify which Citrix Director Servers (comma separated)').Replace(' ','')
             $ControllerServers = @($ControllerServers.Split(','))
 
             foreach ($ControllerServer in $ControllerServers) { 
@@ -216,7 +216,7 @@ function New-EUCMonitoringConfig {
         if ($TestNetscaler -match "y") { 
             $MyJSONConfig.Citrix.Netscalers.Test = "yes" 
             Write-Verbose "Enabling Citrix Netscaler monitoring."
-            $Netscalers = (Read-host -Prompt 'Please specify which Citrix Netscalers by IP (comma separated)').Trim(' ')
+            $Netscalers = (Read-host -Prompt 'Please specify which Citrix Netscalers by IP (comma separated)').Replace(' ','')
             $Netscalers = @($Netscalers.Split(','))
 
             foreach ($Netscaler in $Netscalers) { 
@@ -255,7 +255,7 @@ function New-EUCMonitoringConfig {
         if ($TestProvisioningServer -match "y") { 
             $MyJSONConfig.Citrix.ProvisioningServers.Test = "yes" 
             Write-Verbose "Enabling Citrix Provisioning Server monitoring."
-            $ProvisioningServers = (Read-host -Prompt 'Please specify which Citrix Provisioning Servers (comma separated)').Trim(' ')
+            $ProvisioningServers = (Read-host -Prompt 'Please specify which Citrix Provisioning Servers (comma separated)').Replace(' ','')
             $ProvisioningServers = @($ProvisioningServers.Split(','))
 
             foreach ($ProvisioningServer in $ProvisioningServers) { 
@@ -276,7 +276,7 @@ function New-EUCMonitoringConfig {
         if ($TestWEM -match "y") { 
             $MyJSONConfig.Citrix.WEM.Test = "yes" 
             Write-Verbose "Enabling Citrix WEM Server monitoring."
-            $WEMServers = (Read-host -Prompt 'Please specify which Citrix Director Servers (comma separated)').Trim(' ')
+            $WEMServers = (Read-host -Prompt 'Please specify which Citrix Director Servers (comma separated)').Replace(' ','')
             $WEMServers = @($WEMServers.Split(','))
 
             foreach ($WEMServer in $WEMServers) { 
@@ -296,7 +296,7 @@ function New-EUCMonitoringConfig {
         if ($TestUPS -match "y") { 
             $MyJSONConfig.Citrix.UPS.Test = "yes" 
             Write-Verbose "Enabling Citrix UPS Server monitoring."
-            $UPSServers = (Read-host -Prompt 'Please specify which Citrix Director Servers (comma separated)').Trim(' ')
+            $UPSServers = (Read-host -Prompt 'Please specify which Citrix Director Servers (comma separated)').Replace(' ','')
             $UPSServers = @($UPSServers.Split(','))
 
             foreach ($UPSServer in $UPServers) { 
@@ -316,7 +316,7 @@ function New-EUCMonitoringConfig {
         if ($TestFAS -match "y") { 
             $MyJSONConfig.Citrix.FAS.Test = "yes" 
             Write-Verbose "Enabling Citrix FAS Server monitoring."
-            $FASServers = (Read-host -Prompt 'Please specify which Citrix Director Servers (comma separated)').Trim(' ')
+            $FASServers = (Read-host -Prompt 'Please specify which Citrix Director Servers (comma separated)').Replace(' ','')
             $FASServers = @($FASServers.Split(','))
 
             foreach ($FASServer in $FAServers) { 
@@ -336,7 +336,7 @@ function New-EUCMonitoringConfig {
         if ($TestCC -match "y") { 
             $MyJSONConfig.Citrix.CC.Test = "yes" 
             Write-Verbose "Enabling Citrix Cloud Connector monitoring."
-            $CCServers = (Read-host -Prompt 'Please specify which Citrix Cloud Connectors (comma separated)').Trim(' ')
+            $CCServers = (Read-host -Prompt 'Please specify which Citrix Cloud Connectors (comma separated)').Replace(' ','')
             $CCServers = @($CCServers.Split(','))
 
             foreach ($CCServer in $CCServers) { 
@@ -393,7 +393,7 @@ function New-EUCMonitoringConfig {
             }    
             <# If not... #>
             else {
-                $ADServers = (Read-host -Prompt 'Please specify which Domain Controllers (comma separated)').Trim(' ')
+                $ADServers = (Read-host -Prompt 'Please specify which Domain Controllers (comma separated)'.Replace(' ','')
                 $ADServers = @($ADServers.Split(','))
 
                 foreach ($ADServer in $ADServers) { 
@@ -414,7 +414,7 @@ function New-EUCMonitoringConfig {
         if ($TestSQL -match "y") { 
             $MyJSONConfig.Citrix.SQL.Test = "yes" 
             Write-Verbose "Enabling Microsoft MSSQL monitoring."
-            $SQLServers = (Read-host -Prompt 'Please specify which MSSQL Servers (comma separated)').Trim(' ')
+            $SQLServers = (Read-host -Prompt 'Please specify which MSSQL Servers (comma separated)').Replace(' ','')
             $SQLServers = @($SQLServers.Split(','))
 
             foreach ($SQLServer in $SQLervers) { 
