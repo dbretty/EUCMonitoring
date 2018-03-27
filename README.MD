@@ -80,6 +80,6 @@ Start-XDMonitor -JsonFile ".\mysettings.json" -LogFile ".\mylog.txt" -CSSFile ".
 
 8. Open up your new dashboard HTML file from the location you specified in your json for web data output
 
-## Contributors
+## Active Contributors
 
-Dave Brett [@dbretty](https://twitter.com/dbretty) | James Kindon [@james_kindon](https://twitter.com/james_kindon) | Ryan Butler [@ryan_c_butler](https://twitter.com/Ryan_C_Butler) | David Wilkinson [@WilkyIT](https://twitter.com/WilkyIT) | Gareth Carson [@CitXen](https://twitter.com/CitXen) | Jake Walsh [@jakewalsh90](https://twitter.com/jakewalsh90) | Andy Mallins [@andymallins](https://twitter.com/andymallins) | Adam Yarborough [@littletoyrobots](https://twitter.com/littletoyrobots)
+Dave Brett [@dbretty](https://twitter.com/dbretty) | James Kindon [@james_kindon](https://twitter.com/james_kindon) | Ryan Butler [@ryan_c_butler](https://twitter.com/Ryan_C_Butler) | David Wilkinson [@WilkyIT](https://twitter.com/WilkyIT) | Adam Yarborough [@littletoyrobots](https://twitter.com/littletoyrobots)
