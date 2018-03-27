@@ -276,7 +276,7 @@ function New-EUCMonitoringConfig {
         if ($TestWEM -match "y") { 
             $MyJSONConfig.Citrix.WEM.Test = "yes" 
             Write-Verbose "Enabling Citrix WEM Server monitoring."
-            $WEMServers = (Read-host -Prompt 'Please specify which Citrix Director Servers (comma separated)').Replace(' ','')
+            $WEMServers = (Read-host -Prompt 'Please specify which Citrix WEM Servers (comma separated)').Replace(' ','')
             $WEMServers = @($WEMServers.Split(','))
 
             foreach ($WEMServer in $WEMServers) { 
@@ -296,7 +296,7 @@ function New-EUCMonitoringConfig {
         if ($TestUPS -match "y") { 
             $MyJSONConfig.Citrix.UPS.Test = "yes" 
             Write-Verbose "Enabling Citrix UPS Server monitoring."
-            $UPSServers = (Read-host -Prompt 'Please specify which Citrix Director Servers (comma separated)').Replace(' ','')
+            $UPSServers = (Read-host -Prompt 'Please specify which Citrix UPS Servers (comma separated)').Replace(' ','')
             $UPSServers = @($UPSServers.Split(','))
 
             foreach ($UPSServer in $UPSServers) { 
@@ -316,7 +316,7 @@ function New-EUCMonitoringConfig {
         if ($TestFAS -match "y") { 
             $MyJSONConfig.Citrix.FAS.Test = "yes" 
             Write-Verbose "Enabling Citrix FAS Server monitoring."
-            $FASServers = (Read-host -Prompt 'Please specify which Citrix Director Servers (comma separated)').Replace(' ','')
+            $FASServers = (Read-host -Prompt 'Please specify which Citrix FAS Servers (comma separated)').Replace(' ','')
             $FASServers = @($FASServers.Split(','))
 
             foreach ($FASServer in $FAServers) { 
