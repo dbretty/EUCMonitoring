@@ -23,6 +23,7 @@ function Test-NetScaler {
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     David Brett             1.0             12/03/2018          Function Creation
+    Ryan Butler             1.1             27/30/2018          Change in variable scope for nsession
 .EXAMPLE
     None Required
 #> 
@@ -57,10 +58,10 @@ function Test-NetScaler {
             $NetScalerUp++
 
             # If NetScaler up log Log in and grab vServer Status
-            Connect-NetScaler $NetScaler $UserName $Password
+            $nsession = Connect-NetScaler -IPAddress $NetScaler -username $UserName -password $Password
             Write-Verbose "NetScaler - $NetScaler Logged In"
 
-            $vServers = Get-vServer $NetScaler
+            $vServers = Get-vServer -nsip $NetScaler -nssession $nsession
 				
             # Loop Through vServers and check Status
             Write-Verbose "Looping through vServers to check status"
