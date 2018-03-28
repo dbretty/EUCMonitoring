@@ -41,7 +41,7 @@ function Connect-NetScaler {
             Position = 2,
             ParameterSetName = '',
             ValueFromPipeline = $True)]
-        [System.Security.SecureString]$Password
+            [System.Security.SecureString]$Password
     )
 
     # Check to see if parameters were passed in, if not then prompt the user for them
@@ -71,7 +71,7 @@ function Connect-NetScaler {
     Invoke-RestMethod -uri "$NSIP/nitro/v1/config/login" -body $PayLoad -SessionVariable saveSession -Headers @{"Content-Type" = "application/vnd.com.citrix.netscaler.login+json"} -Method POST
 
     # Build Global NetScaler Session Variable
-    $Global:nsSession = New-Object -TypeName PSObject
+    $Script:nsSession = New-Object -TypeName PSObject
     $nsSession | Add-Member -NotePropertyName Endpoint -NotePropertyValue $NSIP -TypeName String
     $nsSession | Add-Member -NotePropertyName WebSession -NotePropertyValue $saveSession -TypeName Microsoft.PowerShell.Commands.WebRequestSession
 
