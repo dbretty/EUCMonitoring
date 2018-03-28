@@ -1,4 +1,4 @@
-function Test-ProvisioningServers {
+function Test-ProvisioningServer {
     <#   
 .SYNOPSIS   
     Tests Citrix Provisioning Servers Functionailty.
@@ -43,9 +43,6 @@ function Test-ProvisioningServers {
     $ProvisioningServerDown = 0
     Write-Verbose "Variables and Arrays Initalized"
 
-    # Get Provisioning Server Comma Delimited List 
-    $ProvisioningServers = $ProvisioningServers.Split(",")
-    $ProvisioningServerServices = $ProvisioningServerServices.Split(",")
     Write-Verbose "Read in Provisioning Server Details"
     Write-Verbose "Provisioning Server Farm: $ProvisioningServerFarm"
     Write-Verbose "Provisioning Server Site: $ProvisioningServerSite"
@@ -74,7 +71,7 @@ function Test-ProvisioningServers {
 
                 # Check Each Service for a Running State
                 foreach ($Service in $ProvisioningServerServices) {
-                    $CurrentServiceStatus = Check-Service $ProvisioningServer $Service
+                    $CurrentServiceStatus = Test-Service $ProvisioningServer $Service
                     If ($CurrentServiceStatus -ne "Running") {
                         # If the Service is not running set ServicesUp to No and Append The Service with an error to the error description
                         if ($ServiceError -eq "") {

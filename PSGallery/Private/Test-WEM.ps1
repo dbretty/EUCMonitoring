@@ -43,9 +43,6 @@ function Test-WEM {
     $WEMServerDown = 0
     Write-Verbose "Variables and Arrays Initalized"
 
-    # Get WEM Server Comma Delimited List 
-    $WEMServers = $WEMServers.Split(",")
-    $WEMServices = $WEMServices.Split(",")
     Write-Verbose "Read in WEM Details"
     Write-Verbose "WEM Servers: $WEMServers"
     Write-Verbose "WEM Ports: $WEMAgentPortString" 
@@ -72,7 +69,7 @@ function Test-WEM {
 
                 # Check Each Service for a Running State
                 foreach ($Service in $WEMServices) {
-                    $CurrentServiceStatus = Check-Service $WEMServer $Service
+                    $CurrentServiceStatus = Test-Service $WEMServer $Service
                     If ($CurrentServiceStatus -ne "Running") {
                         # If the Service is not running set ServicesUp to No and Append The Service with an error to the error description
                         if ($ServiceError -eq "") {

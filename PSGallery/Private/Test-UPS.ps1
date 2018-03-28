@@ -43,9 +43,6 @@ function Test-UPS {
     $UPSServerDown = 0
     Write-Verbose "Variables and Arrays Initalized"
 
-    # Get UPS Server Comma Delimited List 
-    $UPSServers = $UPSServers.Split(",")
-    $UPSServices = $UPSServices.Split(",")
     Write-Verbose "Read in UPS Details"
     Write-Verbose "UPS Servers: $UPSServers"
     Write-Verbose "UPS Ports: $UPSPortString" 
@@ -72,7 +69,7 @@ function Test-UPS {
 
                 # Check Each Service for a Running State
                 foreach ($Service in $UPSServices) {
-                    $CurrentServiceStatus = Check-Service $UPSServer $Service
+                    $CurrentServiceStatus = Test-Service $UPSServer $Service
                     If ($CurrentServiceStatus -ne "Running") {
                         # If the Service is not running set ServicesUp to No and Append The Service with an error to the error description
                         if ($ServiceError -eq "") {

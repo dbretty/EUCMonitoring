@@ -31,7 +31,7 @@ function Test-NetScaler {
     (
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$NetScalers,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$UserName,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$Password,
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)][System.Security.SecureString]$Password,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ErrorFile,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$OutputFile
 
@@ -44,9 +44,8 @@ function Test-NetScaler {
     $vServerDown = 0
     Write-Verbose "Variables and Arrays Initalized"
 
-    # Get NetScaler List from Registry
+    # Get NetScaler List
     Write-Verbose "Read NetScalers"
-    $NetScalers = $NetScalers.Split(",")
 
     # Loop through NetScalers pulled from Registry
     Write-Verbose "Looping through NetScalers and running monitoring checks"
@@ -61,7 +60,7 @@ function Test-NetScaler {
             Connect-NetScaler $NetScaler $UserName $Password
             Write-Verbose "NetScaler - $NetScaler Logged In"
 
-            $vServers = Get-vServers $NetScaler
+            $vServers = Get-vServer $NetScaler
 				
             # Loop Through vServers and check Status
             Write-Verbose "Looping through vServers to check status"

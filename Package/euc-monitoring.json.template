@@ -3,6 +3,7 @@
         "outputlocation": "c:\\webdata",
         "htmldatafile": "htmldata.txt",
         "htmloutputfile": "index.html",
+        "refreshduration": 0,
         "servererrorfile": "server-errors.txt",
         "desktoperrorfile": "desktop-errors.txt",
         "UpColour": "rgba(221, 70, 70, 0.9)",
@@ -13,11 +14,29 @@
         "Infradonutsize": 160,
         "infraerrorfile": "infra-errors.txt"
     },
+    "Microsoft": {
+        "Global": {
+            "test": "no"
+        },
+        "AD": {
+            "test": "no",
+            "ADServers": ["dc.domain.com"],
+            "ADLDAPPort": "389",
+            "ADServices": ["Netlogon","ADWS","NTDS"]
+        },
+        "SQL": {
+            "test": "no",
+            "SQLServers": ["sql.domain.com"],
+            "SQLPort": "1433",
+            "SQLServices": ["MSSQLServer"]
+        }
+    },
     "Citrix": {
         "Global": {
+            "test": "no",
             "xdbrokerprimary": "xdprimary.domain.com",
             "xdbrokerfailover": "xdsecondary.domain.com",
-            "workloads": "server,desktop",
+            "workloads": ["server","desktop"],
             "controlup": "no"
         },
         "server": {
@@ -31,75 +50,88 @@
             "highload": 8000
         },
         "xenserver": {
-            "test": "yes",
-            "poolmasters": "pool_master_ip",
+            "test": "no",
+            "poolmasters": ["pool_master_ip1","pool_master_ip2"],
             "poolmasterport": "80",
             "username": "root",
             "password": "password"
         },
         "storefront": {
-            "test": "yes",
+            "test": "no",
             "storefrontservers": "storefront.domain.com",
             "storefrontport": "80",
             "storefrontpath": "/citrix/storeweb",
             "protocol": "http"
         },
         "licensing": {
-            "test": "yes",
-            "licenseservers": "license.domain.com",
+            "test": "no",
+            "licenseservers": ["license1.domain.com","license2.domain.com"],
             "vendordaemonport": "7279",
             "licenseport": "27000",
             "webadminport": "8082",
             "simplelicenseserviceport": "8083"
         },
         "director": {
-            "test": "yes",
-            "directorervers": "web.bretty.me.uk",
+            "test": "no",            
+            "directorservers": ["director1.domain.com","director2.domain.com"],
             "directorport": "80",
             "directorpath": "/Director/LogOn.aspx?cc=true",
             "protocol": "http"
         },
         "controllers": {
-            "test": "yes",
-            "controllerservers": "controller.domain.com",
+            "test": "no",
+            "controllerservers": ["controller1.domain.com","controller2.domain.com"],
             "controllerport": "80",
-            "controllerservices": "CitrixADIdentityService,CitrixAnalytics,CitrixAppLibrary"
+            "controllerservices": ["CitrixBrokerService","CitrixHighAvailabilityService","CitrixConfigSyncService","CitrixConfigurationService","CitrixConfigurationLogging","CitrixDelegatedAdmin","CitrixADIdentityService","CitrixMachineCreationService","CitrixHostService","CitrixEnvTest","CitrixMonitor","CitrixAnalytics","CitrixAppLibrary","CitrixOrchestration"]
         },
         "netscalers": {
-            "test": "yes",
-            "netscalers": "nerscaler_ip",
+            "test": "no",
+            "netscalers": ["netscaler_ip1","netscaler_ip2"],
             "netscalerusername": "nsroot",
             "netscalerpassword": "nsroot"
         },
         "netscalergateway": {
-            "test": "yes",
+            "test": "no",
             "netscalerhostinggateway": "netscaler_gateway_ip"
         },
         "ProvisioningServers": {
-            "test": "yes",
+            "test": "no",
             "ProvisioningServerFarm": "pvs",
             "ProvisioningServerSite": "pvs_site",
-            "ProvisioningServers": "pvs.domain.com",
+            "ProvisioningServers": ["pvs1.domain.com","pvs2.domain.com"],
             "ProvisioningServerPort": "54321",
-            "ProvisioningServerServices": "BNPXE,BNTFTP,PvsApi,PVSTSB,soapserver,StreamService"
+            "ProvisioningServerServices": ["BNPXE","BNTFTP","PvsApi","PVSTSB","soapserver","StreamService"]
         },
         "WEM": {
-            "test": "yes",
-            "WEMServers": "wembroker.domain.com",
+            "test": "no",
+            "WEMServers": ["wembroker1.domain.com","wembroker2.domain.com"],
             "WEMAgentPort": "8286",
-            "WEMServices": "Norskale Infrastructure Service"
+            "WEMServices": ["Norskale Infrastructure Service"]
         },
         "UPS": {
-            "test": "yes",
+            "test": "no",
             "UPSServers": "upsserver.domain.com",
             "UPSPort": "7229",
-            "UPSServices": "UpSvc,CitrixXTEServer"
+            "UPSServices": ["UpSvc","CitrixXTEServer"]
         },
         "FAS": {
-            "test": "yes",
-            "FASServers": "fasserver.domain.com",
+            "test": "no",
+            "FASServers": ["fasserver1.domain.com","fasserver2.domain.com"],
             "FASPort": "135",
-            "FASServices": "CitrixFederatedAuthenticationService"
+            "FASServices": ["CitrixFederatedAuthenticationService"]
+         },   
+         "CC": {
+            "test": "no",
+            "CCServers": ["ccserver1.domain","ccserver2.domain"],
+            "CCPort": "80",
+            "CCServices": ["CitrixWorkspaceCloudADProvider","CitrixWorkspaceCloudAgentDiscovery","CitrixWorkspaceCloudAgentLogger","CitrixWorkspaceCloudAgentSystem","CitrixWorkspaceCloudAgentWatchDog","CitrixWorkspaceCloudCredentialProvider","CitrixWorkspaceCloudWebRelayProvider","CitrixConfigSyncService","CitrixHighAvailabilityService","Citrix NetScaler Cloud Gateway","XaXdCloudProxy","RemoteHCLServer","SessionManagerProxy"]
+        },
+        "EnvChecks": {
+            "test": "no",
+            "ddccheck": "yes",
+            "deliverygroupcheck": "yes",
+            "catalogcheck": "yes",
+            "hypervisorcheck": "yes"
         }
     }
 }

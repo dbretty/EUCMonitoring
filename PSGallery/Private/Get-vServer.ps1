@@ -1,4 +1,4 @@
-function Get-vServers {
+function Get-vServer {
     <#   
 .SYNOPSIS   
     Build a Global Variable with all current vServer Status.

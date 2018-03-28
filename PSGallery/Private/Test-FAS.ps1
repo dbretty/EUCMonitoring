@@ -42,9 +42,6 @@ function Test-FAS {
     $FASServerDown = 0
     Write-Verbose "Variables and Arrays Initalized"
 
-    # Get FAS Server Comma Delimited List 
-    $FASServers = $FASServers.Split(",")
-    $FASServices = $FASServices.Split(",")
     Write-Verbose "Read in FAS Details"
     Write-Verbose "FAS Servers: $FASServers"
     Write-Verbose "FAS Ports: $FASPortString" 
@@ -71,7 +68,7 @@ function Test-FAS {
 
                 # Check Each Service for a Running State
                 foreach ($Service in $FASServices) {
-                    $CurrentServiceStatus = Check-Service $FASServer $Service
+                    $CurrentServiceStatus = Test-Service $FASServer $Service
                     If ($CurrentServiceStatus -ne "Running") {
                         # If the Service is not running set ServicesUp to No and Append The Service with an error to the error description
                         if ($ServiceError -eq "") {

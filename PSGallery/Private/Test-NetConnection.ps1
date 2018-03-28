@@ -70,7 +70,7 @@ function Test-NetConnection {
             ForEach ($p in $port) {
                 If ($tcp) {
                     #Create temporary holder  
-                    $temp = "" | Select Server, Port, TypePort, Open, Notes
+                    $temp = "" | Select-Object Server, Port, TypePort, Open, Notes
                     #Create object for connecting to port on computer 
                     $tcpobject = new-Object system.Net.Sockets.TcpClient
                     #Connect to remote machine's port               
@@ -126,7 +126,7 @@ function Test-NetConnection {
                 }
                 If ($udp) {
                     #Create temporary holder  
-                    $temp = "" | Select Server, Port, TypePort, Open, Notes
+                    $temp = "" | Select-Object Server, Port, TypePort, Open, Notes
                     #Create object for connecting to port on computer 
                     $udpobject = new-Object system.Net.Sockets.Udpclient
                     #Set a timeout on receiving message
