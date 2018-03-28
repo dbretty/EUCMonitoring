@@ -24,6 +24,7 @@ function Start-XDMonitor {
     Adam Yarborough         1.4.2?          19/03/2018          Added Studio Checks
     David Brett             1.5             26/03/2018          Prep For SQL and AD Monitoring
     Adam Yarborough         1.5.1           26/03/2018          Fix Termination of Powershell instance https://git.io/vxEGW
+    David Wilkinson         1.6.1           28/03/2018          Added AppV Module
 .PARAMETER JsonFile
     Path to JSON settings file
 .PARAMETER CSSFile
@@ -184,6 +185,12 @@ function Start-XDMonitor {
         $SQLServers = $MyJSONConfigFile.Microsoft.SQL.SQLServers
         $SQLPort = $MyJSONConfigFile.Microsoft.SQL.SQLPort
         $SQLServices = $MyJSONConfigFile.Microsoft.SQL.SQLServices
+        
+        # AppV Publishing
+        $TestAppV = $MyJSONConfigFile.Microsoft.AppV.test
+        $AppVServers = $MyJSONConfigFile.Microsoft.AppV.AppVServers
+        $AppVPort = $MyJSONConfigFile.Microsoft.AppV.AppVPort
+        $AppVServices = $MyJSONConfigFile.Microsoft.AppV.AppVServices
 
         # Build HTML Output and Error File Full Path
         $ServerErrorFileFullPath = Join-Path -Path $OutputLocation -ChildPath $ServerErrorFile
@@ -938,7 +945,34 @@ function Start-XDMonitor {
             remove-item $SQLServerData -Force
             Write-Verbose "Deleted Donut Data File $SQLServerData"
         }    
-        
+        # Checking AppV Servers
+        if ($TestAppv -eq "yes") { 
+            # Increment Infrastructure Components
+            $InfrastructureComponents++
+            $InfrastructureList += "Appv"
+
+            Write-Verbose "AppV Publishing Servers Testing enabled"
+            Write-Verbose "Building AppV Publishing Servers Data Output Files"
+            $AppVServerData = Join-Path -Path $OutputLocation -ChildPath "AppVServer-data.txt"
+
+            # Build Donut File Paths for Citrix Cloud Connector Server
+            $AppVDonut = Join-Path -Path $OutputLocation -ChildPath "AppV.html"
+
+            # Remove Existing Data Files
+            if (test-path $AppVServerData) {
+                Remove-Item $AppVServerData
+            }
+
+            # Test the AppV Publishing Server Infrastructure
+            Test-AppV $AppVServers $AppVPort $AppVServices $InfraErrorFileFullPath $AppVServerData
+
+            Write-Verbose "Building Donut Files for AppV Publishing Servers"
+            New-Donut $AppVDonut $AppVServerData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "AppV"
+
+            # Removing Donut Data File
+            remove-item $AppVServerData -Force
+            Write-Verbose "Deleted Donut Data File $AppVServerData"
+        }   
         # Build the HTML output file
         New-HTMLReport $HTMLOutput $OutputLocation $InfrastructureComponents $InfrastructureList $WorkLoads $CSSFile $RefreshDuration
 
