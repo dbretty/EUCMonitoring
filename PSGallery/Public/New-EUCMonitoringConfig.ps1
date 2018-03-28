@@ -427,7 +427,28 @@ function New-EUCMonitoringConfig {
             Write-Verbose "Microsoft SQL Servers monitoring configured using default values."
         }
         else { $MyJSONConfig.Microsoft.SQL.test = "no" }
+        
+        # Microsoft / AppV
+        $TestAppV = Read-Host -Prompt 'Would you like to monitor Microsoft AppV Servers (yes/no)'
+        if ($TestAppV -match "y") { 
+            $MyJSONConfig.Microsoft.AppV.Test = "yes" 
+            Write-Verbose "Enabling Microsoft AppV monitoring."
+            $AppVServers = (Read-host -Prompt 'Please specify which AppV Servers (comma separated)').Replace(' ','')
+            $AppVServers = @($AppVServers.Split(','))
 
+            foreach ($AppVServer in $AppVServers) { 
+                if ((Connect-Server $AppVServer) -ne "Successful") {  
+                    $Response = Read-Host -Prompt "Unable to connect to $AppVServer. Do you want to continue (yes/no)"
+                    if ($Response -notmatch "y") { return }
+                } 
+            }
+            $MyJSONConfig.Microsoft.AppV.AppVServers = $AppVServers
+            $AppVPort = (Read-host -Prompt 'Please specify AppV Publishing Servers port').Replace(' ','')
+            $MyJSONConfig.Microsoft.AppV.AppvPort =  $AppVPort
+
+            Write-Verbose "Microsoft AppV Servers monitoring configured using default values."
+        }
+        else { $MyJSONConfig.Microsoft.AppV.test = "no" }
     }
     else { $MyJSONConfig.Microsoft.global.test = "no" }
 

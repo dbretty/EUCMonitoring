@@ -34,6 +34,8 @@ Obtain a Citrix Cloud automation credential as follows:
 Note the Customer ID located in this same page, this is case senstitive.
 Set-XDCredentials -CustomerId "%Customer ID%" -SecureClientFile "C:\Monitoring\secureclient.csv" -ProfileType CloudApi -StoreAs "CloudAdmin"
 
+NOTE: xdbrokerprimary/xdbrokerfailover should be set as the Citrix Cloud Connector, the cloud connectors will proxy the connection directly to the Delivery Controller as they are not directly accessible.
+
 ### Installation steps
 
 1. Open up PowerShell on the machine you want to use for monitoring.
