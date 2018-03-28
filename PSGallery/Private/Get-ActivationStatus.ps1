@@ -12,6 +12,7 @@ function Get-ActivationStatus {
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     David Brett             1.0             19/02/2018          Function Creation
+    Ryan Butler             1.1             27/03/2018          Changed to CIM
 .EXAMPLE
     None Required
 #>
@@ -26,7 +27,8 @@ function Get-ActivationStatus {
     
     process {
         try {
-            $wpa = Get-WmiObject SoftwareLicensingProduct -ComputerName $ComputerName -Filter "ApplicationID = '55c92734-d682-4d71-983e-d6ec3f16059f'" -Property LicenseStatus -ErrorAction Stop
+            #Changed to CIM
+            $wpa = get-ciminstance -class SoftwareLicensingProduct -ComputerName $ComputerName -Filter "ApplicationID = '55c92734-d682-4d71-983e-d6ec3f16059f'" -Property LicenseStatus -ErrorAction Stop 
         }
         catch {
             $status = New-Object ComponentModel.Win32Exception ($_.Exception.ErrorCode)
