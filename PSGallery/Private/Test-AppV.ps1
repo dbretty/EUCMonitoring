@@ -44,9 +44,9 @@ function Test-AppV {
     Write-Verbose "Variables and Arrays Initalized"
 
     Write-Verbose "Read in AppV Details"
-    Write-Verbose "AD Servers: $AppVServers"
-    Write-Verbose "AD Ports: $AppVPortString" 
-    Write-Verbose "AD Services: $AppVServices"
+    Write-Verbose "AppV Servers: $AppVServers"
+    Write-Verbose "AppV Ports: $AppVPortString" 
+    Write-Verbose "AppV Services: $AppVServices"
 
     foreach ($AppVServer in $AppVServers) {
 
