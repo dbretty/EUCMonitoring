@@ -20,11 +20,11 @@ function Test-XenServer {
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     David Brett             1.0             22/02/2018          Function Creation
-
+    Ryan Butler             1.1             28/03/2018          Returns object
 .EXAMPLE
     None Required
 #>
-
+    [CmdletBinding()]
     Param
     (
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$PoolMasters,
@@ -64,21 +64,22 @@ function Test-XenServer {
 
         foreach ($PoolMaster in $XenServers) {
         # Initialize Arrays and Variables
+        $poolmasterPing = $false
+        $poolmasterPort = $false
         $HostsUp = 0
         $HostsDown = 0
         $PoolsUp = 0
         $PoolsDown = 0
 
         Write-Verbose "Variables and Arrays Initalized" 
-        $serverObj = [PSCustomObject]@{}
             # If Pool Master is up log to Console and start the monitoring checks
             if ((Connect-Server $PoolMaster) -eq "Successful") {
                 Write-Verbose "PoolMaster - $PoolMaster is up"
-                $poolmasterup = $true
+                $poolmasterPing = $true
                 # Test Management Port Access
 
                 if ((Test-NetConnection $PoolMaster $ConnectionPort).open -eq "True") {
-                    
+                    $poolmasterPort= $true
                     # Increment Pool Master Up Count
                     $PoolsUp ++
 
@@ -133,19 +134,16 @@ function Test-XenServer {
             }
             $results += [PSCustomObject]@{
                 'PoolMaster' = $poolmaster
+                'PoolMasterPing' = $poolmasterPing
+                'PoolMasterPort' = $poolmasterPort
                 'HostsUp' = $HostsUp
                 'HostsDown' = $HostsDown
                 'PoolsUp' = $PoolsUp
                 'PoolsDown' = $PoolsDown
             }
         }
+    #Returns test results
     return $results
     }
-
-    # Write Data to Output File
-    #Write-Verbose "Writing XenServer Pool and Host Data to output file"
-    #"xenserverpool,$PoolsUp,$PoolsDown" | Out-File $OutputFile
-    #"xenserverhost,$HostsUp,$HostsDown" | Out-File $OutputFile -Append
-
 
 }
