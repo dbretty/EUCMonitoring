@@ -28,10 +28,11 @@ function Test-Licensing {
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     David Brett             1.0             07/02/2018          Function Creation
+    Ryan Butler             1.1             28/03/2018          Returns object
 .EXAMPLE
     None Required
 #> 
-[CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High")]
+    [CmdletBinding()]
     Param
     (
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$LicenseServers,
@@ -42,10 +43,6 @@ function Test-Licensing {
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ErrorFile
 
     )
-    # Initialize Arrays and Variables
-    $LicenseServerUp = 0
-    $LicenseServerDown = 0
-
     #Create array with results
     $results = @()
 
@@ -87,41 +84,35 @@ function Test-Licensing {
                     # If License Server Simple License is UP log to Console 
                     if ((Test-NetConnection $LicenseServer $SimpleLicenseServicePortString).open -eq "True") {
                         Write-Verbose "$LicenseServer Simple License Port is up: Port - $SimpleLicenseServicePortString"
-                        #$LicenseServerUp++
                         $SimpleLicPort = $true
                     }
                     else {
                         Write-Verbose "$LicenseServer Simple License ($SimpleLicenseServicePortString) is down"
                         "$LicenseServer Simple License ($SimpleLicenseServicePortString) is down"  | Out-File $ErrorFile -Append
-                        #$LicenseServerDown++
                         $SimpleLicPort = $false
                     }
                 }
                 else {
                     Write-Verbose "$LicenseServer Web Admin ($WebAdminPortString) is down"
                     "$LicenseServer Web Admin ($WebAdminPortString) is down"  | Out-File $ErrorFile -Append
-                    #$LicenseServerDown++
                     $WebAdminPort = $false
                 }
             }
             else {
                 Write-Verbose "$LicenseServer License Port ($LicensePortString) is down"
                 "$LicenseServer License Port ($LicensePortString) is down"  | Out-File $ErrorFile -Append
-                #$LicenseServerDown++
                 $LicensePort = $false
             }
         }
         else {
             Write-Verbose "$LicenseServer Vendor Daemon Port ($VendorDaemonPortString) is down"
             "$LicenseServer Vendor Daemon Port ($VendorDaemonPortString) is down"  | Out-File $ErrorFile -Append
-            #$LicenseServerDown++
             $DaemonPort = $false
         }
     }
     else {
         Write-Verbose "$LicenseServer is down" 
         "$LicenseServer is down"  | Out-File $ErrorFile -Append
-        #$LicenseServerDown++
         $ping = $false
     }
 
@@ -134,9 +125,7 @@ $results += [PSCustomObject]@{
     'SimpleLicPort' = $SimpleLicPort
 }
 
-# Write Data to Output File
-#Write-Verbose "Writing License Server Data to output file"
-#"licensing,$LicenseServerUp,$LicenseServerDown" | Out-File $OutputFile
     }
+    #returns object with test results
     return $results
 }
