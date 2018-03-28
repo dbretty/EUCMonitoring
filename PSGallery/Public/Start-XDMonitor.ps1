@@ -544,26 +544,8 @@ function Start-XDMonitor {
             $InfrastructureList += "licensing"
 
             Write-Verbose "Citrix Licensing Testing enabled"
-            #Write-Verbose "Building Citrix Licensing Data Output Files"
-            #$LicensingData = Join-Path -Path $OutputLocation -ChildPath "license-data.txt"
 
-            # Build Donut File Paths for Licensing
-            #$LicensingDonut = Join-Path -Path $OutputLocation -ChildPath "licensing.html"
-
-            # Remove Existing Data Files
-            #if (test-path $LicensingData) {
-            #    Remove-Item $LicensingData
-            #}
-
-            # Test the Licensing Infrastructure
             $results |Add-Member -Name "Licensing" -Value (Test-Licensing -licenseservers $LicenseServers -VendorDaemonPortString $VendorDaemonPort -licenseportstring $LicensePort -webadminportstring $WebAdminPort -SimpleLicenseServicePortString $SimpleLicensePort -errorfile $InfraErrorFileFullPath) -MemberType "NoteProperty"
-
-            #Write-Verbose "Building Donut Files for Licensing"
-            #New-Donut $LicensingDonut $LicensingData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "Licensing"
-
-            # Removing Donut Data File
-            #remove-item $LicensingData -Force
-            #Write-Verbose "Deleted Donut Data File $LicensingData"
         }
   
         # Checking StoreFront
