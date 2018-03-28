@@ -21,7 +21,9 @@ function Start-XDMonitor {
     James Kindon            1.3             17/03/2018          Added WEM, UPS and FAS Modules
     David Brett             1.4             19/03/2018          Added the ability to pull the files location from the registry
     David Wilkinson         1.4.1           19/03/2018          Added Cloud Connector Module
+    Adam Yarborough         1.4.2?          19/03/2018          Added Studio Checks
     David Brett             1.5             26/03/2018          Prep For SQL and AD Monitoring
+    Adam Yarborough         1.5.1           26/03/2018          Fix Termination of Powershell instance https://git.io/vxEGW
 .PARAMETER JsonFile
     Path to JSON settings file
 .PARAMETER CSSFile
@@ -71,6 +73,7 @@ function Start-XDMonitor {
         # Read in the JSON Data
 
         # Global Variables
+#        $XDTest = $MyJSONConfigFile.Citrix.Global.test # Placeholder value. Currently assumed true. 
         $XDBrokerPrimary = $MyJSONConfigFile.Citrix.Global.xdbrokerprimary
         $XDBrokerFailover = $MyJSONConfigFile.Citrix.Global.xdbrokerfailover
         $WorkLoads = $MyJSONConfigFile.Citrix.Global.workloads
@@ -215,7 +218,7 @@ function Start-XDMonitor {
             }
             Catch {
                 Write-Error "Could Not Create Output Directory $OutputLocation Quitting"
-                break
+                Return # Fix Termination of Powershell instance https://git.io/vxEGW
             } 
         }
         else {
@@ -250,7 +253,7 @@ function Start-XDMonitor {
         if ($null -eq $ctxsnap) {
             Write-error "XenDesktop Powershell Snapin Load Failed - No XenDesktop Brokering SDK Found"
             Write-error "Cannot Load XenDesktop Powershell SDK"
-            break
+            Return # Fix Termination of Powershell instance https://git.io/vxEGW
         }
         else {
             Write-Verbose "XenDesktop Powershell SDK Snapin Loaded"
@@ -269,7 +272,7 @@ function Start-XDMonitor {
                 # Remove Global Functions File
                 remove-module xendesktop-monitor-global
                 Write-error "Cannot Connect to XenDesktop Brokers $XDBrokerPrimary or $XDBrokerFailover"
-                break
+                Return # Fix Termination of Powershell instance https://git.io/vxEGW
             }
         }
         Write-Verbose "Configured XenDesktop Broker for Connectivity: $Broker"

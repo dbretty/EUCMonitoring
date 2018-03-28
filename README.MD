@@ -51,13 +51,22 @@ Find-Module EUCMonitoring
         Install-Module EUCMonitoring -Scope CurrentUser
         ```
 4. Next run the following command pointing to a directory that you want the EUC Monitoring setting files and output HTML to reside.
+   * Run this for manual configuration. 
+        ```text
+        Set-EUCMonitoring C:\Monitoring -verbose
+        ```
+   * Or, for new users, or those who prefer the defaults.  This will ask you a few questions about your environment. 
+        ```text
+        Set-EUCMonitoring C:\Monitoring -QuickConfig -verbose
+        ```
+
+5. If manually configuring, go to that directory and rename the **euc-monitoring.json.template** file to **euc-monitoring.json**
+6. Edit the json file to reflect your environment.  You can always regenerate a new json file with
 
 ```text
-Set-EUCMonitoring C:\Monitoring -verbose
+New-EUCMonitoringConfig C:\Monitoring 
 ```
 
-5. Once this is done go to that directory and rename the **euc-monitoring.json.template** file to **euc-monitoring.json**
-6. Edit the json file to reflect your environment
 7. Finally run the following command pointing to the directory that holds the needed files
 
 ```text
@@ -71,6 +80,6 @@ Start-XDMonitor -JsonFile ".\mysettings.json" -LogFile ".\mylog.txt" -CSSFile ".
 
 8. Open up your new dashboard HTML file from the location you specified in your json for web data output
 
-## Contributors
+## Active Contributors
 
-Dave Brett [@dbretty](https://twitter.com/dbretty) | James Kindon [@james_kindon](https://twitter.com/james_kindon) | Ryan Butler [@ryan_c_butler](https://twitter.com/Ryan_C_Butler) | David Wilkinson [@WilkyIT](https://twitter.com/WilkyIT) | Gareth Carson [@CitXen](https://twitter.com/CitXen) | Jake Walsh [@jakewalsh90](https://twitter.com/jakewalsh90) | Andy Mallins [@andymallins](https://twitter.com/andymallins)
+Dave Brett [@dbretty](https://twitter.com/dbretty) | James Kindon [@james_kindon](https://twitter.com/james_kindon) | Ryan Butler [@ryan_c_butler](https://twitter.com/Ryan_C_Butler) | David Wilkinson [@WilkyIT](https://twitter.com/WilkyIT) | Adam Yarborough [@littletoyrobots](https://twitter.com/littletoyrobots)
