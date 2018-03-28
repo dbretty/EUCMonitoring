@@ -922,7 +922,8 @@ function Start-XDMonitor {
             }
 
             # Test Active Directory Infrastructure
-            Test-AD $ADServers $ADLDAPPort $ADServices $InfraErrorFileFullPath $ADServerData
+            $results |Add-Member -Name "AD" -Value (Test-AD -adserver $ADServers -adportstring $ADLDAPPort -adservices $ADServices -errorfile $InfraErrorFileFullPath) -MemberType "NoteProperty"
+            
 
             Write-Verbose "Building Donut Files for Active Directory"
             New-Donut $ADDonut $ADServerData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "AD"
