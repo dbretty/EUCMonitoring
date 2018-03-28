@@ -22,7 +22,7 @@ To install and run this software follow these steps
 The Server that you want to run this script from must have the XenServer and XenDesktop PowerShell SDK Installed. Install Citrix Studio on the monitoring server and also install the XenServer SDK from the [XenServer 7.2 Standard Edition](https://www.citrix.com/downloads/xenserver/product-software/xenserver-72-standard-edition.html) download page.
 
 #### Cloud
-The Server that you want to run this script from must have the Remote PowerShell SDK for Applications and Desktops Service from: http://download.apps.cloud.com/CitrixPoshSdk.exe
+The Server that you want to run this script from must have the Remote [PowerShell SDK for Applications and Desktops Service](http://download.apps.cloud.com/CitrixPoshSdk.exe): 
 
 Obtain a Citrix Cloud automation credential as follows:
 - Login to https://citrix.cloud.com/
@@ -32,9 +32,11 @@ Obtain a Citrix Cloud automation credential as follows:
 - Once Secure Client is created, download Secure Client Credentials file (ie. downloaded to C:\Monitoring)
 
 Note the Customer ID located in this same page, this is case senstitive.
+```
 Set-XDCredentials -CustomerId "%Customer ID%" -SecureClientFile "C:\Monitoring\secureclient.csv" -ProfileType CloudApi -StoreAs "CloudAdmin"
+```
 
-NOTE: xdbrokerprimary/xdbrokerfailover should be set as the Citrix Cloud Connector, the cloud connectors will proxy the connection directly to the Delivery Controller as they are not directly accessible.
+NOTE: **xdbrokerprimary/xdbrokerfailover** should be set as the Citrix Cloud Connector, the cloud connectors will proxy the connection directly to the Delivery Controller as they are not directly accessible.
 
 ### Installation steps
 
