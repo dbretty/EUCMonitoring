@@ -910,27 +910,10 @@ function Start-XDMonitor {
             $InfrastructureList += "AD"
 
             Write-Verbose "Active Directory Server Testing enabled"
-            Write-Verbose "Building Active Directory Server Data Output Files"
-            $ADServerData = Join-Path -Path $OutputLocation -ChildPath "AD-data.txt"
-
-            # Build Donut File Paths for Active Directory
-            $ADDonut = Join-Path -Path $OutputLocation -ChildPath "AD.html"
-
-            # Remove Existing Data Files
-            if (test-path $ADServerData) {
-                Remove-Item $ADServerData
-            }
 
             # Test Active Directory Infrastructure
             $results |Add-Member -Name "AD" -Value (Test-AD -adserver $ADServers -adportstring $ADLDAPPort -adservices $ADServices -errorfile $InfraErrorFileFullPath) -MemberType "NoteProperty"
-            
 
-            Write-Verbose "Building Donut Files for Active Directory"
-            New-Donut $ADDonut $ADServerData $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "AD"
-
-            # Removing Donut Data File
-            remove-item $ADServerData -Force
-            Write-Verbose "Deleted Donut Data File $ADServerData"
         }
 
         # Checking SQL Servers
