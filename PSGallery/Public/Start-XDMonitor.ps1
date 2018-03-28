@@ -492,48 +492,9 @@ function Start-XDMonitor {
             $InfrastructureList += "xenserverhost"
 
             Write-Verbose "XenServer Testing enabled"
-            #Write-Verbose "Building XenServer Data Output Files"
-            #$XenServerData = Join-Path -Path $OutputLocation -ChildPath "xenserver-data.txt"
-
-            # Build 2 Donut File Paths for XenServer Host and Pools
-            #$PoolFileName = Join-Path -Path $OutputLocation -ChildPath "xenserverpool.txt"
-            #$HostFileName = Join-Path -Path $OutputLocation -ChildPath "xenserverhost.txt"
-            #$PoolFileDonut = Join-Path -Path $OutputLocation -ChildPath "xenserverpool.html"
-            #$HostFileDonut = Join-Path -Path $OutputLocation -ChildPath "xenserverhost.html"
-
-            # Remove Existing Data Files
-            #if (test-path $XenServerData) {
-            #    Remove-Item $XenServerData
-            #}
 
             # Test the XenServer Infrastructure
             $results|Add-Member -Name "XenServer" -Value (Test-XenServer -poolmasters $PoolMasters -connectionport $ConnectionPort -errorfile $InfraErrorFileFullPath -xenusername $XenUserName -xenpassword $XenPassword) -MemberType "NoteProperty"
-            
-
-            # Split output file into 2 html data files
-            #$XenData = Get-Content $XenServerData
-            #foreach ($Line in $XenData) {
-            #    $LineData = $Line -Split ","
-            #    $FileName = $LineData[0]
-            #    [int]$Good = $LineData[1]
-            #    [int]$Bad = $LineData[2]
-
-            #    $NewFileName = Join-Path -Path $OutputLocation -ChildPath "$Filename.txt"
-
-            #    "$FileName,$Good,$Bad" | Out-File $NewFileName
-            #}
-
-            #Write-Verbose "Building Donut Files for XenServers Hosts and Pools"
-            #New-Donut $PoolFileDonut $PoolFileName $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "Pools"
-            #New-Donut $HostFileDonut $HostFileName $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "Hosts"
-
-            # Removing Donut Data File
-            #remove-item $PoolFileName -Force
-            #Write-Verbose "Deleted Donut Data File $PoolFileName"
-            #remove-item $HostFileName -Force
-            #Write-Verbose "Deleted Donut Data File $HostFileName"
-            #remove-item $XenServerData -Force
-            #Write-Verbose "Deleted Donut Data File $XenServerData"
         
         }
 
