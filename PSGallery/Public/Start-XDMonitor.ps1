@@ -75,14 +75,14 @@ function Start-XDMonitor {
         # Read in the JSON Data
 
         # Global Variables
-        $XDBrokerPrimary = $MyJSONConfigFile.Citrix.Global.xdbrokerprimary
-        $XDBrokerFailover = $MyJSONConfigFile.Citrix.Global.xdbrokerfailover
+        #$XDBrokerPrimary = $MyJSONConfigFile.Citrix.Global.xdbrokerprimary
+        #$XDBrokerFailover = $MyJSONConfigFile.Citrix.Global.xdbrokerfailover
         # $ControlUp = $MyJSONConfigFile.Citrix.Global.controlup
   
         # Web Data
         # $HTMLData = $MyJSONConfigFile.WebData.htmldatafile
         $HTMLOutput = $MyJSONConfigFile.WebData.htmloutputfile
-        $RefreshDuration = $MyJSONConfigFile.WebData.refreshduration
+        #$RefreshDuration = $MyJSONConfigFile.WebData.refreshduration
         $ServerErrorFile = $MyJSONConfigFile.WebData.servererrorfile
         $DesktopErrorFile = $MyJSONConfigFile.WebData.desktoperrorfile
         $InfraErrorFile = $MyJSONConfigFile.WebData.infraerrorfile
@@ -404,7 +404,7 @@ function Start-XDMonitor {
             Write-Verbose "Citrix Environmental Checks Testing enabled"
 
             # Test the Citrix Environmental Checks
-            $results | Add-Member -Name "EnvCheck" -Value (Test-EnvChecksXD -AdminAddress $XDBrokerPrimary -ErrorFile $InfraErrorFileFullPath -DDCcheck $EnvChecksXDCheckddc -DeliveryGroupCheck $EnvChecksXDCheckdeliverygroup -CatalogCheck $EnvChecksXDCheckcatalog -HypervisorCheck $EnvChecksXDHypervisor) -MemberType "NoteProperty"
+            $results | Add-Member -Name "EnvCheck" -Value (Test-EnvChecksXD -AdminAddress ($MyJSONConfigFile.Citrix.Global.xdbrokerprimary) -ErrorFile $InfraErrorFileFullPath -DDCcheck $EnvChecksXDCheckddc -DeliveryGroupCheck $EnvChecksXDCheckdeliverygroup -CatalogCheck $EnvChecksXDCheckcatalog -HypervisorCheck $EnvChecksXDHypervisor) -MemberType "NoteProperty"
         }
 
         # Checking Active Directory Servers
