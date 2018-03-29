@@ -73,7 +73,7 @@ function Start-XDMonitor {
         # Global Variables
         $XDBrokerPrimary = $MyJSONConfigFile.Citrix.Global.xdbrokerprimary
         $XDBrokerFailover = $MyJSONConfigFile.Citrix.Global.xdbrokerfailover
-        $ControlUp = $MyJSONConfigFile.Citrix.Global.controlup
+        # $ControlUp = $MyJSONConfigFile.Citrix.Global.controlup
   
         # Web Data
         # $HTMLData = $MyJSONConfigFile.WebData.htmldatafile

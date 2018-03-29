@@ -32,7 +32,7 @@ function Get-AAAUser {
 
     )
 
-    $nsession = Connect-NetScaler $NSIP $UserName $Password
+    Connect-NetScaler $NSIP $UserName $Password
 
     if ($UserType -eq "ica") {
         $Url = "$NSIP/nitro/v1/config/vpnicaconnection"
