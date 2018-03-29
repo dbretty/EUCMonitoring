@@ -255,7 +255,7 @@ function Start-XDMonitor {
         # Start XD Monitoring Checks
         Write-Verbose "Starting Citrix XD Testing"
         if ($TestWorkers -eq "yes") {
-            $InfrastructureList += "XDWorkLoads"
+            $InfrastructureList += "XD WorkLoads"
             Write-Verbose "Citrix XD Testing Enabled"
             $results | Add-Member -Name "XenDesktop" -Value (Test-XenDesktop -XDBrokerPrimary $XDBrokerPrimary -XDBrokerFailover $XDBrokerFailover -workerobj $MyJSONConfigFile.Citrix.Worker) -MemberType "NoteProperty"
         }
@@ -343,28 +343,9 @@ function Start-XDMonitor {
 
         # Checking NetScaler Gateway
         if ($TestNetScalerGateway -eq "yes") {
-
-            #Create array with results
-            $gwresults = @()
-        
-            Write-Verbose "NetScaler Gateway Testing enabled"
-
-            # Test the NetScaler Gateway
-            $ICAUsers = (((Get-AAAUser $NetScalerHostingGateway $NetScalerUserName $NetScalerPassword "ica").vpnicaconnection) | Measure-Object).count
-            $VPNUsers = (((Get-AAAUser $NetScalerHostingGateway $NetScalerUserName $NetScalerPassword "vpn").aaasession) | Measure-Object).count
-        
-            Write-Verbose "Current NetScaler Gateway ICA Users: $ICAUsers"
-            Write-Verbose "Current NetScaler Gateway VPN Users: $VPNUsers"
-            $TotalUsers = [int]$ICAUsers + [int]$VPNUsers
-            Write-Verbose "Current NetScaler Gateway Users: $TotalUsers"
-
-            $gwresults += [PSCustomObject]@{
-                'NetScalerGateway' = $NetScalerHostingGateway
-                'ICAUsers'         = $ICAUsers
-                'VPNUsers'         = $VPNUsers
-            }
-
-            $results | Add-Member -Name "NetScalerGateway" -Value $gwresults -MemberType "NoteProperty"
+            $InfrastructureList += "NS Gateway"
+            Write-Verbose "NetScaler Gateway Testing enabled"    
+            $results | Add-Member -Name "NetScalerGateway" -Value (Test-NetscalerGateway -NetScalerHostingGateway $NetScalerHostingGateway -NetscalerUserName $NetScalerUserName -netscalerpassword $NetscalerPassword) -MemberType "NoteProperty"
         }
     
         # Checking WEM Servers
