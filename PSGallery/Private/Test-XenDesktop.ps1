@@ -4,12 +4,8 @@ function Test-XenDesktop{
     Tests XenDesktop Workers
 .DESCRIPTION 
     Tests XenDesktop Workers
-.PARAMETER XDBrokerPrimary 
-    Primary XD Broker
-.PARAMETER XDBrokerFailover
-    Secondary XD Broker
-.PARAMETER ADServices 
-    AD Services to check
+.PARAMETER GlobalObj
+    Object with Global Citrix settings
 .PARAMETER WorkerObj
     Object with workload settings
 .NOTES
@@ -21,12 +17,13 @@ function Test-XenDesktop{
     [CmdletBinding()]
     Param
     (
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$XDBrokerPrimary,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$XDBrokerFailover,
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$GlobalObj,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$WorkerObj
 
     )
     #Variables
+    $XDBrokerPrimary = $GlobalObj.xdbrokerprimary
+    $xdbrokerfailover = $GlobalObj.xdbrokerfailover
     $WorkerTestMode = $WorkerObj.mode
     $WorkLoads = $WorkerObj.workloads
     $ServerBootThreshold = $WorkerObj.serverbootthreshold

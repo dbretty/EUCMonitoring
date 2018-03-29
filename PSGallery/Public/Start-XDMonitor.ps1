@@ -63,10 +63,14 @@ function Start-XDMonitor {
         # Set the script start time
         $StartTime = (Get-Date)
 
-        $MyJSONConfigFile = Get-Content -Raw -Path $MyConfigFileLocation | ConvertFrom-Json
+        try{
+        $MyJSONConfigFile = Get-Content -Raw -Path $MyConfigFileLocation | ConvertFrom-Json -ErrorAction Stop}
+        catch{
+            throw "Error reading JSON.  Please Check File and try again."
+        }
     
         # Start the Transcript
-        Start-Transcript $LogFile
+        #Start-Transcript $LogFile
     
         # Read in the JSON Data
 
@@ -79,9 +83,9 @@ function Start-XDMonitor {
         # $HTMLData = $MyJSONConfigFile.WebData.htmldatafile
         $HTMLOutput = $MyJSONConfigFile.WebData.htmloutputfile
         $RefreshDuration = $MyJSONConfigFile.WebData.refreshduration
-        #$ServerErrorFile = $MyJSONConfigFile.WebData.servererrorfile
-        #$DesktopErrorFile = $MyJSONConfigFile.WebData.desktoperrorfile
-        #$InfraErrorFile = $MyJSONConfigFile.WebData.infraerrorfile
+        $ServerErrorFile = $MyJSONConfigFile.WebData.servererrorfile
+        $DesktopErrorFile = $MyJSONConfigFile.WebData.desktoperrorfile
+        $InfraErrorFile = $MyJSONConfigFile.WebData.infraerrorfile
         #$UpColour = $MyJSONConfigFile.WebData.UpColour
         #$DownColour = $MyJSONConfigFile.WebData.DownColour
         $OutputLocation = $MyJSONConfigFile.WebData.outputlocation
@@ -94,7 +98,8 @@ function Start-XDMonitor {
         $InfrastructureList = @()
 
         # Worker Data
-        $TestWorkers = $MyJSONConfigFile.Citrix.Worker.test
+        $TestXD = $MyJSONConfigFile.Citrix.Worker.Test
+        #$TestWorkers = $MyJSONConfigFile.Citrix.Worker.test
         #$WorkerTestMode = $MyJSONConfigFile.Citrix.Worker.mode
         #$WorkLoads = $MyJSONConfigFile.Citrix.Worker.workloads
         #$ServerBootThreshold = $MyJSONConfigFile.Citrix.Worker.serverbootthreshold
@@ -204,7 +209,6 @@ function Start-XDMonitor {
         $AppVPort = $MyJSONConfigFile.Microsoft.AppV.AppVPort
         $AppVServices = $MyJSONConfigFile.Microsoft.AppV.AppVServices
 
-        <#  THIS CAN ALL BE DELETED RIGHT?
         # Build HTML Output and Error File Full Path
         $ServerErrorFileFullPath = Join-Path -Path $OutputLocation -ChildPath $ServerErrorFile
         $DesktopErrorFileFullPath = Join-Path -Path $OutputLocation -ChildPath $DesktopErrorFile
@@ -218,6 +222,7 @@ function Start-XDMonitor {
         #Custom PS object
         $results = [pscustomobject]@{}
 
+        ##REMOVE AFTER ERROR FILES
         # Test the output location and create if not there or clean up old data if exists
         Write-Verbose "Testing Output File Location $OutputLocation"
         If ((Test-Path $OutputLocation) -eq $False) {
@@ -250,14 +255,14 @@ function Start-XDMonitor {
                 Remove-Item $InfraErrorFileFullPath
             }
         }
-        #>
+        ##REMOVE AFTER ERROR FILES
 
         # Start XD Monitoring Checks
         Write-Verbose "Starting Citrix XD Testing"
-        if ($TestWorkers -eq "yes") {
-            $InfrastructureList += "XD WorkLoads"
+        if ($TestXD -eq "yes") {
+            $InfrastructureList += "XenDesktop"
             Write-Verbose "Citrix XD Testing Enabled"
-            $results | Add-Member -Name "XenDesktop" -Value (Test-XenDesktop -XDBrokerPrimary $XDBrokerPrimary -XDBrokerFailover $XDBrokerFailover -workerobj $MyJSONConfigFile.Citrix.Worker) -MemberType "NoteProperty"
+            $results | Add-Member -Name "XenDesktop" -Value (Test-XenDesktop -Globalobj $MyJSONConfigFile.Citrix.Global -workerObj $MyJSONConfigFile.Citrix.worker ) -MemberType "NoteProperty"
         }
 
         # Start Infrastructure Monitoring Checks
@@ -399,7 +404,7 @@ function Start-XDMonitor {
             Write-Verbose "Citrix Environmental Checks Testing enabled"
 
             # Test the Citrix Environmental Checks
-            $results | Add-Member -Name "EnvCheck" -Value (Test-EnvChecksXD -AdminAddress $Broker -ErrorFile $InfraErrorFileFullPath -DDCcheck $EnvChecksXDCheckddc -DeliveryGroupCheck $EnvChecksXDCheckdeliverygroup -CatalogCheck $EnvChecksXDCheckcatalog -HypervisorCheck $EnvChecksXDHypervisor) -MemberType "NoteProperty"
+            $results | Add-Member -Name "EnvCheck" -Value (Test-EnvChecksXD -AdminAddress $XDBrokerPrimary -ErrorFile $InfraErrorFileFullPath -DDCcheck $EnvChecksXDCheckddc -DeliveryGroupCheck $EnvChecksXDCheckdeliverygroup -CatalogCheck $EnvChecksXDCheckcatalog -HypervisorCheck $EnvChecksXDHypervisor) -MemberType "NoteProperty"
         }
 
         # Checking Active Directory Servers
@@ -448,7 +453,7 @@ function Start-XDMonitor {
             # THIS DOESN"T ACTUALLY WORK YET
             # Need to pass int he object and sort out the code
             # New-HTMLReport $HTMLOutput $OutputLocation $InfrastructureComponents $InfrastructureList $WorkLoads $CSSFile $RefreshDuration
-            New-HTMLReport -HTMLOutputFile $HTMLOutput -HTMLOutputLocation $OutputLocation -EUCMonitoring $Results -CSSFile $CSSFile -RefreshDuration $RefreshDuration
+            #New-HTMLReport -HTMLOutputFile $HTMLOutput -HTMLOutputLocation $OutputLocation -EUCMonitoring $Results -CSSFile $CSSFile -RefreshDuration $RefreshDuration
         }
         
         # Stop the timer and display the output
