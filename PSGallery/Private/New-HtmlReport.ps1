@@ -8,18 +8,15 @@ function New-HtmlReport {
     HTML Output File
 .PARAMETER HTMLOutputLocation 
     HTML Output File
-.PARAMETER InfrastructureComponents 
-    Number of Infrastructure Components 
-.PARAMETER InfrastructureList 
-    List of Infrastructure Components
-.PARAMETER WorkerList 
-    List of Worker Components
+.PARAMETER EUCMonitoring
+    EUC Monitoring Output Object
 .NOTES
     Current Version:        1.0
     Creation Date:          12/03/2018
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     David Brett             1.0             12/03/2018          Function Creation
+    David Brett             1.1             29/03/2018          Updating function to cater for the new object
 .EXAMPLE
     None Required
 #> 
@@ -30,9 +27,7 @@ function New-HtmlReport {
     (
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$HTMLOutputFile,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$HTMLOutputLocation,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$InfrastructureComponents,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$InfrastructureList,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$WorkerList,
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$EUCMonitoring,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$CSSFile,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$RefreshDuration
     )
@@ -79,29 +74,29 @@ function New-HtmlReport {
     "<tr>" | Out-File $HTMLOutputFileFull -Append
 
     # Work out the column width for Infrastructure
-    $ColumnPercent = 100 / [int]$InfrastructureComponents
-    foreach ($InfService in $InfrastructureList) {
-        Write-Verbose "Getting Donut Data for $InfService"
+    #$ColumnPercent = 100 / [int]($EUCMonitoring.infrastructurelist).count
+    #foreach ($InfService in $InfrastructureList) {
+    #    Write-Verbose "Getting Donut Data for $InfService"
 
-        # Define Table Cell Start
-        "<td width='$ColumnPercent%' align=center valign=top>" | Out-File $HTMLOutputFileFull -Append
+    # Define Table Cell Start
+    #"<td width='$ColumnPercent%' align=center valign=top>" | Out-File $HTMLOutputFileFull -Append
 
-        # Get HTML Code From Monitoring Output
-        $InfFile = "$InfService.html"
-        $InfraInputFile = Join-Path -Path $HTMLOutputLocation -ChildPath $InfFile 
-        Write-Verbose "Using Contents from $InfraInputFile"
+    # Get HTML Code From Monitoring Output
+    #$InfFile = "$InfService.html"
+    #$InfraInputFile = Join-Path -Path $HTMLOutputLocation -ChildPath $InfFile 
+    #Write-Verbose "Using Contents from $InfraInputFile"
 
-        # Read in HTML Data
-        $InfData = Get-Content $InfraInputFile
+    # Read in HTML Data
+    #$InfData = Get-Content $InfraInputFile
 
-        # Write HTML Donut Data to Master File
-        $InfData | Out-File $HTMLOutputFileFull -Append
+    # Write HTML Donut Data to Master File
+    #$InfData | Out-File $HTMLOutputFileFull -Append
 
-        # Define Table Cell Close
-        "</td>" | Out-File $HTMLOutputFileFull -Append
+    # Define Table Cell Close
+    #"</td>" | Out-File $HTMLOutputFileFull -Append
 
-        Remove-Item $InfraInputFile -Force
-    }
+    #Remove-Item $InfraInputFile -Force
+    #}
     
     # Write the Infrastructure Table Footer
     "</tr>" | Out-File $HTMLOutputFileFull -Append
@@ -111,109 +106,147 @@ function New-HtmlReport {
     "<br>" | Out-File $HTMLOutputFileFull -Append
 
     # Start the Worker Donur Build
-    $WorkerCount = ($WorkerList | Measure-Object).Count
+    #$WorkerCount = ($WorkerList | Measure-Object).Count
 
     # Work out column sizes
-    if ($WorkerCount -eq 2) {
-        $WorkerSize = "35%"
-        $ErrorSize = "30%"  
-    }
-    else {
-        $WorkerSize = "70%"
-        $ErrorSize = "30%" 
-    }
+    #if ($WorkerCount -eq 2) {
+    #    $WorkerSize = "35%"
+    #    $ErrorSize = "30%"  
+    #}
+    #else {
+    #    $WorkerSize = "70%"
+    #    $ErrorSize = "30%" 
+    #}
 
     # Write Worker Table Header
     "<table border='0' width='100%'' cellspacing='0' cellpadding='0'>" | Out-File $HTMLOutputFileFull -Append
     "<tr>" | Out-File $HTMLOutputFileFull -Append
   
-    foreach ($Worker in $WorkerList) {
-        Write-Verbose "Getting Donut Data for $Worker"
-
-        # Define Table Cell Start
-        "<td width='$WorkerSize' align=center valign=top>" | Out-File $HTMLOutputFileFull -Append
-
-        # Get HTML Code From Monitoring Output
-        $WrkFile = "$Worker-donut.html"
-        $WorkerInputFile = Join-Path -Path $HTMLOutputLocation -ChildPath $WrkFile 
-        Write-Verbose "Using Contents from $WorkerInputFile"
-
-        # Read in HTML Data
-        $WrkData = Get-Content $WorkerInputFile
-
-        # Write HTML Donut Data to Master File
-        $WrkData | Out-File $HTMLOutputFileFull -Append
-
-        # Define Table Cell Close
-        "</td>" | Out-File $HTMLOutputFileFull -Append
-
-        Remove-Item $WorkerInputFile -Force
-    }
+    #  foreach ($Worker in $WorkerList) {
+    #       Write-Verbose "Getting Donut Data for $Worker"
+    #
+    #      # Define Table Cell Start
+    #       "<td width='$WorkerSize' align=center valign=top>" | Out-File $HTMLOutputFileFull -Append
+    #
+    #    # Get HTML Code From Monitoring Output
+    #     $WrkFile = "$Worker-donut.html"
+    #      $WorkerInputFile = Join-Path -Path $HTMLOutputLocation -ChildPath $WrkFile 
+    #       Write-Verbose "Using Contents from $WorkerInputFile"
+    #
+    #      # Read in HTML Data
+    #       $WrkData = Get-Content $WorkerInputFile
+    #
+    #      # Write HTML Donut Data to Master File
+    #       $WrkData | Out-File $HTMLOutputFileFull -Append
+    #
+    #      # Define Table Cell Close
+    #       "</td>" | Out-File $HTMLOutputFileFull -Append
+    #
+    #     Remove-Item $WorkerInputFile -Force
+    # }
 
     # Define Error Pane
     "<td class='monitoring-info'>" | Out-File $HTMLOutputFileFull -Append
     
     # Output Monitoring Data - Server
-    $ServerData = Join-Path -Path $HTMLOutputLocation -ChildPath "server-htmldata.txt"
-
-    if (test-path $ServerData) {
+    if (!$null -eq $EUCMonitoring.server) {
+        # Title    
         "<div class='info-title'>" | Out-File $HTMLOutputFileFull -Append
         "Server Workload Data" | Out-File $HTMLOutputFileFull -Append
         "</div>" | Out-File $HTMLOutputFileFull -Append
-        $ServerInfo = Get-Content $ServerData
+
+        # Detail
         "<div class='info-text'>" | Out-File $HTMLOutputFileFull -Append
-        foreach ($Line in $ServerInfo) {
-            $LineData = $Line -Split ","
-            $Title = $LineData[0] 
-            $Up = $LineData[1] 
-            $Down = $LineData[2] 
-            $LineData = $Line.Split(",")
-            "$Title - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
-        }
+
+        # Total User Base
+        $Up = $EUCMonitoring.server.TotalConnectedUsers
+        $Down = $EUCMonitoring.server.TotalUsersDisconnected
+        "Total User Base - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
+
+        # Delivery Group Maintenance Mode
+        $Up = $EUCMonitoring.server.DeliveryGroupsInMaintenance
+        $Down = $EUCMonitoring.server.DeliveryGroupsNotInMaintenance
+        "Delivery Group Maintenance Mode - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
+
+        # Broker Machine Power State
+        $Up = $EUCMonitoring.server.BrokerMachineOn
+        $Down = $EUCMonitoring.server.BrokerMachineOff
+        "Broker Machine Power State - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
+
+        # Broker Machine Registration
+        $Up = $EUCMonitoring.server.BrokerMachineRegistered
+        $Down = $EUCMonitoring.server.BrokerMachineUnRegistered
+        "Broker Machine Registration - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
+
+        # Broker Machine Maintenance Mode
+        $Up = $EUCMonitoring.server.BrokerMachineRegistered
+        $Down = $EUCMonitoring.server.BrokerMachineInMaintenance
+        "Broker Machine Maintenance Mode - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
+
+        # Close Section
         "</div>" | Out-File $HTMLOutputFileFull -Append
-        Remove-Item $ServerData
-        # Insert a line break
         "<br>" | Out-File $HTMLOutputFileFull -Append
     }
+
     
     # Output Monitoring Data - Desktop
-    $DesktopData = Join-Path -Path $HTMLOutputLocation -ChildPath "desktop-htmldata.txt"
-
-    if (test-path $DesktopData) {
+    if (!$null -eq $EUCMonitoring.desktop) {
+        # Title    
         "<div class='info-title'>" | Out-File $HTMLOutputFileFull -Append
         "Desktop Workload Data" | Out-File $HTMLOutputFileFull -Append
         "</div>" | Out-File $HTMLOutputFileFull -Append
-        $DesktopInfo = Get-Content $DesktopData
+
+        # Detail
         "<div class='info-text'>" | Out-File $HTMLOutputFileFull -Append
-        foreach ($Line in $DesktopInfo) {
-            $LineData = $Line -Split ","
-            $Title = $LineData[0] 
-            $Up = $LineData[1] 
-            $Down = $LineData[2] 
-            $LineData = $Line.Split(",")
-            "$Title - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
-        }
+
+        # Total User Base
+        $Up = $EUCMonitoring.desktop.TotalConnectedUsers
+        $Down = $EUCMonitoring.desktop.TotalUsersDisconnected
+        "Total User Base - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
+
+        # Delivery Group Maintenance Mode
+        $Up = $EUCMonitoring.desktop.DeliveryGroupsInMaintenance
+        $Down = $EUCMonitoring.desktop.DeliveryGroupsNotInMaintenance
+        "Delivery Group Maintenance Mode - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
+
+        # Broker Machine Power State
+        $Up = $EUCMonitoring.desktop.BrokerMachineOn
+        $Down = $EUCMonitoring.desktop.BrokerMachineOff
+        "Broker Machine Power State - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
+
+        # Broker Machine Registration
+        $Up = $EUCMonitoring.desktop.BrokerMachineRegistered
+        $Down = $EUCMonitoring.desktop.BrokerMachineUnRegistered
+        "Broker Machine Registration - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
+
+        # Broker Machine Maintenance Mode
+        $Up = $EUCMonitoring.desktop.BrokerMachineRegistered
+        $Down = $EUCMonitoring.desktop.BrokerMachineInMaintenance
+        "Broker Machine Maintenance Mode - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
+
+        # Close Section
         "</div>" | Out-File $HTMLOutputFileFull -Append
-        Remove-Item $DesktopData
-        # Insert a line break
         "<br>" | Out-File $HTMLOutputFileFull -Append
     }
 
-    # Output Monitoring Data - NetScaler Gateway Data
-    $GatewayData = Join-Path -Path $HTMLOutputLocation -ChildPath "netscaler-gateway-data.txt"
-
-    if (test-path $GatewayData) {
+    # Output Monitoring Data - NetScaler Gateway
+    if (!$null -eq $EUCMonitoring.NetScalerGateway) {
+        # Title
         "<div class='info-title'>" | Out-File $HTMLOutputFileFull -Append
         "Remote Access Data" | Out-File $HTMLOutputFileFull -Append
         "</div>" | Out-File $HTMLOutputFileFull -Append
-        $GatewayInfo = Get-Content $GatewayData
+
+        $ICAUsers = $EUCMonitoring.NetScalerGateway.ICAUsers
+        $VPNUsers = $EUCMonitoring.NetScalerGateway.VPNUsers
+        $TotalUsers = $ICAUsers + $VPNUsers
+
         "<div class='info-text'>" | Out-File $HTMLOutputFileFull -Append
-        foreach ($Line in $GatewayInfo) {
-            "$Line<br>"  | Out-File $HTMLOutputFileFull -Append
-        }
+        "ICA Users - $ICAUsers<br>"  | Out-File $HTMLOutputFileFull -Append
+        "VPN Users - $VPNUsers<br>"  | Out-File $HTMLOutputFileFull -Append
+        "Total Users - $TotalUsers<br>"  | Out-File $HTMLOutputFileFull -Append
+
+        # Close Section
         "</div>" | Out-File $HTMLOutputFileFull -Append
-        Remove-Item $GatewayData
-        # Insert a line break
         "<br>" | Out-File $HTMLOutputFileFull -Append
     }
 

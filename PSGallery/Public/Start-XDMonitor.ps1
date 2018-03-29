@@ -77,18 +77,30 @@ function Start-XDMonitor {
   
         # Web Data
         # $HTMLData = $MyJSONConfigFile.WebData.htmldatafile
+<<<<<<< HEAD
         # $HTMLOutput = $MyJSONConfigFile.WebData.htmloutputfile
         # $RefreshDuration = $MyJSONConfigFile.WebData.refreshduration
+=======
+        $HTMLOutput = $MyJSONConfigFile.WebData.htmloutputfile
+        $RefreshDuration = $MyJSONConfigFile.WebData.refreshduration
+>>>>>>> upstream/v2_beta
         $ServerErrorFile = $MyJSONConfigFile.WebData.servererrorfile
         $DesktopErrorFile = $MyJSONConfigFile.WebData.desktoperrorfile
         $InfraErrorFile = $MyJSONConfigFile.WebData.infraerrorfile
         # $UpColour = $MyJSONConfigFile.WebData.UpColour
         # $DownColour = $MyJSONConfigFile.WebData.DownColour
         $OutputLocation = $MyJSONConfigFile.WebData.outputlocation
+<<<<<<< HEAD
         # $WorkerDonutStroke = $MyJSONConfigFile.WebData.WorkerDonutStroke
         # $WorkerDonutSize = $MyJSONConfigFile.WebData.workerdonutsize
         # $InfraDonutStroke = $MyJSONConfigFile.WebData.InfraDonutStroke
         # $InfraDonutSize = $MyJSONConfigFile.WebData.infradonutsize
+=======
+        $WorkerDonutStroke = $MyJSONConfigFile.WebData.WorkerDonutStroke
+        $WorkerDonutSize = $MyJSONConfigFile.WebData.workerdonutsize
+        $InfraDonutStroke = $MyJSONConfigFile.WebData.InfraDonutStroke
+        $InfraDonutSize = $MyJSONConfigFile.WebData.infradonutsize
+>>>>>>> upstream/v2_beta
         # $WorkerComponents = 1
         # $InfrastructureComponents = 0
         $InfrastructureList = @()
@@ -96,12 +108,21 @@ function Start-XDMonitor {
 
         # Worker Data
         $TestWorkers = $MyJSONConfigFile.Citrix.Worker.test
+<<<<<<< HEAD
         $WorkerTestMode = $MyJSONConfigFile.Citrix.Worker.mode
         $WorkLoads = $MyJSONConfigFile.Citrix.Worker.workloads
         $ServerBootThreshold = $MyJSONConfigFile.Citrix.Worker.serverbootthreshold
         $ServerHighLoad = $MyJSONConfigFile.Citrix.Worker.serverhighload
         $DesktopBootThreshold = $MyJSONConfigFile.Citrix.Worker.desktopbootthreshold
         $DesktopHighLoad = $MyJSONConfigFile.Citrix.Worker.desktophighload
+=======
+        #$WorkerTestMode = $MyJSONConfigFile.Citrix.Worker.mode
+        #$WorkLoads = $MyJSONConfigFile.Citrix.Worker.workloads
+        #$ServerBootThreshold = $MyJSONConfigFile.Citrix.Worker.serverbootthreshold
+        #$ServerHighLoad = $MyJSONConfigFile.Citrix.Worker.serverhighload
+        #$DesktopBootThreshold = $MyJSONConfigFile.Citrix.Worker.desktopbootthreshold
+        #$DesktopHighLoad = $MyJSONConfigFile.Citrix.Worker.desktophighload
+>>>>>>> upstream/v2_beta
 
         # XenServer Data
         $TestXenServer = $MyJSONConfigFile.Citrix.xenserver.test
@@ -205,6 +226,7 @@ function Start-XDMonitor {
         $AppVPort = $MyJSONConfigFile.Microsoft.AppV.AppVPort
         $AppVServices = $MyJSONConfigFile.Microsoft.AppV.AppVServices
 
+        <#  THIS CAN ALL BE DELETED RIGHT?
         # Build HTML Output and Error File Full Path
         $ServerErrorFileFullPath = Join-Path -Path $OutputLocation -ChildPath $ServerErrorFile
         $DesktopErrorFileFullPath = Join-Path -Path $OutputLocation -ChildPath $DesktopErrorFile
@@ -254,6 +276,7 @@ function Start-XDMonitor {
                 Remove-Item $InfraErrorFileFullPath
             }
         }
+<<<<<<< HEAD
 
         # Display the XenDesktop Brokers Passed In
         Write-Verbose "XenDesktop Primary Broker $XDBrokerPrimary"
@@ -325,6 +348,16 @@ function Start-XDMonitor {
                 $results | Add-Member -Name "$Workload" -Value (Test-Worker -Broker $Broker -WorkerTestMode $WorkerTestMode -WorkLoad $Workload -ServerBootThreshold $ServerBootThreshold -ServerHighLoad $ServerHighLoad -DesktopBootThreshold $DesktopBootThreshold -DesktopHighLoad $DesktopHighLoad -ErrorFile $ErrorFileFullPath) -MemberType "NoteProperty"
             }
             $results | Add-Member -Name "WorkerList" -Value $workerlist -MemberType "NoteProperty"
+=======
+        #>
+
+        # Start XD Monitoring Checks
+        Write-Verbose "Starting Citrix XD Testing"
+        if ($TestWorkers -eq "yes") {
+            $InfrastructureList += "XDWorkLoads"
+            Write-Verbose "Citrix XD Testing Enabled"
+            $results | Add-Member -Name "XenDesktop" -Value (Test-XenDesktop -XDBrokerPrimary $XDBrokerPrimary -XDBrokerSecondary $XDBrokerSecondary -workerobj $MyJSONConfigFile.Citrix.Worker) -MemberType "NoteProperty"
+>>>>>>> upstream/v2_beta
         }
 
         # Start Infrastructure Monitoring Checks
@@ -333,8 +366,13 @@ function Start-XDMonitor {
         # Checking XenServer
         if ($TestXenServer -eq "yes") {
             # Increment Infrastructure Components
+<<<<<<< HEAD
             $InfrastructureList += "xenserverpool"
             $InfrastructureList += "xenserverhost"
+=======
+            $InfrastructureList += "XS Pool"
+            $InfrastructureList += "XS Host"
+>>>>>>> upstream/v2_beta
 
             Write-Verbose "XenServer Testing enabled"
 
@@ -345,7 +383,11 @@ function Start-XDMonitor {
         # Checking Licensing
         if ($TestLicensing -eq "yes") {
             # Increment Infrastructure Components
+<<<<<<< HEAD
             $InfrastructureList += "licensing"
+=======
+            $InfrastructureList += "Licensing"
+>>>>>>> upstream/v2_beta
 
             Write-Verbose "Citrix Licensing Testing enabled"
 
@@ -355,7 +397,11 @@ function Start-XDMonitor {
         # Checking StoreFront
         if ($TestStoreFront -eq "yes") {
             # Increment Infrastructure Components
+<<<<<<< HEAD
             $InfrastructureList += "storefront"
+=======
+            $InfrastructureList += "StoreFront"
+>>>>>>> upstream/v2_beta
 
             Write-Verbose "StoreFront Testing enabled"
 
@@ -366,7 +412,11 @@ function Start-XDMonitor {
         # Checking Director
         if ($TestDirector -eq "yes") {
             # Increment Infrastructure Components
+<<<<<<< HEAD
             $InfrastructureList += "director"
+=======
+            $InfrastructureList += "Director"
+>>>>>>> upstream/v2_beta
 
             Write-Verbose "Director Testing enabled"
 
@@ -377,18 +427,30 @@ function Start-XDMonitor {
         # Checking Controllers
         if ($TestController -eq "yes") {
             # Increment Infrastructure Components
+<<<<<<< HEAD
             $InfrastructureList += "controller"
+=======
+            $InfrastructureList += "Controller"
+>>>>>>> upstream/v2_beta
 
             Write-Verbose "Controller Testing enabled"
 
             # Test the StoreFront Infrastructure
+<<<<<<< HEAD
             $results | Add-Member -Name "Controllers" -Value (Test-Controller -Controllers $ControllerServers -ControllerPortString $ControllerPort -ControllerServices $ControllerServices -ErrorFile $InfraErrorFileFullPath) -MemberType "NoteProperty"
+=======
+            $results | Add-Member -Name "Controller" -Value (Test-Controller -Controllers $ControllerServers -ControllerPortString $ControllerPort -ControllerServices $ControllerServices -ErrorFile $InfraErrorFileFullPath) -MemberType "NoteProperty"
+>>>>>>> upstream/v2_beta
         }
 
         # Checking Provisioning Servers
         if ($TestProvisioningServer -eq "yes") {
             # Increment Infrastructure Components
+<<<<<<< HEAD
             $InfrastructureList += "ProvisioningServer"
+=======
+            $InfrastructureList += "PVS"
+>>>>>>> upstream/v2_beta
 
             Write-Verbose "Provisioning Server Testing enabled"
 
@@ -399,8 +461,13 @@ function Start-XDMonitor {
         # Checking NetScaler
         if ($TestNetScaler -eq "yes") {
             # Increment Infrastructure Components
+<<<<<<< HEAD
             $InfrastructureList += "netscaler"
             $InfrastructureList += "vserver"
+=======
+            $InfrastructureList += "NetScaler"
+            $InfrastructureList += "Load Balancer"
+>>>>>>> upstream/v2_beta
 
             Write-Verbose "NetScaler Testing enabled"
 
@@ -411,9 +478,12 @@ function Start-XDMonitor {
         # Checking NetScaler Gateway
         if ($TestNetScalerGateway -eq "yes") {
 
+<<<<<<< HEAD
             # Increment Infrastructure Components
             $InfrastructureList += "gateway"
 
+=======
+>>>>>>> upstream/v2_beta
             #Create array with results
             $gwresults = @()
         
@@ -478,17 +548,29 @@ function Start-XDMonitor {
             Write-Verbose "Citrix Cloud Connector Server Testing enabled"
 
             # Test the Cloud Connector Server Infrastructure
+<<<<<<< HEAD
             $results | Add-Member -Name "CitrixCloud" -Value (Test-CC -CCServers $CCServers -CCPortString $CCPort -CCServices $CCServices -ErrorFile $InfraErrorFileFullPath) -MemberType "NoteProperty"
+=======
+            $results | Add-Member -Name "CC" -Value (Test-CC -CCServers $CCServers -CCPortString $CCPort -CCServices $CCServices -ErrorFile $InfraErrorFileFullPath) -MemberType "NoteProperty"
+>>>>>>> upstream/v2_beta
         }
         
         if (($TestEnvChecksXD -eq "yes") -and ($TestCC -eq "no")) {
             # Increment Infrastructure Components
+<<<<<<< HEAD
             $InfrastructureList += "EnvCheckXD"
+=======
+            $InfrastructureList += "EnvCheck"
+>>>>>>> upstream/v2_beta
 
             Write-Verbose "Citrix Environmental Checks Testing enabled"
 
             # Test the Citrix Environmental Checks
+<<<<<<< HEAD
             $results | Add-Member -Name "EnvCheckXD" -Value (Test-EnvChecksXD -AdminAddress $Broker -ErrorFile $InfraErrorFileFullPath -DDCcheck $EnvChecksXDCheckddc -DeliveryGroupCheck $EnvChecksXDCheckdeliverygroup -CatalogCheck $EnvChecksXDCheckcatalog -HypervisorCheck $EnvChecksXDHypervisor) -MemberType "NoteProperty"
+=======
+            $results | Add-Member -Name "EnvCheck" -Value (Test-EnvChecksXD -AdminAddress $Broker -ErrorFile $InfraErrorFileFullPath -DDCcheck $EnvChecksXDCheckddc -DeliveryGroupCheck $EnvChecksXDCheckdeliverygroup -CatalogCheck $EnvChecksXDCheckcatalog -HypervisorCheck $EnvChecksXDHypervisor) -MemberType "NoteProperty"
+>>>>>>> upstream/v2_beta
         }
 
         # Checking Active Directory Servers
@@ -517,7 +599,11 @@ function Start-XDMonitor {
         # Checking AppV Servers
         if ($TestAppv -eq "yes") { 
             # Increment Infrastructure Components
+<<<<<<< HEAD
             $InfrastructureList += "Appv"
+=======
+            $InfrastructureList += "AppV"
+>>>>>>> upstream/v2_beta
 
             Write-Verbose "AppV Publishing Servers Testing enabled"
 
@@ -536,7 +622,12 @@ function Start-XDMonitor {
             # Build the HTML output file
             # THIS DOESN"T ACTUALLY WORK YET
             # Need to pass int he object and sort out the code
+<<<<<<< HEAD
             New-HTMLReport $HTMLOutput $OutputLocation $InfrastructureComponents $InfrastructureList $WorkLoads $CSSFile $RefreshDuration
+=======
+            # New-HTMLReport $HTMLOutput $OutputLocation $InfrastructureComponents $InfrastructureList $WorkLoads $CSSFile $RefreshDuration
+            New-HTMLReport -HTMLOutputFile $HTMLOutput -HTMLOutputLocation $OutputLocation -EUCMonitoring $Results -CSSFile $CSSFile -RefreshDuration $RefreshDuration
+>>>>>>> upstream/v2_beta
         }
         
         # Stop the timer and display the output
