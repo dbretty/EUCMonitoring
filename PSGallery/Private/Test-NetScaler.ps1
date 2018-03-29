@@ -102,7 +102,7 @@ function Test-NetScaler {
         }
         
         # Disconnect from the NetScaler
-        Disconnect-NetScaler -NSIP $NetScaler
+        Disconnect-NetScaler -NSIP $NetScaler|Out-Null
 
     }
 
