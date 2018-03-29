@@ -16,9 +16,7 @@ function Test-Controller {
 .PARAMETER ControllerServices 
     Controller Services to check
 .PARAMETER ErrorFile 
-    Infrastructure Error File to Log To
-.PARAMETER OutputFile 
-    Infrastructure OutputFile   
+    Infrastructure Error File to Log To 
 .NOTES
     Current Version:        1.1
     Creation Date:          22/02/2018
@@ -26,23 +24,35 @@ function Test-Controller {
     Name                    Version         Date                Change Detail
     James Kindon            1.0             27/03/2017          Function Creation
     David Brett             1.1             22/02/2018          Updated to reflect new framework and added details for getting site availability
+    David Brett             1.2             29/03/2018          Return Object
 .EXAMPLE
     None Required
 #> 
 
+    [CmdletBinding()]
     Param
     (
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$Controllers,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ControllerPortString,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ControllerServices,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ErrorFile,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$OutputFile
-
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ErrorFile
     )
 
+    #Create array with results
+    $results = @()
+
+    # Load the Citrix Broker Powershell SDK
+    $ControllerSnap = add-pssnapin citrix*
+    $ControllerSnap = get-pssnapin citrix*
+
+    if ($null -eq $ControllerSnap) {
+        Write-error "XenDesktop Powershell Snapin Load Failed - No XenDesktop Brokering SDK Found"
+        Write-error "Cannot Load XenDesktop Powershell SDK"
+    } else {
+        Write-Verbose "XenDesktop Powershell SDK Snapin Loaded"
+    }
+
     # Initialize Arrays and Variables
-    $ControllerUp = 0
-    $ControllerDown = 0
     Write-Verbose "Variables and Arrays Initalized"
 
     Write-Verbose "Read in Controller List"
@@ -52,22 +62,34 @@ function Test-Controller {
 
     foreach ($Controller in $Controllers) {
 
+        # Tests
+        $ping = $false
+        $ctrbrokerport = $false
+        $ctrservices = $false
+
         # Check that the Controller is up
         if ((Connect-Server $Controller) -eq "Successful") {
 			
             # Server is up and responding to ping
             Write-Verbose "$Controller is up" 
+            $ping = $true
 
             # Check the Brokering Port
             if ((Test-NetConnection $Controller $ControllerPortString).open -eq "True") {
 
                 # Controller broker port is up and running
                 Write-Verbose "$Controller Broker Port is up: Port - $ControllerPortString"
+                $ctrbrokerport = $true
                 
-                # Get Broker Site Information for Error Logging
-                $site = Get-XDSite -AdminAddress $Controller
-                $SiteName = $site.Name
-                Write-Verbose "$Controller Site: $SiteName"
+                if ($null -eq $ControllerSnap) {
+                    $SiteName = "Unknown - Citrix SDK Not Found"
+                    Write-Verbose "$Controller Site: $SiteName"
+                } else {
+                    # Get Broker Site Information for Error Logging
+                    $site = Get-BrokerSite -AdminAddress $Controller
+                    $SiteName = $site.Name
+                    Write-Verbose "$Controller Site: $SiteName"
+                }
 
                 # Check all critical service are running on the controller
                 # Initalize Pre loop variables and set Clean Run Services to Yes
@@ -93,13 +115,13 @@ function Test-Controller {
                 if ($ServicesUp -eq "Yes") {
                     # The Controller and all services tested successfully - mark as UP
                     Write-Verbose "$Controller is up and all Services and running"
-                    $ControllerUp++
+                    $ctrservices = $true
                 }
                 else {
                     # There was an error with one or more of the services
                     Write-Verbose "$Controller Service error - $ServiceError - is degraded or stopped. Site: $siteName"
                     "$Controller Service error - $ServiceError - are degraded or stopped. Site: $siteName" | Out-File $ErrorFile -Append
-                    $ControllerDown++
+                    $ctrservices = $false
                 }
                 
             }
@@ -107,7 +129,7 @@ function Test-Controller {
                 # Controller Broker Port is down - mark down, error log and increment down count
                 Write-Verbose "$Controller Broker Port is down - Port - $ControllerPortString"
                 "$Controller Broker Port is down - Port - $ControllerPortString" | Out-File $ErrorFile -Append
-                $ControllerDown++
+                $ctrbrokerport = $false
             }
 
         }
@@ -115,11 +137,19 @@ function Test-Controller {
             # Controller is down - not responding to ping
             Write-Verbose "$Controller is down" 
             "$Controller is down"  | Out-File $ErrorFile -Append
-            $ControllerDown++
+            $ping = $false
+        }
+
+        # Add results to array
+        $results += [PSCustomObject]@{
+            'Server'                = $Controller
+            'Site'                  = $SiteName
+            'Ping'                  = $ping
+            'BrokerPort'            = $ctrbrokerport
+            'ControllerServices'    = $ctrservices
         }
     }
 
-    # Write Data to Output File
-    Write-Verbose "Writing Controller Data to output file"
-    "controller,$ControllerUp,$ControllerDown" | Out-File $OutputFile
+    #returns object with test results
+    return $results
 }

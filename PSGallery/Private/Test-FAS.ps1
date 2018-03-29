@@ -15,31 +15,30 @@ function Test-FAS {
     FAS Services to check
 .PARAMETER ErrorFile 
     Infrastructure Error File to Log To
-.PARAMETER OutputFile 
-    Infrastructure OutputFile   
 .NOTES
     Current Version:        1.0
     Creation Date:          16/03/2018
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     James Kindon            1.0             16/03/2018          Function Creation
+    David Brett             1.1             29/03/2018          Return Object
 .EXAMPLE
     None Required
 #> 
 
+    [CmdletBinding()]
     Param
     (
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$FASServers,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$FASPortString,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$FASServices,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ErrorFile,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$OutputFile
-
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ErrorFile
     )
 
+    #Create array with results
+    $results = @()
+
     # Initialize Arrays and Variables
-    $FASServerUp = 0
-    $FASServerDown = 0
     Write-Verbose "Variables and Arrays Initalized"
 
     Write-Verbose "Read in FAS Details"
@@ -49,17 +48,24 @@ function Test-FAS {
 
     foreach ($FASServer in $FASServers) {
 
+        # Tests
+        $ping = $false
+        $fasport = $false
+        $fassvc = $false
+
         # Check that the FAS Server is up
         if ((Connect-Server $FASServer) -eq "Successful") {
 			
             # Server is up and responding to ping
             Write-Verbose "$FASServer is online and responding to ping" 
+            $ping = $true
 
             # Check the FAS Server Port
             if ((Test-NetConnection $FASServer $FASPortString).open -eq "True") {
 
                 # FAS port is up and running
                 Write-Verbose "$FASServer Certificate Request and Issuance Port is up: Port - $FASPortString"
+                $fasport = $true
 
                 # Check all critical services are running on the FAS Server
                 # Initalize Pre loop variables and set Clean Run Services to Yes
@@ -85,13 +91,13 @@ function Test-FAS {
                 if ($ServicesUp -eq "Yes") {
                     # The FAS Server and all services tested successfully - mark as UP
                     Write-Verbose "$FASServer is up and all Services are running"
-                    $FASServerUp++
+                    $fassvc = $true
                 }
                 else {
                     # There was an error with one or more of the services
                     Write-Verbose "$FASServer Service error - $ServiceError - is degraded or stopped."
                     "$FASServer Service error - $ServiceError - is degraded or stopped." | Out-File $ErrorFile -Append
-                    $FASServerDown++
+                    $fassvc = $false
                 }
                 
             }
@@ -99,7 +105,7 @@ function Test-FAS {
                 # FAS Port is down - mark down, error log and increment down count
                 Write-Verbose "$FASServer Certificate Request and Issuance Port is down - Port - $FASPortString"
                 "$FASServer Certificate Request and Issuance Port is down - Port - $FASPortString" | Out-File $ErrorFile -Append
-                $FASServerDown++
+                $fasport = $false
             }
 
         }
@@ -107,11 +113,18 @@ function Test-FAS {
             # FAS Server is down - not responding to ping
             Write-Verbose "$FASServer is down" 
             "$FASServer is down"  | Out-File $ErrorFile -Append
-            $FASServerDown++
+            $ping = $false
+        }
+
+        # Add results to array
+        $results += [PSCustomObject]@{
+            'Server'         = $FASServer
+            'Ping'           = $ping
+            'FASPort'        = $fasport
+            'FASService'     = $fassvc
         }
     }
 
-    # Write Data to Output File
-    Write-Verbose "Writing FAS Server Data to output file"
-    "FASServer,$FASServerUp,$FASServerDown" | Out-File $OutputFile
+    #returns object with test results
+    return $results
 }

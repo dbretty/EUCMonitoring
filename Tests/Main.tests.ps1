@@ -24,7 +24,7 @@ Describe "General project validation" {
     $scriptAnalyzerRules = Get-ScriptAnalyzerRule
     It "<file> should pass ScriptAnalyzer" -TestCases $testCase {
         param($file)
-        $analysis = Invoke-ScriptAnalyzer -Path  $file.fullname -ExcludeRule @('PSAvoidGlobalVars', 'PSAvoidUsingConvertToSecureStringWithPlainText','PSAvoidUsingWMICmdlet') -Severity @('Warning', 'Error')   
+        $analysis = Invoke-ScriptAnalyzer -Path  $file.fullname -ExcludeRule @('PSAvoidUsingConvertToSecureStringWithPlainText') -Severity @('Warning', 'Error')   
         
         forEach ($rule in $scriptAnalyzerRules) {        
             if ($analysis.RuleName -contains $rule) {

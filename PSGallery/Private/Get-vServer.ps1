@@ -12,13 +12,15 @@ function Get-vServer {
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     David Brett             1.0             12/03/2018          Function Creation
+    Ryan Butler             1.1             27/03/2018          Added in nsession parameter
 .EXAMPLE
     None Required
 #> 
 
     Param
     (
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$NSIP
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$NSIP,
+        [parameter(Mandatory = $true, ValueFromPipeline = $false)]$NSSession
 
     )
 

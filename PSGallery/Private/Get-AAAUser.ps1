@@ -18,6 +18,7 @@ function Get-AAAUser {
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     David Brett             1.0             14/03/2018          Function Creation
+    David Brett             1.2             29/03/2018          Edit NSSession Scope
 .EXAMPLE
     None Required
 #> 
@@ -47,5 +48,4 @@ function Get-AAAUser {
     Disconnect-NetScaler $NSIP
 
     return $UserSessions
-
 }

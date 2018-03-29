@@ -47,6 +47,6 @@ function Disconnect-NetScaler {
     Invoke-RestMethod -uri "$NSIP/nitro/v1/config/logout" -body $PayLoad -WebSession $NSSession.WebSession -Headers @{"Content-Type" = "application/vnd.com.citrix.netscaler.logout+json"} -Method POST
 
     # Clear the Global Variable for the NetScaler Session
-    Remove-Variable -name nsSession -Scope global -force
-    Write-Verbose "NetScaler Session Cleared and Logged Out"
+    # Remove-Variable -name nsSession -Scope global -force
+    # Write-Verbose "NetScaler Session Cleared and Logged Out"
 }
