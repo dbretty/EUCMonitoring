@@ -79,20 +79,19 @@ function Start-XDMonitor {
         # $HTMLData = $MyJSONConfigFile.WebData.htmldatafile
         $HTMLOutput = $MyJSONConfigFile.WebData.htmloutputfile
         $RefreshDuration = $MyJSONConfigFile.WebData.refreshduration
-        $ServerErrorFile = $MyJSONConfigFile.WebData.servererrorfile
-        $DesktopErrorFile = $MyJSONConfigFile.WebData.desktoperrorfile
-        $InfraErrorFile = $MyJSONConfigFile.WebData.infraerrorfile
-        $UpColour = $MyJSONConfigFile.WebData.UpColour
-        $DownColour = $MyJSONConfigFile.WebData.DownColour
+        #$ServerErrorFile = $MyJSONConfigFile.WebData.servererrorfile
+        #$DesktopErrorFile = $MyJSONConfigFile.WebData.desktoperrorfile
+        #$InfraErrorFile = $MyJSONConfigFile.WebData.infraerrorfile
+        #$UpColour = $MyJSONConfigFile.WebData.UpColour
+        #$DownColour = $MyJSONConfigFile.WebData.DownColour
         $OutputLocation = $MyJSONConfigFile.WebData.outputlocation
-        $WorkerDonutStroke = $MyJSONConfigFile.WebData.WorkerDonutStroke
-        $WorkerDonutSize = $MyJSONConfigFile.WebData.workerdonutsize
-        $InfraDonutStroke = $MyJSONConfigFile.WebData.InfraDonutStroke
-        $InfraDonutSize = $MyJSONConfigFile.WebData.infradonutsize
+        #$WorkerDonutStroke = $MyJSONConfigFile.WebData.WorkerDonutStroke
+        #$WorkerDonutSize = $MyJSONConfigFile.WebData.workerdonutsize
+        #$InfraDonutStroke = $MyJSONConfigFile.WebData.InfraDonutStroke
+        #$InfraDonutSize = $MyJSONConfigFile.WebData.infradonutsize
         # $WorkerComponents = 1
         # $InfrastructureComponents = 0
         $InfrastructureList = @()
-        $WorkerList = @()
 
         # Worker Data
         $TestWorkers = $MyJSONConfigFile.Citrix.Worker.test
@@ -258,7 +257,7 @@ function Start-XDMonitor {
         if ($TestWorkers -eq "yes") {
             $InfrastructureList += "XDWorkLoads"
             Write-Verbose "Citrix XD Testing Enabled"
-            $results | Add-Member -Name "XenDesktop" -Value (Test-XenDesktop -XDBrokerPrimary $XDBrokerPrimary -XDBrokerSecondary $XDBrokerSecondary -workerobj $MyJSONConfigFile.Citrix.Worker) -MemberType "NoteProperty"
+            $results | Add-Member -Name "XenDesktop" -Value (Test-XenDesktop -XDBrokerPrimary $XDBrokerPrimary -XDBrokerFailover $XDBrokerFailover -workerobj $MyJSONConfigFile.Citrix.Worker) -MemberType "NoteProperty"
         }
 
         # Start Infrastructure Monitoring Checks
