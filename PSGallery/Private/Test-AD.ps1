@@ -37,6 +37,7 @@ function Test-AD {
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ErrorFile
 
     )
+    
     #Create array with results
     $results = @()
 
@@ -46,22 +47,21 @@ function Test-AD {
     Write-Verbose "AD Services: $ADServices"
 
     foreach ($ADServer in $ADServers) {
-     #Tests
-     $ping = $false
-     $LDAPport = $false
-     $health = "UNHEALTHY"
-     
- 
+
+        #Tests
+        $ping = $false
+        $LDAPport = $false
+        $health = "UNHEALTHY"
 
         # Check that the AD Server is up
         if ((Connect-Server $ADServer) -eq "Successful") {
-			$ping = $true
+            $ping = $true
             # Server is up and responding to ping
             Write-Verbose "$ADServer is online and responding to ping" 
 
             # Check the AD Server Port
             if ((Test-NetConnection $ADServer $ADPortString).open -eq "True") {
-            $LDAPport = $true        
+                $LDAPport = $true        
                 # AD Server port is up and running
                 Write-Verbose "$ADServer LDAP Port is up: Port - $ADPortString"
 
@@ -115,18 +115,17 @@ function Test-AD {
             Write-Verbose "$ADServer is down" 
             "$ADServer is down"  | Out-File $ErrorFile -Append
         }
-    #add results to array
-    $results += [PSCustomObject]@{
-    'Server' = $ADServer
-    'Ping' = $ping
-    'LDAPPort' = $LDAPport
-    'Health' = $health 
-    'Services' = $servicesht
+        #add results to array
+        $results += [PSCustomObject]@{
+            'Server'   = $ADServer
+            'Ping'     = $ping
+            'LDAPPort' = $LDAPport
+            'Health'   = $health 
+            'Services' = $servicesht
+        }
     }
 
-    }
     #returns object with test results
     return $results
-
 
 }

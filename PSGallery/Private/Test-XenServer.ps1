@@ -51,8 +51,6 @@ function Test-XenServer {
 
         Write-Verbose "XenServer SDK Imported Sucessfully"
 
-        
-
         # Get XenServer Comma Delimited List and Management Port
         $XenServers = $PoolMasters
         Write-Verbose "Read in XenServer Pool Masters and Management Ports"
