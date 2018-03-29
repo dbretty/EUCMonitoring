@@ -8,8 +8,6 @@ function Test-EnvChecksXD {
     Current Broker
 .PARAMETER ErrorFile 
     Infrastructure Error File to Log To
-.PARAMETER OutputFile 
-    Infrastructure OutputFile
 .PARAMETER DDCcheck 
     "yes" test Delivery Controllers Environmental Checks. All other inputs to skip.
 .PARAMETER DeliveryGroupCheck
@@ -28,20 +26,29 @@ function Test-EnvChecksXD {
 .EXAMPLE
     None Required
 #>
+
+    [CmdletBinding()]
     Param(
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$AdminAddress,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ErrorFile,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$OutputFile,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$DDCcheck,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$DeliveryGroupCheck,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$CatalogCheck,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$HypervisorCheck
     )
 
+    #Create array with results
+    $results = @()
+
+    # Tests
+    $DeliveryController = $false
+    $DeliveryGroup = $false
+    $Catalog = $false
+    $Hypervisor = $false
+    $HypervisorResources = $false
+
     if ($DDCcheck -eq "yes") {
         Write-Verbose "Delivery Controllers Env Check started"
-        $EnvCheckUp = 0
-        $EnvCheckDown = 0
         $XDDeliveryControllers = Get-BrokerController -AdminAddress $AdminAddress
 
         Write-Verbose "Variables and Arrays Initialized"
@@ -61,8 +68,8 @@ function Test-EnvChecksXD {
                     }
                 } 
             }
-            if ( $Status -eq "Passed" ) { $EnvCheckUp++ }
-            else { $EnvCheckDown++ }
+            if ( $Status -eq "Passed" ) { $DeliveryController = $true }
+            else { $DeliveryController = $false }
         }
     }
 
@@ -86,8 +93,8 @@ function Test-EnvChecksXD {
                     }
                 }
             }
-            if ( $Status -eq "Passed" ) { $EnvCheckUp++ }
-            else { $EnvCheckDown++ }
+            if ( $Status -eq "Passed" ) { $DeliveryGroup = $true }
+            else { $DeliveryGroup = $false }
         }
     }
 
@@ -110,8 +117,8 @@ function Test-EnvChecksXD {
                     }
                 }            
             }
-            if ( $Status -eq "Passed" ) { $EnvCheckUp++ }
-            else { $EnvCheckDown++ }
+            if ( $Status -eq "Passed" ) { $Catalog = $true }
+            else { $Catalog = $false }
         }
     }
 
@@ -135,12 +142,11 @@ function Test-EnvChecksXD {
                 }
 
             }       
-            if ( $Status -eq "Passed" ) { $EnvCheckUp++ }
-            else { $EnvCheckDown++ }
+            if ( $Status -eq "Passed" ) { $Hypervisor = $true }
+            else { $Hypervisor = $false }
         
             Write-Verbose "Testing associated resources"
 
-            #$HypervisorResources = Get-ProvTask -AdminAddress $AdminAddress | select HostingUnitName, HostingUnitUid -Unique | where HostingUnitName -notlike ""
             $HypervisorResources = Get-ChildItem XDHyp:\HostingUnits\* -AdminAddress $AdminAddress | Where-Object HypervisorConnection -like $Connection.Name
 
             # Check the resources
@@ -157,12 +163,22 @@ function Test-EnvChecksXD {
                         }
                     }
                 }
-                if ( $Status -eq "Passed" ) { $EnvCheckUp++ }
-                else { $EnvCheckDown++ }
+                if ( $Status -eq "Passed" ) { $HypervisorResources = $true }
+                else { $HypervisorResources = $false }
             }
         }
     }
 
-    Write-Verbose "Writing EnvCheck Data to output file"
-    "envcheck-xd,$EnvCheckUp,$EnvCheckDown" | Out-File $OutputFile
+    # Add results to array
+    $results += [PSCustomObject]@{
+        'Server'                    = $AdminAddress
+        'DeliveryControllerCheck'   = $DeliveryController
+        'DeliveryGroupCheck'        = $DeliveryGroup
+        'CatalogCheck'              = $Catalog
+        'HypervisorCheck'           = $Hypervisor
+        'HypervisorResourcesCheck'  = $HypervisorResources
+    }
+
+    #returns object with test results
+    return $results
 }

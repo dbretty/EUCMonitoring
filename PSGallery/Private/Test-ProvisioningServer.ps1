@@ -16,53 +16,57 @@ function Test-ProvisioningServer {
     Provisioning Server Services to check
 .PARAMETER ErrorFile 
     Infrastructure Error File to Log To
-.PARAMETER OutputFile 
-    Infrastructure OutputFile   
 .NOTES
     Current Version:        1.0
     Creation Date:          14/03/2018
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     James Kindon            1.0             14/03/2018          Function Creation
+    David Brett             1.1             29/03/2018          Return Object
 .EXAMPLE
     None Required
 #> 
 
+    [CmdletBinding()]
     Param
     (
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ProvisioningServers,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ProvisioningServerPortString,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ProvisioningServerServices,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ErrorFile,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$OutputFile
-
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ErrorFile
     )
 
+    #Create array with results
+    $results = @()
+
     # Initialize Arrays and Variables
-    $ProvisioningServerUp = 0
-    $ProvisioningServerDown = 0
     Write-Verbose "Variables and Arrays Initalized"
 
     Write-Verbose "Read in Provisioning Server Details"
-    Write-Verbose "Provisioning Server Farm: $ProvisioningServerFarm"
-    Write-Verbose "Provisioning Server Site: $ProvisioningServerSite"
     Write-Verbose "Provisioning Servers: $ProvisioningServers"
     Write-Verbose "Provisioning Server Ports: $ProvisioningServerPortString" 
     Write-Verbose "Provisioning Server Services: $ProvisioningServerServices"
 
     foreach ($ProvisioningServer in $ProvisioningServers) {
 
+        # Tests
+        $ping = $false
+        $pvsport = $false
+        $pvsservices = $false
+
         # Check that the Provisioning Server is up
         if ((Connect-Server $ProvisioningServer) -eq "Successful") {
 			
             # Server is up and responding to ping
             Write-Verbose "$ProvisioningServer is online and responding to ping" 
+            $ping = $true
 
             # Check the Provisioning Server Port
             if ((Test-NetConnection $ProvisioningServer $ProvisioningServerPortString).open -eq "True") {
 
                 # PVS Server port is up and running
                 Write-Verbose "$ProvisioningServer Server Port is up: Port - $ProvisioningServerPortString"
+                $pvsport = $true
 
                 # Check all critical services are running on the PVS Server
                 # Initalize Pre loop variables and set Clean Run Services to Yes
@@ -88,13 +92,13 @@ function Test-ProvisioningServer {
                 if ($ServicesUp -eq "Yes") {
                     # The Provisioning Server and all services tested successfully - mark as UP
                     Write-Verbose "$ProvisioningServer is up and all Services and running in Site $ProvisioningServerSite in Farm $ProvisioningServerFarm"
-                    $ProvisioningServerUp++
+                    $pvsservices = $true
                 }
                 else {
                     # There was an error with one or more of the services
                     Write-Verbose "$ProvisioningServer Service error - $ServiceError - is degraded or stopped."
                     "$ProvisioningServer Service error - $ServiceError - is degraded or stopped." | Out-File $ErrorFile -Append
-                    $ProvisioningServerDown++
+                    $pvsservices = $false
                 }
                 
             }
@@ -102,7 +106,7 @@ function Test-ProvisioningServer {
                 # Provisioning Server Broker Port is down - mark down, error log and increment down count
                 Write-Verbose "$ProvisioningServer Server Access Port is down - Port - $ProvisioningServerPortString"
                 "$ProvisioningServer Server Access Port is down - Port - $ProvisioningServerPortString" | Out-File $ErrorFile -Append
-                $ProvisioningServerDown++
+                $pvsport = $false
             }
 
         }
@@ -110,11 +114,19 @@ function Test-ProvisioningServer {
             # Provisioning Server is down - not responding to ping
             Write-Verbose "$ProvisioningServer is down in Site $ProvisioningServerSite in Farm $ProvisioningServerFarm" 
             "$ProvisioningServer is down"  | Out-File $ErrorFile -Append
-            $ProvisioningServerDown++
+            $ping = $false
         }
+
+        # Add results to array
+        $results += [PSCustomObject]@{
+            'Server'         = $ProvisioningServer
+            'Ping'           = $ping
+            'PVSPort'        = $pvsport
+            'PVSServices'    = $pvsservices
+        }
+
     }
 
-    # Write Data to Output File
-    Write-Verbose "Writing Provisioning Server Data to output file"
-    "ProvisioningServer,$ProvisioningServerUp,$ProvisioningServerDown" | Out-File $OutputFile
+    #returns object with test results
+    return $results
 }

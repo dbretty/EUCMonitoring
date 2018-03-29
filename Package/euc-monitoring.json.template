@@ -29,25 +29,28 @@
             "SQLServers": ["sql.domain.com"],
             "SQLPort": "1433",
             "SQLServices": ["MSSQLServer"]
+        },
+        "AppV": {
+            "test": "no",
+            "AppVServers": ["appv.domain.com"],
+            "AppVPort": "8080",
+            "AppVServices": ["W3SVC"]
         }
     },
     "Citrix": {
         "Global": {
-            "test": "no",
             "xdbrokerprimary": "xdprimary.domain.com",
             "xdbrokerfailover": "xdsecondary.domain.com",
-            "workloads": ["server","desktop"],
             "controlup": "no"
         },
-        "server": {
-            "bootthreshold": "7",
-            "donutfile": "donut.txt",
-            "highload": 8000
-        },
-        "desktop": {
-            "bootthreshold": "31",
-            "donutfile": "donut.txt",
-            "highload": 8000
+        "Worker": {
+            "test": "no",
+            "mode": "basic",
+            "workloads": ["server","desktop"],
+            "serverbootthreshold": "7",
+	        "serverhighload": 8000,
+            "desktopbootthreshold": "7",
+	        "desktophighload": 8000
         },
         "xenserver": {
             "test": "no",

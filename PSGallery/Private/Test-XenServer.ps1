@@ -10,8 +10,6 @@ function Test-XenServer {
     TCP Port to use for XenServer Connectivity Tests
 .PARAMETER ErrorFile 
     Infrastructure Error File to Log To
-.PARAMETER OutputFile 
-    Infrastructure OutputFile
 .PARAMETER XenUserName 
     XenServer Username
 .PARAMETER XenPassword 
@@ -22,17 +20,16 @@ function Test-XenServer {
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     David Brett             1.0             22/02/2018          Function Creation
-
+    Ryan Butler             1.1             28/03/2018          Returns object
 .EXAMPLE
     None Required
 #>
-
+    [CmdletBinding()]
     Param
     (
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$PoolMasters,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ConnectionPort,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ErrorFile,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$OutputFile,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$XenUserName,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)][System.Security.SecureString]$XenPassword
     )
@@ -49,14 +46,10 @@ function Test-XenServer {
         "XenServer checks are enabled but no XenServer SDK Found" | Out-File $ErrorFile -Append
     }
     else {
-        Write-Verbose "XenServer SDK Imported Sucessfully"
+        #Create empty array
+        $results = @()
 
-        # Initialize Arrays and Variables
-        $HostsUp = 0
-        $HostsDown = 0
-        $PoolsUp = 0
-        $PoolsDown = 0
-        Write-Verbose "Variables and Arrays Initalized"
+        Write-Verbose "XenServer SDK Imported Sucessfully"
 
         # Get XenServer Comma Delimited List and Management Port
         $XenServers = $PoolMasters
@@ -67,16 +60,24 @@ function Test-XenServer {
         #Loop through Pool Masters pulled from Registry
         Write-Verbose "Looping through XenServer Pool Masters and running monitoring checks"                                                                                                                                                                                                                                          
 
-        foreach ($PoolMaster in $XenServers) { 
+        foreach ($PoolMaster in $XenServers) {
+        # Initialize Arrays and Variables
+        $poolmasterPing = $false
+        $poolmasterPort = $false
+        $HostsUp = 0
+        $HostsDown = 0
+        $PoolsUp = 0
+        $PoolsDown = 0
 
+        Write-Verbose "Variables and Arrays Initalized" 
             # If Pool Master is up log to Console and start the monitoring checks
             if ((Connect-Server $PoolMaster) -eq "Successful") {
                 Write-Verbose "PoolMaster - $PoolMaster is up"
-
+                $poolmasterPing = $true
                 # Test Management Port Access
 
                 if ((Test-NetConnection $PoolMaster $ConnectionPort).open -eq "True") {
-                    
+                    $poolmasterPort= $true
                     # Increment Pool Master Up Count
                     $PoolsUp ++
 
@@ -129,12 +130,18 @@ function Test-XenServer {
                 "Pool Master - $PoolMaster is down" | Out-File $ErrorFile -Append
                 $PoolsDown ++
             }
+            $results += [PSCustomObject]@{
+                'PoolMaster' = $poolmaster
+                'PoolMasterPing' = $poolmasterPing
+                'PoolMasterPort' = $poolmasterPort
+                'HostsUp' = $HostsUp
+                'HostsDown' = $HostsDown
+                'PoolsUp' = $PoolsUp
+                'PoolsDown' = $PoolsDown
+            }
         }
+    #Returns test results
+    return $results
     }
-
-    # Write Data to Output File
-    Write-Verbose "Writing XenServer Pool and Host Data to output file"
-    "xenserverpool,$PoolsUp,$PoolsDown" | Out-File $OutputFile
-    "xenserverhost,$HostsUp,$HostsDown" | Out-File $OutputFile -Append
 
 }

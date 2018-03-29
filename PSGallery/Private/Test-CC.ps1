@@ -16,31 +16,30 @@ function Test-CC {
     Cloud Connector Services to check
 .PARAMETER ErrorFile 
     Infrastructure Error File to Log To
-.PARAMETER OutputFile 
-    Infrastructure OutputFile   
 .NOTES
     Current Version:        1.0
     Creation Date:          19/03/2018
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     David Wilkinson         1.0             19/03/2018          Function Creation
+    David Brett             1.1             29/03/2018          Return Object
 .EXAMPLE
     None Required
 #> 
 
+    [CmdletBinding()]
     Param
     (
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$CCServers,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$CCPortString,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$CCServices,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ErrorFile,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$OutputFile
-
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ErrorFile
     )
 
+    #Create array with results
+    $results = @()
+
     # Initialize Arrays and Variables
-    $CCServerUp = 0
-    $CCServerDown = 0
     Write-Verbose "Variables and Arrays Initalized"
 
     # Get Cloud Connector Server Comma Delimited List 
@@ -51,17 +50,24 @@ function Test-CC {
 
     foreach ($CCServer in $CCServers) {
 
+        # Tests
+        $ping = $false
+        $ccport = $false
+        $ccsvc = $false
+
         # Check that the Cloud Connector Server is up
         if ((Connect-Server $CCServer) -eq "Successful") {
 			
             # Server is up and responding to ping
             Write-Verbose "$CCServer is online and responding to ping" 
+            $ping = $true
 
             # Check the Cloud Connector Server Port
             if ((Test-NetConnection $CCServer $CCPortString).open -eq "True") {
 
                 # Cloud Connector incoming port is up and running
                 Write-Verbose "$CCServer Incoming Port is up: Port - $CCPortString"
+                $ccport = $true
 
                 # Check all critical services are running on the Cloud Connector Server
                 # Initalize Pre loop variables and set Clean Run Services to Yes
@@ -87,13 +93,13 @@ function Test-CC {
                 if ($ServicesUp -eq "Yes") {
                     # The Cloud Connector Server and all services tested successfully - mark as UP
                     Write-Verbose "$CCServer is up and all Services are running"
-                    $CCServerUp++
+                    $ccsvc = $true
                 }
                 else {
                     # There was an error with one or more of the services
                     Write-Verbose "$CCServer Service error - $ServiceError - is degraded or stopped."
                     "$CCServer Service error - $ServiceError - is degraded or stopped." | Out-File $ErrorFile -Append
-                    $CCServerDown++
+                    $ccsvc = $false
                 }
                 
             }
@@ -101,7 +107,7 @@ function Test-CC {
                 # Cloud Connector incoming Port is down - mark down, error log and increment down count
                 Write-Verbose "$CCServer incoming Port is down - Port - $CCPortString"
                 "$CCServer Incoming Port is down - Port - $CCPortString" | Out-File $ErrorFile -Append
-                $CCServerDown++
+                $ccport = $false
             }
 
         }
@@ -109,11 +115,19 @@ function Test-CC {
             # Cloud Connector Server is down - not responding to ping
             Write-Verbose "$CCServer is down" 
             "$CCServer is down"  | Out-File $ErrorFile -Append
-            $CCServerDown++
+            $ping = $false
         }
+
+        # Add results to array
+        $results += [PSCustomObject]@{
+            'Server'         = $CCServer
+            'Ping'           = $ping
+            'CCPort'         = $ccport
+            'CCService'      = $ccsvc
+        }
+
     }
 
-    # Write Data to Output File
-    Write-Verbose "Writing Cloud Connector Server Data to output file"
-    "CCServer,$CCServerUp,$CCServerDown" | Out-File $OutputFile
+    #returns object with test results
+    return $results
 }

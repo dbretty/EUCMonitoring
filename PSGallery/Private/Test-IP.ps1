@@ -18,6 +18,7 @@ function Test-IP {
         DefaultParameterSetName = '',
         ConfirmImpact = 'low'
     )]
+    [OutputType([System.boolean])]
 
     Param (
         [Parameter(
