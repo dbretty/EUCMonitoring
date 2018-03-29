@@ -16,31 +16,30 @@ function Test-UPS {
     UPS Services to check
 .PARAMETER ErrorFile 
     Infrastructure Error File to Log To
-.PARAMETER OutputFile 
-    Infrastructure OutputFile   
 .NOTES
     Current Version:        1.0
     Creation Date:          16/03/2018
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     James Kindon            1.0             16/03/2018          Function Creation
+    David Brett             1.1             29/03/2018          Return Object
 .EXAMPLE
     None Required
 #> 
 
+    [CmdletBinding()]
     Param
     (
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$UPSServers,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$UPSPortString,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$UPSServices,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ErrorFile,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$OutputFile
-
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ErrorFile
     )
+    
+    #Create array with results
+    $results = @()
 
     # Initialize Arrays and Variables
-    $UPSServerUp = 0
-    $UPSServerDown = 0
     Write-Verbose "Variables and Arrays Initalized"
 
     Write-Verbose "Read in UPS Details"
@@ -50,17 +49,24 @@ function Test-UPS {
 
     foreach ($UPSServer in $UPSServers) {
 
+        # Tests
+        $ping = $false
+        $upsport = $false
+        $upssvc = $false
+
         # Check that the UPS Server is up
         if ((Connect-Server $UPSServer) -eq "Successful") {
 			
             # Server is up and responding to ping
             Write-Verbose "$UPSServer is online and responding to ping" 
+            $ping = $true
 
             # Check the UPS Server Port
             if ((Test-NetConnection $UPSServer $UPSPortString).open -eq "True") {
 
                 # UPS Data Stream CGP port is up and running
                 Write-Verbose "$UPSServer Data Stream CGP Port is up: Port - $UPSPortString"
+                $upsport = $true
 
                 # Check all critical services are running on the UPS Server
                 # Initalize Pre loop variables and set Clean Run Services to Yes
@@ -86,13 +92,13 @@ function Test-UPS {
                 if ($ServicesUp -eq "Yes") {
                     # The UPS Server and all services tested successfully - mark as UP
                     Write-Verbose "$UPSServer is up and all Services are running"
-                    $UPSServerUp++
+                    $upssvc = $true
                 }
                 else {
                     # There was an error with one or more of the services
                     Write-Verbose "$UPSServer Service error - $ServiceError - is degraded or stopped."
                     "$UPSServer Service error - $ServiceError - is degraded or stopped." | Out-File $ErrorFile -Append
-                    $UPSServerDown++
+                    $upssvc = $false
                 }
                 
             }
@@ -100,7 +106,7 @@ function Test-UPS {
                 # UPS Data Stream Agent Port is down - mark down, error log and increment down count
                 Write-Verbose "$UPSServer Data Stream CGP Port is down - Port - $UPSPortString"
                 "$UPSServer Data Stream CGP Port is down - Port - $UPSPortString" | Out-File $ErrorFile -Append
-                $UPSServerDown++
+                $upsport = $false
             }
 
         }
@@ -108,11 +114,19 @@ function Test-UPS {
             # UPS Server is down - not responding to ping
             Write-Verbose "$UPSServer is down" 
             "$UPSServer is down"  | Out-File $ErrorFile -Append
-            $UPSServerDown++
+            $ping = $false
         }
+
+        # Add results to array
+        $results += [PSCustomObject]@{
+            'Server'            = $UPSServer
+            'Ping'              = $ping
+            'UPSPort'           = $upsport
+            'UPSServices'       = $upssvc
+        }
+
     }
 
-    # Write Data to Output File
-    Write-Verbose "Writing UPS Server Data to output file"
-    "UPSServer,$UPSServerUp,$UPSServerDown" | Out-File $OutputFile
+    #returns object with test results
+    return $results
 }

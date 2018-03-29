@@ -16,31 +16,30 @@ function Test-WEM {
     WEM Services to check
 .PARAMETER ErrorFile 
     Infrastructure Error File to Log To
-.PARAMETER OutputFile 
-    Infrastructure OutputFile   
 .NOTES
     Current Version:        1.0
     Creation Date:          16/03/2018
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     James Kindon            1.0             16/03/2018          Function Creation
+    David Brett             1.1             29/03/2018          Return Object
 .EXAMPLE
     None Required
 #> 
 
+    [CmdletBinding()]
     Param
     (
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$WEMServers,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$WEMAgentPortString,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$WEMServices,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ErrorFile,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$OutputFile
-
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ErrorFile
     )
 
+    #Create array with results
+    $results = @()
+
     # Initialize Arrays and Variables
-    $WEMServerUp = 0
-    $WEMServerDown = 0
     Write-Verbose "Variables and Arrays Initalized"
 
     Write-Verbose "Read in WEM Details"
@@ -50,17 +49,24 @@ function Test-WEM {
 
     foreach ($WEMServer in $WEMServers) {
 
+        # Tests
+        $ping = $false
+        $wemport = $false
+        $wemsvc = $false
+
         # Check that the WEM Server is up
         if ((Connect-Server $WEMServer) -eq "Successful") {
 			
             # Server is up and responding to ping
             Write-Verbose "$WEMServer is online and responding to ping" 
+            $ping = $true
 
             # Check the WEM Server Port
             if ((Test-NetConnection $WEMServer $WEMAgentPortString).open -eq "True") {
 
                 # WEM Server port is up and running
                 Write-Verbose "$WEMServer WEM Server Agent Port is up: Port - $WEMAgentPortString"
+                $wemport = $true
 
                 # Check all critical services are running on the WEM Server
                 # Initalize Pre loop variables and set Clean Run Services to Yes
@@ -86,13 +92,13 @@ function Test-WEM {
                 if ($ServicesUp -eq "Yes") {
                     # The WEM Server and all services tested successfully - mark as UP
                     Write-Verbose "$WEMServer is up and all Services are running"
-                    $WEMServerUp++
+                    $wemsvc = $true
                 }
                 else {
                     # There was an error with one or more of the services
                     Write-Verbose "$WEMServer Service error - $ServiceError - is degraded or stopped."
                     "$WEMServer Service error - $ServiceError - is degraded or stopped." | Out-File $ErrorFile -Append
-                    $WEMServerDown++
+                    $wemsvc = $false
                 }
                 
             }
@@ -100,7 +106,7 @@ function Test-WEM {
                 # WEM Server Agent Port is down - mark down, error log and increment down count
                 Write-Verbose "$WEMServer WEM Server Agent Port is down - Port - $WEMAgentPortString"
                 "$WEMServer Server Agent Port is down - Port - $WEMAgentPortString" | Out-File $ErrorFile -Append
-                $WEMServerDown++
+                $wemport = $false
             }
 
         }
@@ -108,11 +114,19 @@ function Test-WEM {
             # WEM Server is down - not responding to ping
             Write-Verbose "$WEMServer is down" 
             "$WEMServer is down"  | Out-File $ErrorFile -Append
-            $WEMServerDown++
+            $ping = $false
+        }
+
+        # Add results to array
+        $results += [PSCustomObject]@{
+            'Server'         = $WEMServer
+            'Ping'           = $ping
+            'WEMPort'        = $wemport
+            'WEMServices'    = $wemsvc
         }
     }
 
-    # Write Data to Output File
-    Write-Verbose "Writing WEM Server Data to output file"
-    "WEMServer,$WEMServerUp,$WEMServerDown" | Out-File $OutputFile
+    #returns object with test results
+    return $results
+    
 }

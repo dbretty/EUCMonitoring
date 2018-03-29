@@ -15,8 +15,6 @@ function Test-NetScaler {
     Password to use to log into the NetScaler
 .PARAMETER ErrorFile 
     Infrastructure Error File to Log To
-.PARAMETER OutputFile 
-    Infrastructure OutputFile   
 .NOTES
     Current Version:        1.0
     Creation Date:          12/03/2018
@@ -24,25 +22,24 @@ function Test-NetScaler {
     Name                    Version         Date                Change Detail
     David Brett             1.0             12/03/2018          Function Creation
     Ryan Butler             1.1             27/30/2018          Change in variable scope for nsession
+    David Brett             1.2             29/03/2018          Return Object
 .EXAMPLE
     None Required
 #> 
 
+    [CmdletBinding()]
     Param
     (
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$NetScalers,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$UserName,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)][System.Security.SecureString]$Password,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ErrorFile,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$OutputFile
-
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ErrorFile
     )
 
+    #Create empty array
+    $results = @()
+
     # Initialize Arrays and Variables
-    $NetScalerUp = 0
-    $NetScalerDown = 0
-    $vServerUp = 0
-    $vServerDown = 0
     Write-Verbose "Variables and Arrays Initalized"
 
     # Get NetScaler List
@@ -52,13 +49,21 @@ function Test-NetScaler {
     Write-Verbose "Looping through NetScalers and running monitoring checks"
     foreach ($NetScaler in $NetScalers) { 
 
+        # Initialize Arrays and Variables
+        $netscalerPing = $false
+        $vServerUp = 0
+        $vServerDown = 0
+        $NetScalerUp = 0
+        $NetScalerDown = 0
+
         # If NetScaler is UP then log to Console and Increment UP Count
         if ((Connect-Server $NetScaler) -eq "Successful") {
             Write-Verbose "NetScaler - $NetScaler is up"
-            $NetScalerUp++
+            $netscalerPing = $true
+            $NetScalerUp ++
 
             # If NetScaler up log Log in and grab vServer Status
-            $nsession = Connect-NetScaler -IPAddress $NetScaler -username $UserName -password $Password
+            $nsession = Connect-NetScaler -NSIP $NetScaler -username $UserName -password $Password
             Write-Verbose "NetScaler - $NetScaler Logged In"
 
             $vServers = Get-vServer -nsip $NetScaler -nssession $nsession
@@ -87,10 +92,20 @@ function Test-NetScaler {
             "NetScaler - $NetScaler is down" | Out-File $ErrorFile -Append
             $NetScalerDown++
         }
+        $results += [PSCustomObject]@{
+            'NetScaler'      = $NetScaler
+            'NetScalerPing'  = $netscalerPing
+            'NetScalersUp'   = $NetScalerUp
+            'NetScalersDown' = $NetScalerDown
+            'vServerUp'      = $vServerUp
+            'vServerDown'    = $vServerDown
+        }
+        
+        # Disconnect from the NetScaler
+        Disconnect-NetScaler -NSIP $NetScaler
+
     }
 
-    # Write Data to Output File
-    Write-Verbose "Writing NetScaler Data to output file"
-    "netscaler,$NetScalerUp,$NetScalerDown" | Out-File $OutputFile
-    "vserver,$vServerUp,$vServerDown" | Out-File $OutputFile -Append
+    #Returns test results
+    return $results
 }
