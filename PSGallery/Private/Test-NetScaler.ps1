@@ -55,6 +55,7 @@ function Test-NetScaler {
         $vServerDown = 0
         $NetScalerUp = 0
         $NetScalerDown = 0
+        $vserverresults = $null
 
         # If NetScaler is UP then log to Console and Increment UP Count
         if ((Connect-Server $NetScaler) -eq "Successful") {
@@ -70,6 +71,7 @@ function Test-NetScaler {
 				
             # Loop Through vServers and check Status
             Write-Verbose "Looping through vServers to check status"
+            $vserverresults = @()
             foreach ($vServer in $vServers.lbvserver) {
                 $vServerName = $vServer.name
                 if ($vServer.State -eq "UP") {
@@ -85,6 +87,9 @@ function Test-NetScaler {
                     "$vServerName is Down" | Out-File $ErrorFile -Append
                     $vServerDown++
                 }
+            $vserverresults += [PSCustomObject]@{"Serivce" = $vServerName
+                                                 "State"   = $vServer.State}
+                                                 
             }
         }
         else {
@@ -99,6 +104,7 @@ function Test-NetScaler {
             'NetScalersDown' = $NetScalerDown
             'vServerUp'      = $vServerUp
             'vServerDown'    = $vServerDown
+            'vServices'      = $vserverresults
         }
         
         # Disconnect from the NetScaler
