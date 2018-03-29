@@ -62,7 +62,8 @@ function Test-Licensing {
         $daemonport = $false
         $LicensePort = $false
         $WebAdminPort = $false
-        $SimpleLicPort = $false  
+        $SimpleLicPort = $false
+        $licensedata = $false  
 
         # If License Server is UP then log to Console
         if ((Connect-Server $LicenseServer) -eq "Successful") {
@@ -84,6 +85,7 @@ function Test-Licensing {
                         if ((Test-NetConnection $LicenseServer $SimpleLicenseServicePortString).open -eq "True") {
                             Write-Verbose "$LicenseServer Simple License Port is up: Port - $SimpleLicenseServicePortString"
                             $SimpleLicPort = $true
+                            $licensedata = get-XDLicenseCount -LicenseServer $LicenseServer
                         }
                         else {
                             Write-Verbose "$LicenseServer Simple License ($SimpleLicenseServicePortString) is down"
@@ -123,6 +125,7 @@ function Test-Licensing {
             'LicensePort'   = $LicensePort
             'WebAdminPort'  = $WebAdminPort
             'SimpleLicPort' = $SimpleLicPort
+            'LicenseData'   = $Licensedata
         }
     }
     
