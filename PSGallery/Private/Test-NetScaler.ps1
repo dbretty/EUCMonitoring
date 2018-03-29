@@ -87,7 +87,7 @@ function Test-NetScaler {
                     "$vServerName is Down" | Out-File $ErrorFile -Append
                     $vServerDown++
                 }
-            $vserverresults += [PSCustomObject]@{"Serivce" = $vServerName
+            $vserverresults += [PSCustomObject]@{"Service" = $vServerName
                                                  "State"   = $vServer.State}
                                                  
             }
