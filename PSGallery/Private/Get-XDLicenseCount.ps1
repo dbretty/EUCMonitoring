@@ -18,12 +18,21 @@ Param
     [parameter(Mandatory = $true, ValueFromPipeline = $true)]$LicenseServer
 
 )
+#Try to connect to license server and pull data
+try {
+$LicenseData = Get-CimInstance -class "Citrix_GT_License_Pool" -namespace "ROOT\CitrixLicensing" -ComputerName $LicenseServer -ErrorAction stop
+}
+catch{
+    Write-error "Could not pull license data from license server"
+    return $false
+}
 
-$LicenseData = Get-CimInstance -class "Citrix_GT_License_Pool" -namespace "ROOT\CitrixLicensing" -ComputerName $LicenseServer
-
+#Create results array
 $results = @()
+
 if ($LicenseData )
 {
+    #Create custom object for each license found and add to results
     foreach ($lic in $LicenseData )
     {
         $results += [PSCustomObject]@{
@@ -37,7 +46,7 @@ if ($LicenseData )
 return $results
 }
 else {
-    Write-Warning "Could not pull license data"
+    Write-Warning "No license data found"
 return $false
 }
 
