@@ -25,6 +25,7 @@ function Start-XDMonitor {
     David Brett             1.5             26/03/2018          Prep For SQL and AD Monitoring
     Adam Yarborough         1.5.1           26/03/2018          Fix Termination of Powershell instance https://git.io/vxEGW
     David Wilkinson         1.6.1           28/03/2018          Added AppV Module
+    David Wilkinson         1.6.2           04/04/2018          Added logic to resolve issue #24
 .PARAMETER JsonFile
     Path to JSON settings file
 .PARAMETER CSSFile
@@ -63,7 +64,7 @@ function Start-XDMonitor {
         # Read in the JSON Data
 
         # Global Variables
-#        $XDTest = $MyJSONConfigFile.Citrix.Global.test # Placeholder value. Currently assumed true. 
+        $XDTest = $MyJSONConfigFile.Citrix.Global.test
         $XDBrokerPrimary = $MyJSONConfigFile.Citrix.Global.xdbrokerprimary
         $XDBrokerFailover = $MyJSONConfigFile.Citrix.Global.xdbrokerfailover
         $WorkLoads = $MyJSONConfigFile.Citrix.Global.workloads
@@ -234,7 +235,9 @@ function Start-XDMonitor {
                 Remove-Item $InfraErrorFileFullPath
             }
         }
-
+    #Start of Citrix Testing Modules
+    if ($XDTest -eq "yes") {
+    
         # Display the XenDesktop Brokers Passed In
         Write-Verbose "XenDesktop Primary Broker $XDBrokerPrimary"
         Write-Verbose "XenDesktop Failover Broker $XDBrokerFailover"
@@ -665,83 +668,6 @@ function Start-XDMonitor {
             remove-item $ProvisioningServerData -Force
             Write-Verbose "Deleted Donut Data File $ProvisioningServerData"
         }
-
-        # Checking NetScaler
-        if ($TestNetScaler -eq "yes") {
-            # Increment Infrastructure Components
-            $InfrastructureComponents++
-            $InfrastructureComponents++
-            $InfrastructureList += "netscaler"
-            $InfrastructureList += "vserver"
-
-            Write-Verbose "NetScaler Testing enabled"
-            Write-Verbose "Building NetScaler Data Output Files"
-            $NetScalerData = Join-Path -Path $OutputLocation -ChildPath "netscaler-data.txt"
-
-            # Build 2 Donut File Paths for NetScaler Host and Pools
-            $NetScalerFileName = Join-Path -Path $OutputLocation -ChildPath "netscaler.txt"
-            $vServerFileName = Join-Path -Path $OutputLocation -ChildPath "vserver.txt"
-            $NetScalerFileDonut = Join-Path -Path $OutputLocation -ChildPath "netscaler.html"
-            $vServerFileDonut = Join-Path -Path $OutputLocation -ChildPath "vserver.html"
-
-            # Remove Existing Data Files
-            if (test-path $NetScalerData) {
-                Remove-Item $NetScalerData
-            }
-
-            # Test the NetScaler Infrastructure
-            Test-NetScaler $NetScalers $NetScalerUserName $NetScalerPassword $InfraErrorFileFullPath $NetScalerData
-
-            # Split output file into 2 html data files
-            $NetData = Get-Content $NetScalerData
-            foreach ($Line in $NetData) {
-                $LineData = $Line -Split ","
-                $FileName = $LineData[0]
-                [int]$Good = $LineData[1]
-                [int]$Bad = $LineData[2]
-
-                $NewFileName = Join-Path -Path $OutputLocation -ChildPath "$Filename.txt"
-
-                "$FileName,$Good,$Bad" | Out-File $NewFileName
-            }
-
-            Write-Verbose "Building Donut Files for NetScalers and vServers"
-            New-Donut $NetScalerFileDonut $NetScalerFileName $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "NetScalers"
-            New-Donut $vServerFileDonut $vServerFileName $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "LoadBalancer"
-
-            # Removing Donut Data File
-            remove-item $NetScalerFileName -Force
-            Write-Verbose "Deleted Donut Data File $PoolFilNetScalerFileNameeName"
-            remove-item $vServerFileName -Force
-            Write-Verbose "Deleted Donut Data File $vServerFileName"
-            remove-item $NetScalerData -Force
-            Write-Verbose "Deleted Donut Data File $NetScalerData"
-        }
-
-        # Checking NetScaler Gateway
-        if ($TestNetScalerGateway -eq "yes") {
-        
-            Write-Verbose "NetScaler Gateway Testing enabled"
-            Write-Verbose "Building NetScaler Gateway Data Output Files"
-            $NetScalerGatewayData = Join-Path -Path $OutputLocation -ChildPath "netscaler-gateway-data.txt"
-
-            # Remove Existing Data Files
-            if (test-path $NetScalerGatewayData) {
-                Remove-Item $NetScalerGatewayData
-            }
-
-            # Test the NetScaler Gateway
-            $ICAUsers = (((Get-AAAUser $NetScalerHostingGateway $NetScalerUserName $NetScalerPassword "ica").vpnicaconnection) | Measure-Object).count
-            $VPNUsers = (((Get-AAAUser $NetScalerHostingGateway $NetScalerUserName $NetScalerPassword "vpn").aaasession) | Measure-Object).count
-        
-            "Total ICA Users - $ICAUsers" | Out-File $NetScalerGatewayData -Append
-            Write-Verbose "Current NetScaler Gateway ICA Users: $ICAUsers"
-            "Total VPN Users - $vpnusers" | Out-File $NetScalerGatewayData -Append
-            Write-Verbose "Current NetScaler Gateway VPN Users: $VPNUsers"
-            $TotalUsers = [int]$ICAUsers + [int]$VPNUsers
-            "Total Users - $TotalUsers" | Out-File $NetScalerGatewayData -Append
-            Write-Verbose "Current NetScaler Gateway Users: $TotalUsers"
-        }
     
         # Checking WEM Servers
         if ($TestWEM -eq "yes") {
@@ -887,7 +813,10 @@ function Start-XDMonitor {
             remove-item $EnvChecksXDData -Force
             Write-Verbose "Deleted Donut Data File $EnvChecksXDData"
         }
-
+    }   
+    #End of Citrix Testing Modules
+    
+        #Start of Microsoft Testing Modules
         # Checking Active Directory Servers
         if ($TestAD -eq "yes") {
             # Increment Infrastructure Components
@@ -973,6 +902,87 @@ function Start-XDMonitor {
             remove-item $AppVServerData -Force
             Write-Verbose "Deleted Donut Data File $AppVServerData"
         }   
+        #End of Microsoft Testing Modules
+        
+        #Start of Network Testing Modules
+        # Checking NetScaler
+        if ($TestNetScaler -eq "yes") {
+            # Increment Infrastructure Components
+            $InfrastructureComponents++
+            $InfrastructureComponents++
+            $InfrastructureList += "netscaler"
+            $InfrastructureList += "vserver"
+
+            Write-Verbose "NetScaler Testing enabled"
+            Write-Verbose "Building NetScaler Data Output Files"
+            $NetScalerData = Join-Path -Path $OutputLocation -ChildPath "netscaler-data.txt"
+
+            # Build 2 Donut File Paths for NetScaler Host and Pools
+            $NetScalerFileName = Join-Path -Path $OutputLocation -ChildPath "netscaler.txt"
+            $vServerFileName = Join-Path -Path $OutputLocation -ChildPath "vserver.txt"
+            $NetScalerFileDonut = Join-Path -Path $OutputLocation -ChildPath "netscaler.html"
+            $vServerFileDonut = Join-Path -Path $OutputLocation -ChildPath "vserver.html"
+
+            # Remove Existing Data Files
+            if (test-path $NetScalerData) {
+                Remove-Item $NetScalerData
+            }
+
+            # Test the NetScaler Infrastructure
+            Test-NetScaler $NetScalers $NetScalerUserName $NetScalerPassword $InfraErrorFileFullPath $NetScalerData
+
+            # Split output file into 2 html data files
+            $NetData = Get-Content $NetScalerData
+            foreach ($Line in $NetData) {
+                $LineData = $Line -Split ","
+                $FileName = $LineData[0]
+                [int]$Good = $LineData[1]
+                [int]$Bad = $LineData[2]
+
+                $NewFileName = Join-Path -Path $OutputLocation -ChildPath "$Filename.txt"
+
+                "$FileName,$Good,$Bad" | Out-File $NewFileName
+            }
+
+            Write-Verbose "Building Donut Files for NetScalers and vServers"
+            New-Donut $NetScalerFileDonut $NetScalerFileName $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "NetScalers"
+            New-Donut $vServerFileDonut $vServerFileName $InfraDonutSize $InfraDonutSize $UpColour $DownColour $InfraDonutStroke "LoadBalancer"
+
+            # Removing Donut Data File
+            remove-item $NetScalerFileName -Force
+            Write-Verbose "Deleted Donut Data File $PoolFilNetScalerFileNameeName"
+            remove-item $vServerFileName -Force
+            Write-Verbose "Deleted Donut Data File $vServerFileName"
+            remove-item $NetScalerData -Force
+            Write-Verbose "Deleted Donut Data File $NetScalerData"
+        }
+
+        # Checking NetScaler Gateway
+        if ($TestNetScalerGateway -eq "yes") {
+        
+            Write-Verbose "NetScaler Gateway Testing enabled"
+            Write-Verbose "Building NetScaler Gateway Data Output Files"
+            $NetScalerGatewayData = Join-Path -Path $OutputLocation -ChildPath "netscaler-gateway-data.txt"
+
+            # Remove Existing Data Files
+            if (test-path $NetScalerGatewayData) {
+                Remove-Item $NetScalerGatewayData
+            }
+
+            # Test the NetScaler Gateway
+            $ICAUsers = (((Get-AAAUser $NetScalerHostingGateway $NetScalerUserName $NetScalerPassword "ica").vpnicaconnection) | Measure-Object).count
+            $VPNUsers = (((Get-AAAUser $NetScalerHostingGateway $NetScalerUserName $NetScalerPassword "vpn").aaasession) | Measure-Object).count
+        
+            "Total ICA Users - $ICAUsers" | Out-File $NetScalerGatewayData -Append
+            Write-Verbose "Current NetScaler Gateway ICA Users: $ICAUsers"
+            "Total VPN Users - $vpnusers" | Out-File $NetScalerGatewayData -Append
+            Write-Verbose "Current NetScaler Gateway VPN Users: $VPNUsers"
+            $TotalUsers = [int]$ICAUsers + [int]$VPNUsers
+            "Total Users - $TotalUsers" | Out-File $NetScalerGatewayData -Append
+            Write-Verbose "Current NetScaler Gateway Users: $TotalUsers"
+        }
+        #End of Network Testing Modules
+        
         # Build the HTML output file
         New-HTMLReport $HTMLOutput $OutputLocation $InfrastructureComponents $InfrastructureList $WorkLoads $CSSFile $RefreshDuration
 
