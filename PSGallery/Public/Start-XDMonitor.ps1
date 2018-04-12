@@ -63,16 +63,20 @@ function Start-XDMonitor {
         # Set the script start time
         $StartTime = (Get-Date)
 
-        $MyJSONConfigFile = Get-Content -Raw -Path $MyConfigFileLocation | ConvertFrom-Json
+        try{
+        $MyJSONConfigFile = Get-Content -Raw -Path $MyConfigFileLocation | ConvertFrom-Json -ErrorAction Stop}
+        catch{
+            throw "Error reading JSON.  Please Check File and try again."
+        }
     
         # Start the Transcript
-        Start-Transcript $LogFile
+        #Start-Transcript $LogFile
     
         # Read in the JSON Data
 
         # Global Variables
-        $XDBrokerPrimary = $MyJSONConfigFile.Citrix.Global.xdbrokerprimary
-        $XDBrokerFailover = $MyJSONConfigFile.Citrix.Global.xdbrokerfailover
+        #$XDBrokerPrimary = $MyJSONConfigFile.Citrix.Global.xdbrokerprimary
+        #$XDBrokerFailover = $MyJSONConfigFile.Citrix.Global.xdbrokerfailover
         # $ControlUp = $MyJSONConfigFile.Citrix.Global.controlup
   
         # Web Data
@@ -82,6 +86,7 @@ function Start-XDMonitor {
         # $RefreshDuration = $MyJSONConfigFile.WebData.refreshduration
 =======
         $HTMLOutput = $MyJSONConfigFile.WebData.htmloutputfile
+<<<<<<< HEAD
         $RefreshDuration = $MyJSONConfigFile.WebData.refreshduration
 >>>>>>> upstream/v2_beta
         $ServerErrorFile = $MyJSONConfigFile.WebData.servererrorfile
@@ -101,12 +106,25 @@ function Start-XDMonitor {
         $InfraDonutStroke = $MyJSONConfigFile.WebData.InfraDonutStroke
         $InfraDonutSize = $MyJSONConfigFile.WebData.infradonutsize
 >>>>>>> upstream/v2_beta
+=======
+        #$RefreshDuration = $MyJSONConfigFile.WebData.refreshduration
+        $ServerErrorFile = $MyJSONConfigFile.WebData.servererrorfile
+        $DesktopErrorFile = $MyJSONConfigFile.WebData.desktoperrorfile
+        $InfraErrorFile = $MyJSONConfigFile.WebData.infraerrorfile
+        #$UpColour = $MyJSONConfigFile.WebData.UpColour
+        #$DownColour = $MyJSONConfigFile.WebData.DownColour
+        $OutputLocation = $MyJSONConfigFile.WebData.outputlocation
+        #$WorkerDonutStroke = $MyJSONConfigFile.WebData.WorkerDonutStroke
+        #$WorkerDonutSize = $MyJSONConfigFile.WebData.workerdonutsize
+        #$InfraDonutStroke = $MyJSONConfigFile.WebData.InfraDonutStroke
+        #$InfraDonutSize = $MyJSONConfigFile.WebData.infradonutsize
+>>>>>>> upstream/v2_beta
         # $WorkerComponents = 1
         # $InfrastructureComponents = 0
         $InfrastructureList = @()
-        $WorkerList = @()
 
         # Worker Data
+<<<<<<< HEAD
         $TestWorkers = $MyJSONConfigFile.Citrix.Worker.test
 <<<<<<< HEAD
         $WorkerTestMode = $MyJSONConfigFile.Citrix.Worker.mode
@@ -116,6 +134,10 @@ function Start-XDMonitor {
         $DesktopBootThreshold = $MyJSONConfigFile.Citrix.Worker.desktopbootthreshold
         $DesktopHighLoad = $MyJSONConfigFile.Citrix.Worker.desktophighload
 =======
+=======
+        $TestXD = $MyJSONConfigFile.Citrix.Worker.Test
+        #$TestWorkers = $MyJSONConfigFile.Citrix.Worker.test
+>>>>>>> upstream/v2_beta
         #$WorkerTestMode = $MyJSONConfigFile.Citrix.Worker.mode
         #$WorkLoads = $MyJSONConfigFile.Citrix.Worker.workloads
         #$ServerBootThreshold = $MyJSONConfigFile.Citrix.Worker.serverbootthreshold
@@ -226,7 +248,6 @@ function Start-XDMonitor {
         $AppVPort = $MyJSONConfigFile.Microsoft.AppV.AppVPort
         $AppVServices = $MyJSONConfigFile.Microsoft.AppV.AppVServices
 
-        <#  THIS CAN ALL BE DELETED RIGHT?
         # Build HTML Output and Error File Full Path
         $ServerErrorFileFullPath = Join-Path -Path $OutputLocation -ChildPath $ServerErrorFile
         $DesktopErrorFileFullPath = Join-Path -Path $OutputLocation -ChildPath $DesktopErrorFile
@@ -240,6 +261,7 @@ function Start-XDMonitor {
         #Custom PS object
         $results = [pscustomobject]@{}
 
+        ##REMOVE AFTER ERROR FILES
         # Test the output location and create if not there or clean up old data if exists
         Write-Verbose "Testing Output File Location $OutputLocation"
         If ((Test-Path $OutputLocation) -eq $False) {
@@ -276,6 +298,7 @@ function Start-XDMonitor {
                 Remove-Item $InfraErrorFileFullPath
             }
         }
+<<<<<<< HEAD
 <<<<<<< HEAD
 
         # Display the XenDesktop Brokers Passed In
@@ -350,13 +373,20 @@ function Start-XDMonitor {
             $results | Add-Member -Name "WorkerList" -Value $workerlist -MemberType "NoteProperty"
 =======
         #>
+=======
+        ##REMOVE AFTER ERROR FILES
+>>>>>>> upstream/v2_beta
 
         # Start XD Monitoring Checks
         Write-Verbose "Starting Citrix XD Testing"
-        if ($TestWorkers -eq "yes") {
-            $InfrastructureList += "XDWorkLoads"
+        if ($TestXD -eq "yes") {
+            $InfrastructureList += "XenDesktop"
             Write-Verbose "Citrix XD Testing Enabled"
+<<<<<<< HEAD
             $results | Add-Member -Name "XenDesktop" -Value (Test-XenDesktop -XDBrokerPrimary $XDBrokerPrimary -XDBrokerSecondary $XDBrokerSecondary -workerobj $MyJSONConfigFile.Citrix.Worker) -MemberType "NoteProperty"
+>>>>>>> upstream/v2_beta
+=======
+            $results | Add-Member -Name "XenDesktop" -Value (Test-XenDesktop -Globalobj $MyJSONConfigFile.Citrix.Global -workerObj $MyJSONConfigFile.Citrix.worker ) -MemberType "NoteProperty"
 >>>>>>> upstream/v2_beta
         }
 
@@ -477,6 +507,7 @@ function Start-XDMonitor {
 
         # Checking NetScaler Gateway
         if ($TestNetScalerGateway -eq "yes") {
+<<<<<<< HEAD
 
 <<<<<<< HEAD
             # Increment Infrastructure Components
@@ -505,6 +536,11 @@ function Start-XDMonitor {
             }
 
             $results | Add-Member -Name "NetScalerGateway" -Value $gwresults -MemberType "NoteProperty"
+=======
+            $InfrastructureList += "NS Gateway"
+            Write-Verbose "NetScaler Gateway Testing enabled"    
+            $results | Add-Member -Name "NetScalerGateway" -Value (Test-NetscalerGateway -NetScalerHostingGateway $NetScalerHostingGateway -NetscalerUserName $NetScalerUserName -netscalerpassword $NetscalerPassword) -MemberType "NoteProperty"
+>>>>>>> upstream/v2_beta
         }
     
         # Checking WEM Servers
@@ -567,9 +603,13 @@ function Start-XDMonitor {
 
             # Test the Citrix Environmental Checks
 <<<<<<< HEAD
+<<<<<<< HEAD
             $results | Add-Member -Name "EnvCheckXD" -Value (Test-EnvChecksXD -AdminAddress $Broker -ErrorFile $InfraErrorFileFullPath -DDCcheck $EnvChecksXDCheckddc -DeliveryGroupCheck $EnvChecksXDCheckdeliverygroup -CatalogCheck $EnvChecksXDCheckcatalog -HypervisorCheck $EnvChecksXDHypervisor) -MemberType "NoteProperty"
 =======
             $results | Add-Member -Name "EnvCheck" -Value (Test-EnvChecksXD -AdminAddress $Broker -ErrorFile $InfraErrorFileFullPath -DDCcheck $EnvChecksXDCheckddc -DeliveryGroupCheck $EnvChecksXDCheckdeliverygroup -CatalogCheck $EnvChecksXDCheckcatalog -HypervisorCheck $EnvChecksXDHypervisor) -MemberType "NoteProperty"
+>>>>>>> upstream/v2_beta
+=======
+            $results | Add-Member -Name "EnvCheck" -Value (Test-EnvChecksXD -AdminAddress ($MyJSONConfigFile.Citrix.Global.xdbrokerprimary) -ErrorFile $InfraErrorFileFullPath -DDCcheck $EnvChecksXDCheckddc -DeliveryGroupCheck $EnvChecksXDCheckdeliverygroup -CatalogCheck $EnvChecksXDCheckcatalog -HypervisorCheck $EnvChecksXDHypervisor) -MemberType "NoteProperty"
 >>>>>>> upstream/v2_beta
         }
 
@@ -626,7 +666,11 @@ function Start-XDMonitor {
             New-HTMLReport $HTMLOutput $OutputLocation $InfrastructureComponents $InfrastructureList $WorkLoads $CSSFile $RefreshDuration
 =======
             # New-HTMLReport $HTMLOutput $OutputLocation $InfrastructureComponents $InfrastructureList $WorkLoads $CSSFile $RefreshDuration
+<<<<<<< HEAD
             New-HTMLReport -HTMLOutputFile $HTMLOutput -HTMLOutputLocation $OutputLocation -EUCMonitoring $Results -CSSFile $CSSFile -RefreshDuration $RefreshDuration
+>>>>>>> upstream/v2_beta
+=======
+            #New-HTMLReport -HTMLOutputFile $HTMLOutput -HTMLOutputLocation $OutputLocation -EUCMonitoring $Results -CSSFile $CSSFile -RefreshDuration $RefreshDuration
 >>>>>>> upstream/v2_beta
         }
         

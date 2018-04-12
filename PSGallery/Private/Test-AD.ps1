@@ -72,7 +72,7 @@ function Test-AD {
 
                 # Check Each Service for a Running State
                 #services hash table
-                $servicesht = [PSCustomObject]@{}
+                $servicesht = @()
                 foreach ($Service in $ADServices) {
                     $CurrentServiceStatus = Test-Service $ADServer $Service
                     If ($CurrentServiceStatus -ne "Running") {
@@ -87,7 +87,10 @@ function Test-AD {
                         }
                         $ServicesUp = "no"
                     }
-                    $servicesht|add-member -name $service -Value $CurrentServiceStatus -MemberType NoteProperty
+                    $servicesht += [PSCustomObject]@{
+                        "Service" = $service
+                        "Status" = $CurrentServiceStatus
+                    }
                 }
 
                 # Check for ALL services running, if so mark AD Server as UP, if not Mark as down and increment down count
