@@ -41,12 +41,22 @@ function Test-AD {
     #Create array with results
     $results = @()
 
+
+
     Write-Verbose "Read in AD Details"
     Write-Verbose "AD Servers: $ADServers"
     Write-Verbose "AD Ports: $ADPortString" 
     Write-Verbose "AD Services: $ADServices"
 
     foreach ($ADServer in $ADServers) {
+
+        $PortsUp = @()
+        $PortsDown = @()
+        $ServicesUp = @()
+        $ServicesDown = @()
+        $ChecksUp = @()
+        $ChecksDown = @()
+        $Errors = @()
 
         #Tests
         $ping = $false
@@ -84,6 +94,7 @@ function Test-AD {
                         else {
                             $ServiceError = $ServiceError + ", " + $Service
                             $CurrentServiceStatus = "UNKNOWN"
+                            $Error += $Service + " - "
                         }
                         $ServicesUp = "no"
                     }
@@ -125,6 +136,13 @@ function Test-AD {
             'LDAPPort' = $LDAPport
             'Health'   = $health 
             'Services' = $servicesht
+            'PortsUp' = $PortsUp      
+            'PortsDown' = $PortsDown    
+            'ServicesUp' = $ServicesUp   
+            'ServicesDown' = $ServicesDown 
+            'ChecksUp' = $ChecksUp    
+            'ChecksDown'   = $ChecksDown  
+            'Errors' = $Errors
         }
     }
 
