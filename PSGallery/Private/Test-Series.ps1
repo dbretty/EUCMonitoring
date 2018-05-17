@@ -1,4 +1,4 @@
-function Test-Template {
+function Test-Series {
     <#   
 .SYNOPSIS   
     Checks the ports and services of a Windows Server.
@@ -30,9 +30,9 @@ function Test-Template {
     [CmdletBinding()]
     Param
     (
-        [Parameter(ValueFromPipeline,Mandatory=$true)][string]$SeriesName,
-        [Parameter(ValueFromPipeline,Mandatory=$true)][string]$JSONConfigFileName
- #       [Parameter(ValueFromPipeline)]$ConfigObject
+        [Parameter(ValueFromPipeline, Mandatory = $true)][string]$SeriesName,
+        [Parameter(ValueFromPipeline, Mandatory = $true)][string]$JSONConfigFileName
+        #       [Parameter(ValueFromPipeline)]$ConfigObject
     )
     # There's probably a better way of ensuring one or the other works better.  
 
@@ -45,9 +45,9 @@ function Test-Template {
    
 
     # Including a JSONFileName has higher precedence than passing a loaded. 
- #   if ( $JSONConfigFilename ) {
- #       $ConfigObject = Get-Content -Raw -Path $JSONConfigFilename | ConvertFrom-Json
- #   }    
+    #   if ( $JSONConfigFilename ) {
+    #       $ConfigObject = Get-Content -Raw -Path $JSONConfigFilename | ConvertFrom-Json
+    #   }    
 
     # XXX CHANGEME XXX
     # Set $Config to the proper location.  This should be passed 
@@ -148,7 +148,7 @@ function Test-Template {
                         if (Test-CommandExists $CheckFunc) {
                             $Success = Invoke-Expression "$CheckFunc $Series $JSONConfigFilename $ComputerName"
                         
-                        # Validate Success
+                            # Validate Success
                             if ( $true -eq $Success ) { 
                                 $ChecksUp += "$CheckName"
                             }
@@ -160,9 +160,9 @@ function Test-Template {
                                 # XXX CHANGEME XXX
                                 $Errors += "$CheckName failed"
                                 $State = "DEGRADED"
-                                         }         
-                                                }
-                                                else { $Errors += "$CheckFunc does not exist"}
+                            }         
+                        }
+                        else { $Errors += "$CheckFunc does not exist"}
                         
                     }
 

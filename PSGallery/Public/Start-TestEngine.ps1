@@ -20,7 +20,8 @@ function Start-TestEngine {
     [CmdletBinding()]
     Param
     (
-        [Parameter(ValueFromPipeline, Mandatory = $true)][string]$JSONConfigFileName
+        [Parameter(ValueFromPipeline, Mandatory = $true)][string]$JSONConfigFileName,
+        [Parameter(ValueFromPipeline)][switch]$OutputToVar
     )
     
     $Results = @()
@@ -74,13 +75,15 @@ function Start-TestEngine {
                         }
                     }
                 }
-                
+
                 $Results += $SeriesResult
             }
         }
 
         # Now we should have results, even if blank.
 
+        # Output handling
+        
         # If we see WebData enabled, send to the report maker.
         if ( $ConfigObject.Global.Webdata.Enabled ) {
             New-HTMLReport $ConfigObject $Results 
@@ -93,8 +96,15 @@ function Start-TestEngine {
             Send-ResultToInfluxDB $ConfigObject $Results
         }
 
+        # PSGraph generated data, using the State property in each result 
+        if ( $ConfigObject.Global.Graph.Enabled ) {
+            New-EUCGraph $ConfigObject $Results
+        }
 
-
+        # Maybe console formatted data?  Just ideas at the moment.  
+        if ( $ConfigObject.Global.ShowResults.Enabled ) {
+            Show-Results $ConfigObject $Results
+        }
 
         # Stop the timer and display the output
         $EndTime = (Get-Date)

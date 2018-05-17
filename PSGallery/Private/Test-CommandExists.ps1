@@ -3,8 +3,23 @@
 # Straight lifted from Ed Wilson, https://bit.ly/2wUQw2C
 
 
-Function Test-CommandExists
-{
+Function Test-CommandExists {
+    <#
+    .SYNOPSIS
+    Make sure that our generated functions work. 
+    
+    .DESCRIPTION
+    Long description
+    
+    .PARAMETER command
+    Parameter description
+    
+    .EXAMPLE
+    An example
+    
+    .NOTES
+    General notes
+    #>
 
     Param ($command)
 

@@ -1,6 +1,6 @@
           
           
-function Start-TestEngine {
+function Send-ResultToInfluxDB {
     <#
 .SYNOPSIS
     Starts the main engine behind EUCMonitoring
@@ -13,7 +13,7 @@ function Start-TestEngine {
     Creation Date:          07/02/2018
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
-    David Brett             1.0             07/02/2018          Function Creation
+    Adam Yarborough            1.0          17/05/2018          Function Creation
 
 .EXAMPLE
     None Required
@@ -23,6 +23,9 @@ function Start-TestEngine {
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ConfigObject,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$Results
     ) 
+
+    # We want all results to represent the same moment in time, even if that's not true for 
+    # collation reasons. This is why this step happens at the end. 
     $timestamp = Get-InfluxTime(get-date)
     $InfluxURI = Get-InfluxURI $ConfigObject
          

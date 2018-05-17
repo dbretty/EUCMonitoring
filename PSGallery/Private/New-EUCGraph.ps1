@@ -12,7 +12,7 @@ function New-EUCGraph {
 Broken Stuff.  Total testbed. 
 #> 
 
-#    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High")]
+    #    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High")]
     
     Param
     (
@@ -24,7 +24,7 @@ Broken Stuff.  Total testbed.
     $subgraph = 0
     graph EUC -Attributes @{ Label = 'EUC Monitoring' } {
         
-       <#This won't work
+        <#This won't work
         if ( !$null -eq $Results.Server ) {
             subgraph $subgraph -Attributes @{ Label = 'Workloads'} {
                 if ( $Results.Server.Downs = 0 ) { $color = 'palegreen'}
@@ -86,7 +86,7 @@ Broken Stuff.  Total testbed.
 
         subgraph $subgraph -Attributes @{label = 'Microsoft'} {
             node database @{ style = 'filled'; color = 'lightblue'; label = 'MSSQL Servers'}
-  #          node rdsbroker, app-v @{ style = 'filled'; color = 'palegreen'}
+            #          node rdsbroker, app-v @{ style = 'filled'; color = 'palegreen'}
             node hyper-v @{ style = 'filled'; color = 'lightblue'}
         }
         $subgraph++ 
@@ -105,19 +105,19 @@ Broken Stuff.  Total testbed.
 
         subgraph $subgraph -Attributes @{Label = 'Networking'} {
             node netscaler @{style = 'filled'; color = 'paleGreen'; Label = 'Netscaler'}
-   #        node f5 @{ style = 'filled'; color = 'Red'}
+            #        node f5 @{ style = 'filled'; color = 'Red'}
         }
         $subgraph++
         edge netscaler -To controllers, storefront
-#        edge f5 -To rdsbroker
+        #        edge f5 -To rdsbroker
 
 
         edge controllers -To server, desktop
- #       edge rdsbroker -To server, desktop
+        #       edge rdsbroker -To server, desktop
 
         subgraph $subgraph -Attributes @{ Label = 'Third Party'} {
             node ControlUp @{ style = 'filled'; color = 'lightblue'; label = 'Control Up'}
-    #        node uberAgent @{ style = 'filled'; color = 'lightblue'}
+            #        node uberAgent @{ style = 'filled'; color = 'lightblue'}
         }
 
         $errors = "This is a problem", "here is another problem", "things are really getting hairy", "even longer error list", "one more"
@@ -158,7 +158,8 @@ Broken Stuff.  Total testbed.
     } | Export-PSGraph  -ShowGraph -LayoutEngine Hierarchical
 }
 
-
+# All below is just testing.  
+<#
 
 $MyConfigFileLocation = "C:\Monitor\euc-monitoring.json.test"
 $Config = Get-Content -Raw -Path $MyConfigFileLocation | ConvertFrom-Json -ErrorAction Stop 
@@ -200,6 +201,7 @@ foreach ( $server in $Servers ) {
 # use JSON to say true instead of "yes", and have a common parameter set. 
 #>
 
+<#
 $Res.Microsoft.AD.Results | ConvertTo-Json
 <# Yeilds this:
 [
@@ -224,4 +226,7 @@ $Res.Microsoft.AD.Results | ConvertTo-Json
 ]
 #>
 
+<#
 New-EUCGraph -Results $Res
+
+#>
