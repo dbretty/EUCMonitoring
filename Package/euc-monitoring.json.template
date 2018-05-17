@@ -1,140 +1,253 @@
 {
-    "WebData": {
-        "outputlocation": "c:\\webdata",
-        "htmldatafile": "htmldata.txt",
-        "htmloutputfile": "index.html",
-        "refreshduration": 0,
-        "servererrorfile": "server-errors.txt",
-        "desktoperrorfile": "desktop-errors.txt",
-        "UpColour": "rgba(221, 70, 70, 0.9)",
-        "DownColour": "rgba(67, 137, 203, 0.95)",
-        "WorkerDonutStroke": 5,
-        "workerdonutsize": 500,
-        "InfraDonutStroke": 4,
-        "Infradonutsize": 160,
-        "infraerrorfile": "infra-errors.txt"
-    },
-    "Microsoft": {
-        "Global": {
-            "test": "no"
-        },
-        "AD": {
-            "test": "no",
-            "ADServers": ["dc.domain.com"],
-            "ADLDAPPort": "389",
-            "ADServices": ["Netlogon","ADWS","NTDS"]
-        },
-        "SQL": {
-            "test": "no",
-            "SQLServers": ["sql.domain.com"],
-            "SQLPort": "1433",
-            "SQLServices": ["MSSQLServer"]
-        },
-        "AppV": {
-            "test": "no",
-            "AppVServers": ["appv.domain.com"],
-            "AppVPort": "8080",
-            "AppVServices": ["W3SVC"]
-        }
-    },
-    "Citrix": {
-        "Global": {
+    "Global": {
+        "Citrix": {
             "xdbrokerprimary": "xdprimary.domain.com",
             "xdbrokerfailover": "xdsecondary.domain.com",
             "controlup": "no"
         },
-        "Worker": {
-            "test": "no",
-            "mode": "basic",
-            "workloads": ["server","desktop"],
-            "serverbootthreshold": "7",
-	        "serverhighload": 8000,
-            "desktopbootthreshold": "7",
-	        "desktophighload": 8000
+        "WebData": {
+            "outputlocation": "c:\\webdata",
+            "htmldatafile": "htmldata.txt",
+            "htmloutputfile": "index.html",
+            "refreshduration": 0,
+            "servererrorfile": "server-errors.txt",
+            "desktoperrorfile": "desktop-errors.txt",
+            "UpColour": "rgba(221, 70, 70, 0.9)",
+            "DownColour": "rgba(67, 137, 203, 0.95)",
+            "WorkerDonutStroke": 5,
+            "workerdonutsize": 500,
+            "InfraDonutStroke": 4,
+            "Infradonutsize": 160,
+            "infraerrorfile": "infra-errors.txt"
         },
-        "xenserver": {
-            "test": "no",
-            "poolmasters": ["pool_master_ip1","pool_master_ip2"],
-            "poolmasterport": "80",
-            "username": "root",
-            "password": "password"
+        "Influx": {
+            "Enabled": true,
+            "InfluxDB": "EUCMonitoring",
+            "InfluxServer": "localhost",
+            "Protocol": "http",
+            "Port": 8086
         },
-        "storefront": {
-            "test": "no",
-            "storefrontservers": "storefront.domain.com",
-            "storefrontport": "80",
-            "storefrontpath": "/citrix/storeweb",
-            "protocol": "http"
-        },
-        "licensing": {
-            "test": "no",
-            "licenseservers": ["license1.domain.com","license2.domain.com"],
-            "vendordaemonport": "7279",
-            "licenseport": "27000",
-            "webadminport": "8082",
-            "simplelicenseserviceport": "8083"
-        },
-        "director": {
-            "test": "no",            
-            "directorservers": ["director1.domain.com","director2.domain.com"],
-            "directorport": "80",
-            "directorpath": "/Director/LogOn.aspx?cc=true",
-            "protocol": "http"
-        },
-        "controllers": {
-            "test": "no",
-            "controllerservers": ["controller1.domain.com","controller2.domain.com"],
-            "controllerport": "80",
-            "controllerservices": ["CitrixBrokerService","CitrixHighAvailabilityService","CitrixConfigSyncService","CitrixConfigurationService","CitrixConfigurationLogging","CitrixDelegatedAdmin","CitrixADIdentityService","CitrixMachineCreationService","CitrixHostService","CitrixEnvTest","CitrixMonitor","CitrixAnalytics","CitrixAppLibrary","CitrixOrchestration"]
-        },
-        "netscalers": {
-            "test": "no",
-            "netscalers": ["netscaler_ip1","netscaler_ip2"],
-            "netscalerusername": "nsroot",
-            "netscalerpassword": "nsroot"
-        },
-        "netscalergateway": {
-            "test": "no",
-            "netscalerhostinggateway": "netscaler_gateway_ip"
-        },
-        "ProvisioningServers": {
-            "test": "no",
-            "ProvisioningServerFarm": "pvs",
-            "ProvisioningServerSite": "pvs_site",
-            "ProvisioningServers": ["pvs1.domain.com","pvs2.domain.com"],
-            "ProvisioningServerPort": "54321",
-            "ProvisioningServerServices": ["BNPXE","BNTFTP","PvsApi","PVSTSB","soapserver","StreamService"]
-        },
-        "WEM": {
-            "test": "no",
-            "WEMServers": ["wembroker1.domain.com","wembroker2.domain.com"],
-            "WEMAgentPort": "8286",
-            "WEMServices": ["Norskale Infrastructure Service"]
-        },
-        "UPS": {
-            "test": "no",
-            "UPSServers": "upsserver.domain.com",
-            "UPSPort": "7229",
-            "UPSServices": ["UpSvc","CitrixXTEServer"]
-        },
-        "FAS": {
-            "test": "no",
-            "FASServers": ["fasserver1.domain.com","fasserver2.domain.com"],
-            "FASPort": "135",
-            "FASServices": ["CitrixFederatedAuthenticationService"]
-         },   
-         "CC": {
-            "test": "no",
-            "CCServers": ["ccserver1.domain","ccserver2.domain"],
-            "CCPort": "80",
-            "CCServices": ["CitrixWorkspaceCloudADProvider","CitrixWorkspaceCloudAgentDiscovery","CitrixWorkspaceCloudAgentLogger","CitrixWorkspaceCloudAgentSystem","CitrixWorkspaceCloudAgentWatchDog","CitrixWorkspaceCloudCredentialProvider","CitrixWorkspaceCloudWebRelayProvider","CitrixConfigSyncService","CitrixHighAvailabilityService","Citrix NetScaler Cloud Gateway","XaXdCloudProxy","RemoteHCLServer","SessionManagerProxy"]
-        },
-        "EnvChecks": {
-            "test": "no",
-            "ddccheck": "yes",
-            "deliverygroupcheck": "yes",
-            "catalogcheck": "yes",
-            "hypervisorcheck": "yes"
+        "Alerting": {
+            "Enabled": false,
+            "Slack": {
+                "Enabled": false,
+                "Channel": "some-channel",
+                "URI": "https://hooks.slack.com/services/<ID HERE>"
+            },
+            "Spark": {
+                "Enabled": false
+            }
         }
+    },
+    "AD": {
+        "test": "no",
+        "Servers": [ "dc.domain.com" ],
+        "Ports": [ 389, 636 ],
+        "Services": [ 
+            "Netlogon",
+            "ADWS",
+            "NTDS"
+        ],
+        "Checks": {
+            "ValidCert": {
+                "Ports": [ 636 ]
+            }
+        }
+    },
+    "SQL": {
+        "test": "no",
+        "Servers": [ "sql.domain.com" ],
+        "Ports": [ 1433 ],
+        "Services": [
+            "MSSQLServer"
+        ]
+    },
+    "AppV": {
+        "test": "no",
+        "Servers": [ "appv.domain.com" ],
+        "Ports": [ 8080 ],
+        "Services": [
+            "W3SVC"
+        ]
+    },
+    "Worker": {
+        "test": "no",
+        "Checks": {
+            "Workload": {
+                "XdServer": {
+                    "BootThreshold": 7,
+                    "HighLoad": 8000
+                },
+                "XdDesktop": {
+                    "BootThreshold": 7,
+                    "HighLoad": 8000
+                }
+            },
+            "XdDeliveryGroup": true,
+            "XdDDC": true,
+            "XdCatalogs": true,
+            "XdHypervisor": true
+        }
+    },
+    "Xenserver": {
+        "test": "no",
+        "Servers": [ "pool_master_ip1", "pool_master_ip2" ],
+        "Ports": [ 80 ],
+        "Checks": {
+            "XenServer": {
+                "username": "root",
+                "password": "password"
+            }
+        }
+    },
+    "Storefront": {
+        "test": "no",
+        "Servers": [ "storefront.domain.com" ],
+        "Ports": [ 80, 443 ],
+        "Checks": {
+            "HTTPUrl": {
+                "Ports": [ 80 ],
+                "Path": "/Citrix/StoreWeb"
+            },
+            "HTTPSUrl": {
+                "Ports": [ 443 ],
+                "Path": "/Citrix/StoreWeb"
+            },
+            "ValidCert": {
+                "Ports": [ 443 ]
+            }
+        }
+    },
+    "Licensing": {
+        "test": "no",
+        "Servers": [ "license1.domain.com", "license2.domain.com" ],
+        "Ports": [ 7279, 27000, 8082, 8083 ],
+        "Checks": {
+            "XDLicense": {
+                "Ports": [ 27000 ]
+            }
+        }
+    },
+    "Director": {
+        "test": "no",
+        "Servers": [ "director1.domain.com", "director2.domain.com" ],
+        "Ports": [ 80, 443 ],
+        "Checks": {
+            "HTTPUrl": {
+                "Ports": [ 80 ],
+                "Path": "/Director/LogOn.aspx?cc=true"
+            },
+            "HTTPSUrl": {
+                "Ports": [ 443 ],
+                "Path": "/Director/LogOn.aspx?cc=true"
+            }
+        }
+    },
+    "Controllers": {
+        "test": "no",
+        "Servers": [ "controller1.domain.com", "controller2.domain.com" ],
+        "Ports": [ 80 ],
+        "Services": [
+            "CitrixBrokerService",
+            "CitrixHighAvailabilityService",
+            "CitrixConfigSyncService",
+            "CitrixConfigurationService",
+            "CitrixConfigurationLogging",
+            "CitrixDelegatedAdmin",
+            "CitrixADIdentityService",
+            "CitrixMachineCreationService",
+            "CitrixHostService",
+            "CitrixEnvTest",
+            "CitrixMonitor",
+            "CitrixAnalytics",
+            "CitrixAppLibrary",
+            "CitrixOrchestration"
+        ]
+    },
+    "Netscaler": {
+        "test": "no",
+        "Servers": [ "netscaler_ip1", "netscaler_ip2" ],
+        "Ports": [ 443 ],
+        "Checks": {
+            "Netscaler": {
+                "netscalerusername": "nsroot",
+                "netscalerpassword": "nsroot"
+            }
+        }
+    },
+    "NetscalerGateway": {
+        "test": "no",
+        "Servers": [ "netscaler_gateway_ip" ],
+        "Ports": [ 443 ],
+        "Checks": {
+            "NSGateway": {
+                "Username": "nsroot",
+                "Password": "nsroot"
+            }
+        }
+    },
+    "Provisioning": {
+        "test": "no",
+        "Servers": [ "pvs1.domain.com", "pvs2.domain.com" ],
+        "Ports": [ 54321 ],
+        "Services": [
+            "BNPXE",
+            "BNTFTP",
+            "PvsApi",
+            "PVSTSB",
+            "soapserver",
+            "StreamService"
+        ],
+        "Checks": {
+            "PVSFarm": {
+                "Name": [ "pvs" ]
+            },
+            "PVSSite": {
+                "Name": [ "pvs_site" ]
+            }
+        }
+    },
+    "WEM": {
+        "test": "no",
+        "Servers": [ "wembroker1.domain.com", "wembroker2.domain.com" ],
+        "Ports": [ 8286 ],
+        "Services": [ "Norskale Infrastructure Service" ]
+    },
+    "UPS": {
+        "test": "no",
+        "Servers": [ "upsserver.domain.com" ],
+        "Ports": [ 7229 ],
+        "Services": [
+            "UpSvc",
+            "CitrixXTEServer"
+        ]
+    },
+    "FAS": {
+        "test": "no",
+        "Servers": [ "fasserver1.domain.com", "fasserver2.domain.com" ],
+        "Ports": [ 135 ],
+        "Services": [
+            "CitrixFederatedAuthenticationService"
+        ]
+    },
+    "CC": {
+        "test": "no",
+        "Servers": [ "ccserver1.domain", "ccserver2.domain" ],
+        "Ports": [ 80 ],
+        "Services": [
+            "CitrixWorkspaceCloudADProvider",
+            "CitrixWorkspaceCloudAgentDiscovery",
+            "CitrixWorkspaceCloudAgentLogger",
+            "CitrixWorkspaceCloudAgentSystem",
+            "CitrixWorkspaceCloudAgentWatchDog",
+            "CitrixWorkspaceCloudCredentialProvider",
+            "CitrixWorkspaceCloudWebRelayProvider",
+            "CitrixConfigSyncService",
+            "CitrixHighAvailabilityService",
+            "Citrix NetScaler Cloud Gateway",
+            "XaXdCloudProxy",
+            "RemoteHCLServer",
+            "SessionManagerProxy"
+        ]
     }
 }

@@ -20,7 +20,7 @@ function Start-TestEngine {
 #>
     [CmdletBinding()]
     Param(
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ConfigObject
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ConfigObject,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$Results
     ) 
     $timestamp = Get-InfluxTime(get-date)

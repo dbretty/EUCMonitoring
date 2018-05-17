@@ -42,40 +42,50 @@ function Start-TestEngine {
             $SeriesName = $Series.PSObject.Properties.Name
             # As long as its not the global section of the config file
             if ( "Global" -ne $SeriesName ) {
+
+                # This is where all the work happens. 
                 $SeriesResult = Test-Series $SeriesName $JSONConfigFileName
 
+                # As long as we get results, write out any errors to appropriate log file
                 if ( $null -ne $SeriesResult ) {
-                    if ( "Worker" -eq $SeriesName ) {
-                        # Some check to redirect Desktop errors to DesktopErrorFile 
-                        # And some for ServerErrorFile
-                        foreach ( $Result in $SeriesResult ) {
+
+                    foreach ( $Result in $SeriesResult ) {
+                        
+                        if ( $null -ne $Result.Errors ) {
                             $ResultName = $Result.PSObject.Properties.Name
+                    
+                            # Check to redirect Desktop errors to DesktopErrorFile 
+                            
                             if ( "XdServer" -eq $ResultName ) {
                                 "$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $ConfigObject.Global.ServerErrorFile -Append
                                 $SeriesResult.Errors | Out-File $ConfigObject.Global.ServerErrorFile -Append
                             }
+                            # And some for ServerErrorFile
                             elseif ( "XdDesktop" -eq $ResultName ) {
                                 "$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $ConfigObject.Global.DesktopErrorFile -Append
                                 $SeriesResult.Errors | Out-File $ConfigObject.Global.DesktopErrorFile -Append
+                            } 
+                            # Or Just assume its the supporting infrastructure.
+                            else {
+                                "$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $ConfigObject.Global.InfraErrorFile -Append
+                                $SeriesResult.Errors | Out-File $ConfigObject.Global.InfraErrorFile -Append
                             }
                         }
                     }
-                    else {
-                        foreach ( $Result in $SeriesResult ) {
-                            "$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $ConfigObject.Global.InfraErrorFile -Append
-                            $SeriesResult.Errors | Out-File $ConfigObject.Global.InfraErrorFile -Append
-                        }
-                    }
+                    
                 }
                 $Results += $SeriesResult
             }
         }
 
+        # Now we should have results, even if blank.
+
+        # If we see WebData enabled, send to the report maker.
         if ( $ConfigObject.Global.Webdata.Enabled ) {
             New-HTMLReport $ConfigObject $Results 
         }
 
-        # Now we have results.  If we see InfluxDB in ConfigObject, we send results appropriately before
+        # If we see InfluxDB Enabled in ConfigObject, we send results appropriately before
         # returning the object.  This needs to be consistent.  
         if ( $ConfigObject.Global.Influx.Enabled ) {
             Send-ResultToInfluxDB $ConfigObject $Results
