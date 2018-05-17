@@ -45,6 +45,6 @@ function Test-URL {
     }
     else {
         return "bad"
-    }./
+    }
 
 }

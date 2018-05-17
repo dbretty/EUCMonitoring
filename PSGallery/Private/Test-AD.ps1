@@ -54,8 +54,8 @@ function Test-AD {
         $PortsDown = @()
         $ServicesUp = @()
         $ServicesDown = @()
-        $ChecksUp = @()
-        $ChecksDown = @()
+        $ChecksUp = @() # These are additional and might not be used. 
+        $ChecksDown = @() # These are additional and might not be used.
         $Errors = @()
 
         #Tests
@@ -140,8 +140,8 @@ function Test-AD {
             'PortsDown' = $PortsDown    
             'ServicesUp' = $ServicesUp   
             'ServicesDown' = $ServicesDown 
-            'ChecksUp' = $ChecksUp    
-            'ChecksDown'   = $ChecksDown  
+            'ChecksUp' = $ChecksUp    # These are additional and might not be used.
+            'ChecksDown'   = $ChecksDown  # These are additional and might not be used.
             'Errors' = $Errors
         }
     }
