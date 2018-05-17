@@ -11,17 +11,18 @@ function Start-TestEngine {
     Creation Date:          07/02/2018
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
-    David Brett             1.0             07/02/2018          Function Creation
+    Adam Yarborough         1.0             17/05/2018          Function Creation
 
 .EXAMPLE
     None Required
 #>
+    
     [CmdletBinding()]
     Param
     (
         [Parameter(ValueFromPipeline, Mandatory = $true)][string]$JSONConfigFileName
     )
-
+    
     $Results = @()
 
     
@@ -38,7 +39,7 @@ function Start-TestEngine {
         foreach ( $Series in $ConfigObject ) {
 
             # So, this works by iterating over the top elements of the config file and processing them.
-            # All checks 
+            
             $SeriesName = $Series.PSObject.Properties.Name
             # As long as its not the global section of the config file
             if ( "Global" -ne $SeriesName ) {
@@ -72,8 +73,8 @@ function Start-TestEngine {
                             }
                         }
                     }
-                    
                 }
+                
                 $Results += $SeriesResult
             }
         }
@@ -85,14 +86,14 @@ function Start-TestEngine {
             New-HTMLReport $ConfigObject $Results 
         }
 
-        # If we see InfluxDB Enabled in ConfigObject, we send results appropriately before
-        # returning the object.  This needs to be consistent.  
+        # If we see InfluxDB Enabled in ConfigObject, generate the data.  
+        # We want all results to represent the same moment in time, even if that's not true for 
+        # collation reasons. This is why this step happens at the end. 
         if ( $ConfigObject.Global.Influx.Enabled ) {
             Send-ResultToInfluxDB $ConfigObject $Results
         }
 
-        # We want all results to represent the same moment in time, even if that's not true for 
-        # collation reasons. This is why this step happens at the end. 
+
 
 
         # Stop the timer and display the output
