@@ -27,17 +27,19 @@ function Get-InfluxURI {
     [CmdletBinding()]
     Param
     (
-        [Parameter(ValueFromPipeline)]$JSONConfigFileName,
         [Parameter(ValueFromPipeline)]$ConfigObject
     )
 
     # XXX CHANGEME XXX
-    Write-Verbose "Starting Test-Template."
+    Write-Verbose "Starting Get-InfluxURI."
     # Initialize Empty Results
 
+    <#
     if ( $JSONConfigFilename ) {
         $ConfigObject = Get-Content -Raw -Path $JSONConfigFilename | ConvertFrom-Json
     }    
+
+#>
 
     $DB = $ConfigObject.Global.Influx.InfluxDB
     $Server = $ConfigObject.Global.Influx.InfluxServer
