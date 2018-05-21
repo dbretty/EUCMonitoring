@@ -1,4 +1,4 @@
-function Get-CitrixLicenseCounts {
+function Get-CTXLicenseCounts {
     <#   
 .SYNOPSIS   
     Checks the ports and services of a Windows Server.

@@ -22,7 +22,7 @@ function Test-Series {
     Creation Date:          14/05/2018
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
-    Adam Yarborough         1.0             22/02/2018          Function Creation
+    Adam Yarborough         1.0             17/05/2018          Function Creation
     
 .EXAMPLE
     Test-Template -JSonConfigFilename "C:\Monitoring\EUCMonitoring.json"
@@ -37,7 +37,7 @@ function Test-Series {
     # There's probably a better way of ensuring one or the other works better.  
 
     # XXX CHANGEME XXX
-    Write-Verbose "Starting Test-Template."
+    Write-Verbose "Starting Test-Series on $SeriesName."
     # Initialize Empty Results
     $Results = @()
 
@@ -51,7 +51,7 @@ function Test-Series {
 
     # XXX CHANGEME XXX
     # Set $Config to the proper location.  This should be passed 
-    $Config = $Series.Path
+    #    $Config = $Series.Path
     $Config = $ConfigObject.$Series
 
     # Set the path to your test area. 
@@ -61,19 +61,55 @@ function Test-Series {
     # Make sure we're allowed to run this test. 
     if ( ($true -eq $Config.Test) -or ("yes" -eq $Config.Test) ) {
 
-        # For the Series that have no servers configured
+        # For the Series that have no servers configured, we will populate servers 
+        # with either global values, or amongst sets.  I'd like to eventually be able
+        # to have multiple sites definable.  
         if ( $Series -eq "Worker" ) {
             $State = "UP"
-            $PortsUp = @()
-            $PortsDown = @()
-            $ServicesUp = @()
-            $ServicesDown = @()
-            $ChecksUp = @()     # These are additional and might not be used. 
-            $ChecksDown = @()   # These are additional and might not be used.
-            $Errors = @()
 
-            Write-Verbose 
+            Write-Verbose "Invoking Worker Targets"
+
+            # If someone populates this, they know which servers to hit.
+            if ( $null = $Config.Servers ) { $Config.Servers = @() }
+            $XdSites = @()
+            $RdsSites = @()
+            # Troll the Config object, get all the XdSite definitions from the workers
+            # 
+
+            foreach ( $XdSite in $XdSites ) {
+                # Test Connection, add the first controller that responds to Servers
+                # as well as XdControllers
+                $Controller = ""
+            
+                if ( (Connect-Server $XdSite.PrimaryController ) -eq "Successful" ) {
+                    $Controller = $XdSite.PrimaryController 
+                    $Config.Servers += $Controller
+                    $XdControllers += $Controller
+                    Write-Verbose "Adding XD Controller $XDController"
+                }
+                elseif ( (Connect-Server $XdSite.SecondaryController) -eq "Successful") {
+                    $Controller = $XdSite.SecondaryController       
+                    $Servers += $Controller
+                    $XdControllers += $Controller
+                    Write-Verbose "Adding XD Controller $XDController"             
+                }
+                else {                    
+                    Write-Verbose "Could not connect to any controllers in $XDSite"
+                    $Errors += "Could not connect to any controllers in $XDSite."
+                }
+            }
+
+            foreach ( $RdsSite in $RdsSites  ) {
+                # Test connection, add the first controller that responds to Servers
+                # as well as RdsServers
+            }
+            
+            
+            
+            $Config.Servers += "$XDController"
+
         }
+        # Not Worker
 
         # This section will skip the "Worker"/"CitrixEnvironment"
         foreach ($ComputerName in $Config.Servers) {
@@ -85,6 +121,7 @@ function Test-Series {
             $ServicesDown = @()
             $ChecksUp = @()     # These are additional and might not be used. 
             $ChecksDown = @()   # These are additional and might not be used.
+            $ChecksData = @()
             $Errors = @()
 
 
@@ -146,11 +183,13 @@ function Test-Series {
                         $CheckName = $Check.PSObject.Properties.Name
                         $CheckFunc = "Test-$($CheckName)"
                         if (Test-CommandExists $CheckFunc) {
-                            $Success = Invoke-Expression "$CheckFunc $Series $JSONConfigFilename $ComputerName"
+                            $Success, $Values = Invoke-Expression "$CheckFunc $Series $JSONConfigFilename $ComputerName"
                         
                             # Validate Success
                             if ( $true -eq $Success ) { 
+                                
                                 $ChecksUp += "$CheckName"
+
                             }
 
                             # Assume Error if we got this far. 
@@ -161,11 +200,66 @@ function Test-Series {
                                 $Errors += "$CheckName failed"
                                 $State = "DEGRADED"
                             }         
-                        }
-                        else { $Errors += "$CheckFunc does not exist"}
+                            
+                            if ( $null -ne $Values ) {
+                                $ChecksData += [PSCustomObject]@{
+                                    CheckName = $CheckName
+                                    Values    = $Values
+                                }
+                            }
                         
-                    }
 
+                            foreach ( $Check in $Config.Checks ) {
+                                $CheckName = $Check.PSObject.Properties.Name
+                                $CheckValue = $Check.PSObject.Properties.Name
+                
+                                switch ($CheckName) {
+                                    # XenDesktop Checks
+                                    # Worker Checks
+                                    "XdDesktop" { 
+                                        if ( $ComputerName -in $XdControllers ) { 
+                                            $ChecksData += Test-XdDesktop $ComputerName 
+                                        }
+                                        else {
+                                            $Errors += "$ComputerName not "                                         
+                                        }
+                                    }
+                                    "XdServer" {
+                                        if ( $ComputerName -in $XdControllers) { 
+                                            $ChecksData += Test-XdServer $ComputerName $Check.BootThreshold $Check.HighLoad 
+                                        }
+                                    }
+
+                                    # License Checks
+                                    "XdLicense" { }
+
+                                    # Site/Env Checks
+                                    "XdDeliveryGroupHealth" { if ( $true -eq $CheckValue ) { Test-XdDeliveryGroupHealth $ComputerName }}
+                                    "XdCatalogHealth" { }
+                                    "XdHypevisorHealth" { }
+
+                                    "XdSession" { }
+
+
+                                    
+                                    # Netscaler Checks
+                                    "Netscaler" { }
+                                    "NetscalerGateway" { }
+
+                                    # URL Checks
+                                    "HTTPUrl" { }
+                                    "HTTPSUrl" { }
+
+                                    "ValidCert" { }
+
+                                    Default { }
+                                }
+           
+
+                            }
+                        } 
+                        else { $Errors += "$CheckFunc does not exist"}
+                    }
                     <#
                     Check-HTTPUrl (host, port, path)
                     Check-HTTPSUrl (host, port, path)
@@ -178,11 +272,12 @@ function Test-Series {
                     Test-CheckName($Series.CheckName, $ConfigObject, $ComputerName)
                     #>
                 } 
-                else {
-                    # State is DEGRADED, we will not run additional checks.
-                    $ChecksDown = $Config.Checks
+                # State is DEGRADED, we will not run additional checks.
+                else {    
+                    foreach ($Check in $Config.Checks) {
+                        $ChecksDown += $Check.PSObject.Properties.Name
+                    }
                 }
-
 
                 # Finalize State by making sure if no tests passed, it's the same as being down. If degraded,
                 # There's no need to do further checks 
@@ -208,7 +303,10 @@ function Test-Series {
                 $State = "DOWN"
                 $PortsDown += $Ports
                 $ServicesDown += $Services
-                $ChecksDown += $Checks
+                    
+                foreach ($Check in $Config.Checks) {
+                    $ChecksDown += $Check.PSObject.Properties.Name
+                }
                 $Errors += "$ComputerName is down." 
             }
         
@@ -222,12 +320,10 @@ function Test-Series {
                 'ServicesDown' = $ServicesDown
                 'ChecksUp'     = $ChecksUp
                 'ChecksDown'   = $ChecksDown
+                'ChecksData'   = $ChecksData
                 'Errors'       = $Errors
             }
-        }
-    
-
-        #else we didn't really want to test, so we don't populate results, which will return an empty array.
-    }
+        }    
+    } #else we didn't really want to test, so we don't populate results, which will return an empty array.
     return $results
 }
