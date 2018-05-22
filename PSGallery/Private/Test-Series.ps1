@@ -63,20 +63,23 @@ function Test-Series {
 
         # For the Series that have no servers configured, we will populate servers 
         # with either global values, or amongst sets.  I'd like to eventually be able
-        # to have multiple sites definable.  
+        # to have multiple sites definable.  To do this, we let 
         if ( $Series -eq "Worker" ) {
-            $State = "UP"
 
             Write-Verbose "Invoking Worker Targets"
 
             # If someone populates this, they know which servers to hit.
             if ( $null = $Config.Servers ) { $Config.Servers = @() }
-            $XdSites = @()
-            $RdsSites = @()
-            # Troll the Config object, get all the XdSite definitions from the workers
-            # 
 
-            foreach ( $XdSite in $XdSites ) {
+            # Troll the Config object, get all the XdSite definitions from the workers
+            # and pick either primary or secondary server as the controller that all the 
+            # checks will be done from.  Add Controller to $Servers, so that for multiple
+            # sites the checks will be done to all up servers.  This will then funnel down
+            # to the foreach loop.  
+
+            # RdsSites in place for eventual support. 
+
+            foreach ( $XdSite in $Config.XdSites ) {
                 # Test Connection, add the first controller that responds to Servers
                 # as well as XdControllers
                 $Controller = ""
@@ -89,7 +92,7 @@ function Test-Series {
                 }
                 elseif ( (Connect-Server $XdSite.SecondaryController) -eq "Successful") {
                     $Controller = $XdSite.SecondaryController       
-                    $Servers += $Controller
+                    $Config.Servers += $Controller
                     $XdControllers += $Controller
                     Write-Verbose "Adding XD Controller $XDController"             
                 }
@@ -99,19 +102,23 @@ function Test-Series {
                 }
             }
 
-            foreach ( $RdsSite in $RdsSites  ) {
+            <# - Not valid yet... but soon hopefully.
+            foreach ( $RdsSite in $Config.RdsSites  ) {
                 # Test connection, add the first controller that responds to Servers
                 # as well as RdsServers
             }
+            #>
             
             
-            
-            $Config.Servers += "$XDController"
+            #     $Config.Servers += "$XDController"
 
-        }
-        # Not Worker
-
-        # This section will skip the "Worker"/"CitrixEnvironment"
+        } #END WORKER
+    
+        # This loops over each computer in $Config.Servers, checks the connection,
+        # tests all ports defined in config, all services defined in the config,
+        # and if none of those tests fail, it will do the additional checks.
+        # Worker Series will populate with just the servers, but no ports or 
+        # Services, so they will be checks only.  
         foreach ($ComputerName in $Config.Servers) {
             # State can be UP / DEGRADED / DOWN
             $State = "UP"
@@ -124,8 +131,8 @@ function Test-Series {
             $ChecksData = @()
             $Errors = @()
 
-
             if ((Connect-Server $ComputerName) -eq "Successful") {
+               
                 # Ports
                 foreach ($Port in $Config.Ports) { 
                     if ((Test-NetConnection $ComputerName $Port).open -eq "True") {
@@ -180,97 +187,95 @@ function Test-Series {
                     # This section, you'll probably end up copying and 
                     # XXX CHANGEME XXX 
                     foreach ($Check in $Config.Checks) {
+                        <#
                         $CheckName = $Check.PSObject.Properties.Name
                         $CheckFunc = "Test-$($CheckName)"
                         if (Test-CommandExists $CheckFunc) {
                             $Success, $Values = Invoke-Expression "$CheckFunc $Series $JSONConfigFilename $ComputerName"
                         
-                            # Validate Success
-                            if ( $true -eq $Success ) { 
-                                
-                                $ChecksUp += "$CheckName"
 
-                            }
-
-                            # Assume Error if we got this far. 
-                            else { 
-                                # XXX CHANGEME XXX
-                                $ChecksDown += "$CheckName"
-                                # XXX CHANGEME XXX
-                                $Errors += "$CheckName failed"
-                                $State = "DEGRADED"
-                            }         
-                            
-                            if ( $null -ne $Values ) {
-                                $ChecksData += [PSCustomObject]@{
-                                    CheckName = $CheckName
-                                    Values    = $Values
-                                }
-                            }
                         
 
-                            foreach ( $Check in $Config.Checks ) {
-                                $CheckName = $Check.PSObject.Properties.Name
-                                $CheckValue = $Check.PSObject.Properties.Name
+                        # I was originally going to have the user be able to define checks, but that would lead to 
+                        # the introduction of possibly unsafe code running in elevated privs. Playing safe for now.
+                        foreach ( $Check in $Config.Checks ) {
+                            $CheckName = $Check.PSObject.Properties.Name
+                            $CheckValue = $Check.PSObject.Properties.Name
+#>
+                    
+                        $Success = $false
+                        $Values = @()
                 
-                                switch ($CheckName) {
-                                    # XenDesktop Checks
-                                    # Worker Checks
-                                    "XdDesktop" { 
-                                        if ( $ComputerName -in $XdControllers ) { 
-                                            $ChecksData += Test-XdDesktop $ComputerName 
-                                        }
-                                        else {
-                                            $Errors += "$ComputerName not "                                         
-                                        }
-                                    }
-                                    "XdServer" {
-                                        if ( $ComputerName -in $XdControllers) { 
-                                            $ChecksData += Test-XdServer $ComputerName $Check.BootThreshold $Check.HighLoad 
-                                        }
-                                    }
-
-                                    # License Checks
-                                    "XdLicense" { }
-
-                                    # Site/Env Checks
-                                    "XdDeliveryGroupHealth" { if ( $true -eq $CheckValue ) { Test-XdDeliveryGroupHealth $ComputerName }}
-                                    "XdCatalogHealth" { }
-                                    "XdHypevisorHealth" { }
-
-                                    "XdSession" { }
-
-
-                                    
-                                    # Netscaler Checks
-                                    "Netscaler" { }
-                                    "NetscalerGateway" { }
-
-                                    # URL Checks
-                                    "HTTPUrl" { }
-                                    "HTTPSUrl" { }
-
-                                    "ValidCert" { }
-
-                                    Default { }
+                        switch ($CheckName) {
+                            # XenDesktop Checks
+                            # Worker Checks
+                            "XdDesktop" { 
+                                if ( $ComputerName -in $XdControllers ) { 
+                                    Write-Verbose "$ComputerName starting Test-XdDesktop"
+                                    $Success, $Values = Test-XdDesktop $ComputerName $Check.BootThreshold $Check.HighLoad
                                 }
-           
-
                             }
-                        } 
-                        else { $Errors += "$CheckFunc does not exist"}
-                    }
-                    <#
-                    Check-HTTPUrl (host, port, path)
-                    Check-HTTPSUrl (host, port, path)
-                    Check-ValidCert (host, port)
-                    Check-XenServer (host, port, creds)
-                    Check-Netscaler
-                    Check-PVSsite ( , , )
+                            "XdServer" {
+                                if ( $ComputerName -in $XdControllers) { 
+                                    Write-Verbose"$ComputerName starting Test-XdServer"
+                                    $Success, $Values = Test-XdServer $ComputerName $Check.BootThreshold $Check.HighLoad 
+                                }
+                            }
+                            "XdSessionInfo" { }
 
-                    Each of these invocations looks like  
-                    Test-CheckName($Series.CheckName, $ConfigObject, $ComputerName)
-                    #>
+                            # License Checks
+                            "XdLicense" { 
+                                $Success, $Values = Test-XdLicense $ComputerName 
+                            }
+
+                            # Site/Env Checks
+                            "XdDeliveryGroupHealth" { 
+                                if ( $true -eq $CheckValue ) { 
+                                    $Success, $Values = Test-XdDeliveryGroupHealth $ComputerName 
+                                }
+                            }
+                            "XdCatalogHealth" { }
+                            "XdHypervisorHealth" { }
+                                    
+                            # Netscaler Checks
+                            "Netscaler" { }
+                            "NetscalerGateway" { }
+
+                            # URL Checks
+                            "HTTPUrl" { }
+                            "HTTPSUrl" { }
+                            "ValidCert" { }
+
+                            # PVS
+                            "PVSSite" { }
+                            "PVSFarm" { }
+
+                            Default { }
+                        }
+           
+                        # Validate Success
+                        if ( $true -eq $Success ) {     
+                            $ChecksUp += $CheckName
+                        } # Assume Error if we got this far. 
+                        else { 
+                            # XXX CHANGEME XXX
+                            $ChecksDown += $CheckName
+                            # XXX CHANGEME XXX
+                            $Errors += "$CheckName failed"
+                            $State = "DEGRADED"
+                        }         
+                            
+                        if ( $null -ne $Values ) {
+                            $ChecksData += [PSCustomObject]@{
+                                CheckName = $CheckName
+                                Values    = $Values
+                            }
+                        }
+                    }
+                    #   } 
+                    # else { $Errors += "$CheckFunc does not exist"}
+                    #    }
+
                 } 
                 # State is DEGRADED, we will not run additional checks.
                 else {    
@@ -278,6 +283,7 @@ function Test-Series {
                         $ChecksDown += $Check.PSObject.Properties.Name
                     }
                 }
+
 
                 # Finalize State by making sure if no tests passed, it's the same as being down. If degraded,
                 # There's no need to do further checks 
@@ -293,9 +299,7 @@ function Test-Series {
                         $Errors += "$ComputerName is down."
                     } 
                 }
-
-            } 
-            
+            }
             # Server is down - not responding to ping
             # XXX CHANGEME XXX - Anything else to be set / returned? 
             else {
@@ -323,7 +327,7 @@ function Test-Series {
                 'ChecksData'   = $ChecksData
                 'Errors'       = $Errors
             }
-        }    
+        } 
     } #else we didn't really want to test, so we don't populate results, which will return an empty array.
     return $results
 }

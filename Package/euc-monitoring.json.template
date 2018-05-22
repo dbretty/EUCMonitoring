@@ -1,8 +1,6 @@
 {
     "Global": {
-        "Citrix": {
-            "xdbrokerprimary": "xdprimary.domain.com",
-            "xdbrokerfailover": "xdsecondary.domain.com",
+        "ThirdParty": {
             "controlup": "no"
         },
         "WebData": {
@@ -72,17 +70,25 @@
     },
     "Worker": {
         "test": "no",
-        "Checks": {
-            "Workload": {
-                "XdServer": {
-                    "BootThreshold": 7,
-                    "HighLoad": 8000
-                },
-                "XdDesktop": {
-                    "BootThreshold": 7,
-                    "HighLoad": 8000
-                }
+        "XdSites": [
+            { 
+                "PrimaryController": "ddc1.domain.com",
+                "SecondaryController": "ddc2.domain.com
             },
+            {     
+                "PrimaryController": "ddc3.domain.com",
+                "SecondaryController": "ddc4.domain.com"
+            }
+        ],
+        "Checks": {
+            "XdServer": {
+                "BootThreshold": 7,
+                "HighLoad": 8000
+            },
+            "XdDesktop": {
+                "BootThreshold": 7,
+                "HighLoad": 8000
+            },        
             "XdDeliveryGroup": true,
             "XdDDC": true,
             "XdCatalogs": true,
