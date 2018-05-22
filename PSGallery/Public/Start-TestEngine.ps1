@@ -46,7 +46,7 @@ function Start-TestEngine {
             if ( "Global" -ne $SeriesName ) {
 
                 # This is where all the work happens. 
-                $SeriesResult = Test-Series $SeriesName $JSONConfigFileName
+                $SeriesResult = Test-Series $JSONConfigFileName $SeriesName
 
                 # As long as we get results, write out any errors to appropriate log file
                 if ( $null -ne $SeriesResult ) {
@@ -86,24 +86,24 @@ function Start-TestEngine {
         
         # If we see WebData enabled, send to the report maker.
         if ( $ConfigObject.Global.Webdata.Enabled ) {
-            New-HTMLReport $ConfigObject $Results 
+            New-HTMLReport $JSONConfigFilename $Results 
         }
 
         # If we see InfluxDB Enabled in ConfigObject, generate the data.  
         # We want all results to represent the same moment in time, even if that's not true for 
         # collation reasons. This is why this step happens at the end. 
         if ( $ConfigObject.Global.Influx.Enabled ) {
-            Send-ResultToInfluxDB $ConfigObject $Results
+            Send-ResultToInfluxDB $JSONConfigFilename $Results
         }
 
         # PSGraph generated data, using the State property in each result 
         if ( $ConfigObject.Global.Graph.Enabled ) {
-            New-EUCGraph $ConfigObject $Results
+            New-EUCGraph $JSONConfigFilename $Results
         }
 
         # Maybe console formatted data?  Just ideas at the moment.  
         if ( $ConfigObject.Global.ShowResults.Enabled ) {
-            Show-Results $ConfigObject $Results
+            Show-Results $JSONConfigFilename $Results
         }
 
         # Stop the timer and display the output

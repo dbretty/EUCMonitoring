@@ -31,7 +31,7 @@ function Test-Series {
     Param
     (
         [Parameter(ValueFromPipeline, Mandatory = $true)][string]$SeriesName,
-        [Parameter(ValueFromPipeline, Mandatory = $true)][string]$JSONConfigFileName
+        [Parameter(ValueFromPipeline, Mandatory = $true)][string]$JSONConfigFilename
         #       [Parameter(ValueFromPipeline)]$ConfigObject
     )
     # There's probably a better way of ensuring one or the other works better.  
@@ -39,23 +39,22 @@ function Test-Series {
     # XXX CHANGEME XXX
     Write-Verbose "Starting Test-Series on $SeriesName."
     # Initialize Empty Results
+    Write-Verbose "Initializing Results..."
     $Results = @()
 
     # Set up tests
-   
 
-    # Including a JSONFileName has higher precedence than passing a loaded. 
-    #   if ( $JSONConfigFilename ) {
-    #       $ConfigObject = Get-Content -Raw -Path $JSONConfigFilename | ConvertFrom-Json
-    #   }    
+    Write-Verbose "Loading config from $JSonConfigFilename"
+    if ( $JSONConfigFilename ) {
+        $ConfigObject = Get-Content -Raw -Path $JSONConfigFilename | ConvertFrom-Json
+    }    
 
-    # XXX CHANGEME XXX
-    # Set $Config to the proper location.  This should be passed 
-    #    $Config = $Series.Path
+    
     $Config = $ConfigObject.$Series
-
-    # Set the path to your test area. 
-    #$Config = $JSONConfig.Citrix.Controllers
+    if ( $null -eq $Config ) {
+        Write-Verbose "Unable to find $Series series in $JSonConfigFilename. We shouldn't get here."
+        return $Results
+    }
    
 
     # Make sure we're allowed to run this test. 

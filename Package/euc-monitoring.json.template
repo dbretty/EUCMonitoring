@@ -73,7 +73,7 @@
         "XdSites": [
             { 
                 "PrimaryController": "ddc1.domain.com",
-                "SecondaryController": "ddc2.domain.com
+                "SecondaryController": "ddc2.domain.com"
             },
             {     
                 "PrimaryController": "ddc3.domain.com",
