@@ -5,12 +5,13 @@
 # Find-Module PSGraph | Install-Module
 
 # Import Module
-Import-Module PSGraph
+
 
 function New-EUCGraph {
     <#   
 Broken Stuff.  Total testbed. 
 #> 
+    Import-Module PSGraph
 
     #    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High")]
     

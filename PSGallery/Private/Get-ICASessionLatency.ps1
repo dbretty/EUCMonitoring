@@ -5,10 +5,8 @@ Function Get-ICASessionLatency {
 
     # $Avg = get-Counter "\\$computername\ICA Session(*)\Latency - Session Average"
     $Last = get-Counter "\\$computername\ICA Session(*)\Latency - Last Recorded"
-    
-    #return $Last, $Avg
 
-    return $Last.CounterSamples.CookedValue | Measure-Object -Average -Maximum -Minimum | Select-Object Average, Maximum, Sum
+    return $Last.CounterSamples.CookedValue | Measure-Object -Average -Maximum -Minimum | Select-Object Minimum, Average, Maximum
 }
 
 <#

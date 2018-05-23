@@ -30,9 +30,8 @@ function Test-Series {
     [CmdletBinding()]
     Param
     (
-        [Parameter(ValueFromPipeline, Mandatory = $true)][string]$SeriesName,
-        [Parameter(ValueFromPipeline, Mandatory = $true)][string]$JSONConfigFilename
-        #       [Parameter(ValueFromPipeline)]$ConfigObject
+        [Parameter(ValueFromPipeline, Mandatory = $true)][string]$JSONConfigFilename,
+        [Parameter(ValueFromPipeline, Mandatory = $true)][string]$SeriesName
     )
     # There's probably a better way of ensuring one or the other works better.  
 
@@ -42,12 +41,23 @@ function Test-Series {
     Write-Verbose "Initializing Results..."
     $Results = @()
 
-    # Set up tests
-
     Write-Verbose "Loading config from $JSonConfigFilename"
-    if ( $JSONConfigFilename ) {
-        $ConfigObject = Get-Content -Raw -Path $JSONConfigFilename | ConvertFrom-Json
-    }    
+    # Set up tests
+    if ( test-path $JSONConfigFilename ) {
+        $StartTime = (Get-Date)
+
+        try {
+            $ConfigObject = Get-Content -Raw -Path $JSONConfigFilename | ConvertFrom-Json -ErrorAction Stop
+        }
+        catch {
+            throw "Error reading JSON.  Please Check File and try again."
+        }
+    }
+    else {
+        Write-Verbose "Error opening JSON. Please Check File and try again."
+        return 
+    }
+  
 
     
     $Config = $ConfigObject.$Series
@@ -186,22 +196,10 @@ function Test-Series {
                     # This section, you'll probably end up copying and 
                     # XXX CHANGEME XXX 
                     foreach ($Check in $Config.Checks) {
-                        <#
+
                         $CheckName = $Check.PSObject.Properties.Name
-                        $CheckFunc = "Test-$($CheckName)"
-                        if (Test-CommandExists $CheckFunc) {
-                            $Success, $Values = Invoke-Expression "$CheckFunc $Series $JSONConfigFilename $ComputerName"
-                        
+                        $CheckValue = $Check.PSObject.Properties.Name
 
-                        
-
-                        # I was originally going to have the user be able to define checks, but that would lead to 
-                        # the introduction of possibly unsafe code running in elevated privs. Playing safe for now.
-                        foreach ( $Check in $Config.Checks ) {
-                            $CheckName = $Check.PSObject.Properties.Name
-                            $CheckValue = $Check.PSObject.Properties.Name
-#>
-                    
                         $Success = $false
                         $Values = @()
                 
@@ -210,17 +208,19 @@ function Test-Series {
                             # Worker Checks
                             "XdDesktop" { 
                                 if ( $ComputerName -in $XdControllers ) { 
-                                    Write-Verbose "$ComputerName starting Test-XdDesktop"
                                     $Success, $Values = Test-XdDesktop $ComputerName $Check.BootThreshold $Check.HighLoad
                                 }
                             }
                             "XdServer" {
-                                if ( $ComputerName -in $XdControllers) { 
-                                    Write-Verbose"$ComputerName starting Test-XdServer"
+                                if ( $ComputerName -in $XdControllers ) { 
                                     $Success, $Values = Test-XdServer $ComputerName $Check.BootThreshold $Check.HighLoad 
                                 }
                             }
-                            "XdSessionInfo" { }
+                            "XdSessionInfo" {
+                                if ( $ComputerName -in $XdControllers ) {
+                                    $Success, $Values = Test-XdSessions $ComputerName 
+                                }
+                            }
 
                             # License Checks
                             "XdLicense" { 
@@ -255,26 +255,26 @@ function Test-Series {
                         # Validate Success
                         if ( $true -eq $Success ) {     
                             $ChecksUp += $CheckName
-                        } # Assume Error if we got this far. 
+                        } 
                         else { 
-                            # XXX CHANGEME XXX
                             $ChecksDown += $CheckName
-                            # XXX CHANGEME XXX
                             $Errors += "$CheckName failed"
                             $State = "DEGRADED"
                         }         
                             
                         if ( $null -ne $Values ) {
+                            # Do I traverse Values to find Errors?  
+                            # XXX CHANGEME XXX 
+                            if ( $null -ne $Values.Errors ) {
+                                $Errors += $Values.Errors
+                                $State = "DEGRADED"
+                            }
                             $ChecksData += [PSCustomObject]@{
                                 CheckName = $CheckName
                                 Values    = $Values
                             }
                         }
                     }
-                    #   } 
-                    # else { $Errors += "$CheckFunc does not exist"}
-                    #    }
-
                 } 
                 # State is DEGRADED, we will not run additional checks.
                 else {    
@@ -327,6 +327,12 @@ function Test-Series {
                 'Errors'       = $Errors
             }
         } 
+
+        $EndTime = (Get-Date)
+        Write-Verbose "Test-Series for $Series finished."
+        Write-Verbose "Elapsed Time: $(($EndTime-$StartTime).TotalMinutes) Minutes"
+        Write-Verbose "Elapsed Time: $(($EndTime-$StartTime).TotalSeconds) Seconds"
     } #else we didn't really want to test, so we don't populate results, which will return an empty array.
+
     return $results
 }

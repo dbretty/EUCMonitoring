@@ -1,4 +1,4 @@
-function Start-TestEngine {
+function Start-EUCMonitor {
     <#
 .SYNOPSIS
     Starts the main engine behind EUCMonitoring
@@ -108,13 +108,15 @@ function Start-TestEngine {
 
         # Stop the timer and display the output
         $EndTime = (Get-Date)
-        Write-Verbose "Elapsed Time: $(($EndTime-$StartTime).TotalSeconds) Seconds"
+
+        Write-Verbose "Completed."
         Write-Verbose "Elapsed Time: $(($EndTime-$StartTime).TotalMinutes) Minutes"
+        Write-Verbose "Elapsed Time: $(($EndTime-$StartTime).TotalSeconds) Seconds"
     }
     else {
         write-error "Path not found to json. Run Set-EUCMonitoring to get started."
     }
 
-
+    if ( $OutputToVar ) { return $Results }
 
 }
