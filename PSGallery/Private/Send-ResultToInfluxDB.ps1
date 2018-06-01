@@ -81,8 +81,60 @@ function Send-ResultToInfluxDB {
             else { $CheckString += ",$Check=0" }
         }
 
-        $CheckString = $ServiceString -replace " ", "\ "
-        $PostParams = "$Series-Checks,Server=$($Result.ComputerName) $ServiceString $timeStamp"
-        Invoke-RestMethod -Method "POST" -Uri $InfluxUri -Body $postParams
+        if ( "" -ne $CheckString ) {
+            $CheckString = $ServiceString -replace " ", "\ "
+            $PostParams = "$Series-Checks,Server=$($Result.ComputerName) $ServiceString $timeStamp"
+            Invoke-RestMethod -Method "POST" -Uri $InfluxUri -Body $postParams
+        }
+
+        foreach ( $Check in $CheckData ) {
+            $CheckDataString = ""
+
+            switch ($CheckName) {
+                # XenDesktop Checks
+                # Worker Checks
+                "XdDesktop" { 
+
+                }
+                "XdServer" {
+                }
+                "XdSessionInfo" {
+                    $CheckDataString = ""
+                }
+
+                # License Checks
+                "XdLicense" { 
+                    $Success, $Values = Test-XdLicense $ComputerName 
+                }
+
+                # Site/Env Checks
+                "XdDeliveryGroupHealth" { 
+                    Write-Verbose "XdDeliveryGroupHealth CheckData has not been implemented"
+                }
+                "XdCatalogHealth" { }
+                "XdHypervisorHealth" { }
+                                    
+                # Netscaler Checks
+                "Netscaler" { }
+                "NetscalerGateway" { }
+
+                # URL Checks
+                "HTTPUrl" { }
+                "HTTPSUrl" { }
+                "ValidCert" { }
+
+                # PVS
+                "PVSSite" { }
+                "PVSFarm" { }
+
+                Default { }
+            }
+
+            if ( "" -ne $CheckDataString ) {
+                $CheckDataString = $ServiceString -replace " ", "\ "
+                $PostParams = "$Series-Checks,Server=$($Result.ComputerName) $ServiceString $timeStamp"
+                Invoke-RestMethod -Method "POST" -Uri $InfluxUri -Body $postParams
+            }
+        }
     }
 }

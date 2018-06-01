@@ -118,8 +118,6 @@ function Test-Series {
             }
             #>
             
-            
-            #     $Config.Servers += "$XDController"
 
         } #END WORKER
     
@@ -183,10 +181,7 @@ function Test-Series {
                     }
                 
                 #>
-                # Okay, so this is some magic.  We're gonna dynamically invoke functions using the 
-                # check name.  If the check name is "HTTPUrl", we'll call Test-HTTPUrl and pass 
-                # parameters.  Each check will know what series it's in, as well as have a config
-                # object referenced.  
+                
                 # Tests will return true or false, which will determine checkup or checkdown. 
                 # If it cannot invoke a check, it will create an error and be placed in checkdown.
                 # Each check should be able to create their own influx data using the series
@@ -233,12 +228,24 @@ function Test-Series {
                                     $Success, $Values = Test-XdDeliveryGroupHealth $ComputerName 
                                 }
                             }
-                            "XdCatalogHealth" { }
-                            "XdHypervisorHealth" { }
+                            "XdCatalogHealth" { 
+                                if ( $true -eq $CheckValue ) {
+                                    $Success, $Values = Test-XdCatalogsHealth $ComputerName
+                                }
+                            }
+                            "XdHypervisorHealth" { 
+                                if ( $true -eq $CheckValue ) {
+                                    $Success, $Values = Test-XdHypervisorHealth $ComputerName
+                                }
+                            }
                                     
                             # Netscaler Checks
-                            "Netscaler" { }
-                            "NetscalerGateway" { }
+                            "Netscaler" {
+                                $Success, $Values = Test-Netscaler $ComputerName $CheckValue.Username $CheckValue.Password
+                            }
+                            "NetscalerGateway" { 
+                                $Success, $Values = Test-NSGateway $ComputerName $CheckValue.Username $CheckValue.Password
+                            }
 
                             # URL Checks
                             "HTTPUrl" { }
