@@ -248,9 +248,30 @@ function Test-Series {
                             }
 
                             # URL Checks
-                            "HTTPUrl" { }
-                            "HTTPSUrl" { }
-                            "ValidCert" { }
+                            "HTTPUrl" { 
+                                
+                                $Success, $Values = Test-URL "http://$($ComputerName):$($CheckValue.Port)$($CheckValue.Path)"
+                                
+
+                                <#
+
+                                            "HTTPUrl": {
+                "Ports": [ 80 ],
+                "Path": "/Citrix/StoreWeb"
+            },
+            "HTTPSUrl": {
+                "Ports": [ 443 ],
+                "Path": "/Citrix/StoreWeb"
+            }, 
+            #>
+
+                            }
+                            "HTTPSUrl" { 
+                                $Success, $Values = Test-URL "https://$($ComputerName):$($CheckValue.Port)$($CheckValue.Path)"
+                            }
+                            "ValidCert" { 
+                                $Success, $Values = Test-ValidCert $ComputerName $CheckValue.Port
+                            }
 
                             # PVS
                             "PVSSite" { }

@@ -22,11 +22,7 @@ To install and run this software follow these steps
 The Server that you want to run this script from must have the XenServer and XenDesktop PowerShell SDK Installed. Install Citrix Studio on the monitoring server and also install the XenServer SDK from the [XenServer 7.2 Standard Edition](https://www.citrix.com/downloads/xenserver/product-software/xenserver-72-standard-edition.html) download page.
 
 #### Cloud
-<<<<<<< HEAD
-The Server that you want to run this script from must have the Remote PowerShell SDK for Applications and Desktops Service from: http://download.apps.cloud.com/CitrixPoshSdk.exe
-=======
 The Server that you want to run this script from must have the Remote [PowerShell SDK for Applications and Desktops Service](http://download.apps.cloud.com/CitrixPoshSdk.exe): 
->>>>>>> upstream/v2_beta
 
 Obtain a Citrix Cloud automation credential as follows:
 - Login to https://citrix.cloud.com/
