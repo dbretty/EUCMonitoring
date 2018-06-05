@@ -77,7 +77,7 @@ New-EUCMonitoringConfig C:\Monitoring
 
 ```text
 cd C:\Monitoring
-Start-XDMonitor
+Start-EUCMonitor
 ```
 OR
 ```text
