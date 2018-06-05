@@ -164,31 +164,13 @@ function Test-Series {
                         $Errors += "$Service not running"
                     } 
                 } 
-
-
-                # JSON file should reflect this configuration.  Interate over checks, test, and put in 
-                # correct group.  Checks are pass/fail.  Errors array holds the detail for review
-                <#
-                if ("ValidateHTTPSCert" -in $Config.Checks) {
-                     if ( Test-ValidCert -Target $ComputerName -port 443 ) { 
-                        $ChecksUp += "ValidCert"
-                    } 
-                    else {
-                        Write-Verbose "$ComputerName state degraded. Port 443 Cert not valid"
-                        $State = "DEGRADED"
-                        $ChecksDown += "ValidCert"
-                        $Errors += "$ComputerName - Port 443 Cert not valid"
-                    }
-                
-                #>
                 
                 # Tests will return true or false, which will determine checkup or checkdown. 
                 # If it cannot invoke a check, it will create an error and be placed in checkdown.
                 # Each check should be able to create their own influx data using the series
-                # information.  
+                # information, so update that function as well. 
 
                 if ( $State -eq "UP") {
-                    # This section, you'll probably end up copying and 
                     # XXX CHANGEME XXX 
                     foreach ($Check in $Config.Checks) {
 
@@ -238,7 +220,12 @@ function Test-Series {
                                     $Success, $Values = Test-XdHypervisorHealth $ComputerName
                                 }
                             }
-                                    
+
+                            # XenServer
+                            "XenServer" {
+                                $Success, $Values = Test-XenServer $ComputerName $CheckValue.Username $CheckValue.Password
+                            }
+           
                             # Netscaler Checks
                             "Netscaler" {
                                 $Success, $Values = Test-Netscaler $ComputerName $CheckValue.Username $CheckValue.Password
@@ -247,35 +234,24 @@ function Test-Series {
                                 $Success, $Values = Test-NSGateway $ComputerName $CheckValue.Username $CheckValue.Password
                             }
 
-                            # URL Checks
-                            "HTTPUrl" { 
-                                
-                                $Success, $Values = Test-URL "http://$($ComputerName):$($CheckValue.Port)$($CheckValue.Path)"
-                                
-
-                                <#
-
-                                            "HTTPUrl": {
-                "Ports": [ 80 ],
-                "Path": "/Citrix/StoreWeb"
-            },
-            "HTTPSUrl": {
-                "Ports": [ 443 ],
-                "Path": "/Citrix/StoreWeb"
-            }, 
-            #>
-
-                            }
-                            "HTTPSUrl" { 
-                                $Success, $Values = Test-URL "https://$($ComputerName):$($CheckValue.Port)$($CheckValue.Path)"
-                            }
-                            "ValidCert" { 
-                                $Success, $Values = Test-ValidCert $ComputerName $CheckValue.Port
-                            }
-
-                            # PVS
+                            # PVS - XXX CHANGEME XXX 
                             "PVSSite" { }
                             "PVSFarm" { }
+
+                            # URL Checks
+                            "HTTPUrl" { 
+                                $Url = "http://$($ComputerName):$($CheckValue.Port)$($CheckValue.Path)"
+                                $Success = Test-URL -Url $Url
+                            }
+                            "HTTPSUrl" { 
+                                $Url = "https://$($ComputerName):$($CheckValue.Port)$($CheckValue.Path)"
+                                $Success = Test-URL -Url $Url
+                            }
+                            "ValidCert" { 
+                                $Success = Test-ValidCert $ComputerName $CheckValue.Port
+                            }
+
+                          
 
                             Default { }
                         }

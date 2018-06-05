@@ -28,15 +28,17 @@ function Test-ValidCert {
     )
     
     $TCPClient = New-Object -TypeName System.Net.Sockets.TCPClient
+
     try {
         $TcpSocket = New-Object Net.Sockets.TcpClient($Target, $Port)
         $tcpstream = $TcpSocket.GetStream()
         $Callback = { param($sender, $cert, $chain, $errors) return $true }
         $SSLStream = New-Object -TypeName System.Net.Security.SSLStream -ArgumentList @($tcpstream, $True, $Callback)
+        
         try {
             $SSLStream.AuthenticateAsClient($Target)
             $Certificate = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2($SSLStream.RemoteCertificate)
-        }
+        } 
         finally {
             $SSLStream.Dispose()
         }

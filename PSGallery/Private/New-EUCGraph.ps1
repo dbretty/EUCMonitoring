@@ -1,3 +1,6 @@
+function New-EUCGraph {
+    <#   
+Broken Stuff.  Total testbed. 
 # Install GraphViz from the Chocolatey repo
 # Find-Package graphviz | Install-Package -ForceBootstrap
 
@@ -7,9 +10,6 @@
 # Import Module
 
 
-function New-EUCGraph {
-    <#   
-Broken Stuff.  Total testbed. 
 #> 
     Import-Module PSGraph
 

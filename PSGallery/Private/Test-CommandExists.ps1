@@ -1,8 +1,3 @@
-
-
-# Straight lifted from Ed Wilson, https://bit.ly/2wUQw2C
-
-
 Function Test-CommandExists {
     <#
     .SYNOPSIS
@@ -18,7 +13,9 @@ Function Test-CommandExists {
     An example
     
     .NOTES
-    General notes
+    Straight lifted from Ed Wilson, https://bit.ly/2wUQw2C
+
+
     #>
 
     Param ($command)

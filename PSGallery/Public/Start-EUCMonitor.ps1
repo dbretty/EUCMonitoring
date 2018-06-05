@@ -12,6 +12,11 @@ function Start-EUCMonitor {
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     Adam Yarborough         1.0             17/05/2018          Function Creation
+.CREDITS 
+    David Brett - Original creation, Netscaler, Controller, Director, Storefront
+    James Kindon - AD, Controller, FAS, PVS, SQL, UPS, WEM
+    David Wilkinson - AppV, CC, 
+    Ryan Butler - Pretty much everything
 
 .EXAMPLE
     None Required
@@ -35,6 +40,22 @@ function Start-EUCMonitor {
         }
         catch {
             throw "Error reading JSON.  Please Check File and try again."
+        }
+
+        Write-Verbose "Config File Loaded."
+        Write-Verbose "ErrorFile "
+
+         Write-Verbose "Testing Output File Location $OutputLocation"
+
+        If ((Test-Path $OutputLocation) -eq $False) {
+            try {
+                Write-Verbose "Output File Location $OutputLocation Does Not Exist - Creating Directory"
+                New-Item -ItemType directory -Path $OutputLocation -ErrorAction Stop
+            }
+            Catch {
+                Write-Error "Could Not Create Output Directory $OutputLocation Quitting"
+                break
+            } 
         }
 
         foreach ( $Series in $ConfigObject ) {
