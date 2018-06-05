@@ -81,7 +81,7 @@ Start-EUCMonitor
 ```
 OR
 ```text
-Start-XDMonitor -JsonFile ".\mysettings.json" -LogFile ".\mylog.txt" -CSSFile ".\euc-monitor.css" -Verbose 
+Start-EUCMonitor -JsonFile ".\mysettings.json" -LogFile ".\mylog.txt" -CSSFile ".\euc-monitor.css" -Verbose 
 ```
 
 8. Open up your new dashboard HTML file from the location you specified in your json for web data output
