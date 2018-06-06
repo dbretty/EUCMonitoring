@@ -66,6 +66,8 @@ function Test-Series {
         return $Results
     }
    
+    $XdControllers = @()
+    # Add RdsControllers = @() here when implementing. 
 
     # Make sure we're allowed to run this test. 
     if ( ($true -eq $Config.Test) -or ("yes" -eq $Config.Test) ) {
@@ -309,13 +311,9 @@ function Test-Series {
                 # XXX CHANGEME XXX - Validate this is correct.  
                 if ( "DEGRADED" -eq $State ) {
                     if ( ($null -eq $ServicesUp) -and ($null -eq $PortsUp) -and ($null -eq $ChecksUp) ) {
-                        Write-Verbose "$ComputerName is down."
+                        Write-Verbose "$ComputerName is effectively down."
+                        $Errors += "$ComputerName is effectively down."
                         $State = "DOWN"
-                        # This is probably redundant, but good housekeeping. 
-                        $PortsDown = $Config.Ports
-                        $ServicesDown = $Config.Services
-                        $ChecksDown = $Config.Checks
-                        $Errors += "$ComputerName is down."
                     } 
                 }
             }

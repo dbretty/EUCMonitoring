@@ -54,7 +54,6 @@ function Test-XdHypervisorHealth {
 
         # Check the resources
         foreach ($Resource in $HypervisorResources ) {
-            $Status = "Passed"
             $TestTarget = New-EnvTestDiscoveryTargetDefinition -AdminAddress $AdminAddress -TargetIdType "HostingUnit" -TestSuiteId "HostingUnit" -TargetId $Resource.HostingUnitUid
             $TestResults = Start-EnvTestTask -AdminAddress $AdminAddress -InputObject $TestTarget -RunAsynchronously 
             foreach ( $Result in $TestResults.TestResults ) {

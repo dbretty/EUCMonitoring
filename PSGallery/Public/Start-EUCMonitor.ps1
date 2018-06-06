@@ -25,7 +25,7 @@ function Start-EUCMonitor {
     [CmdletBinding()]
     Param
     (
-        [Parameter(ValueFromPipeline, Mandatory = $true)][string]$JSONConfigFileName = ("$(get-location)\euc-monitoring.json"),
+        [Parameter(ValueFromPipeline)][string]$JSONConfigFileName = ("$(get-location)\euc-monitoring.json"),
         [Parameter(ValueFromPipeline)][switch]$OutputToVar
     )
     
