@@ -1,22 +1,22 @@
 {
     "Global": {
+        "OutputLocation": "c:\\webdata",
+        "ServerErrorFile": "server-errors.txt",
+        "DesktopErrorFile": "desktop-errors.txt",
+        "InfraErrorFile": "infra-errors.txt",
         "ThirdParty": {
             "controlup": "no"
         },
         "WebData": {
-            "outputlocation": "c:\\webdata",
             "htmldatafile": "htmldata.txt",
             "htmloutputfile": "index.html",
             "refreshduration": 0,
-            "servererrorfile": "server-errors.txt",
-            "desktoperrorfile": "desktop-errors.txt",
             "UpColour": "rgba(221, 70, 70, 0.9)",
             "DownColour": "rgba(67, 137, 203, 0.95)",
             "WorkerDonutStroke": 5,
             "workerdonutsize": 500,
             "InfraDonutStroke": 4,
-            "Infradonutsize": 160,
-            "infraerrorfile": "infra-errors.txt"
+            "Infradonutsize": 160
         },
         "Influx": {
             "Enabled": true,
@@ -112,11 +112,11 @@
         "Ports": [ 80, 443 ],
         "Checks": {
             "HTTPUrl": {
-                "Ports": [ 80 ],
+                "Port":  80 ,
                 "Path": "/Citrix/StoreWeb"
             },
             "HTTPSUrl": {
-                "Ports": [ 443 ],
+                "Port":  443,
                 "Path": "/Citrix/StoreWeb"
             },
             "ValidCert": {
@@ -140,11 +140,11 @@
         "Ports": [ 80, 443 ],
         "Checks": {
             "HTTPUrl": {
-                "Ports": [ 80 ],
+                "Port":  80 ,
                 "Path": "/Director/LogOn.aspx?cc=true"
             },
             "HTTPSUrl": {
-                "Ports": [ 443 ],
+                "Port":  443 ,
                 "Path": "/Director/LogOn.aspx?cc=true"
             }
         }
