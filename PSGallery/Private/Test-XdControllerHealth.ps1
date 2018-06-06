@@ -35,7 +35,6 @@ function Test-XdControllerHealth {
     Write-Verbose "Variables and Arrays Initialized"
 
     foreach ( $DeliveryController in $XDDeliveryControllers) {
-        $Status = "Passed"
         Write-Verbose "Initialize Test Variables"
         Write-Verbose "Testing $($DeliveryController.MachineName)"
         $TestTarget = New-EnvTestDiscoveryTargetDefinition -AdminAddress $AdminAddress -TargetIdType "Infrastructure" -TestSuiteId "Infrastructure" -TargetId $DeliveryController.Uuid

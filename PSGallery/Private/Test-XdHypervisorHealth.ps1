@@ -29,9 +29,8 @@ function Test-XdHypervisorHealth {
     Write-Verbose "XdHypervisor Check started"
     $HypervisorConnections = Get-HypScopedObject -AdminAddress $AdminAddress
     Write-Verbose "Initialize Test Variables"
-    $HyperVisor = $true
-    $HypervisorResources = $true
-    $Status = "Passed"
+
+    $Health = $true
         
     foreach ($Connection in $HypervisorConnections) {
         Write-Verbose "Testing $($Connection.Name)"
@@ -48,7 +47,6 @@ function Test-XdHypervisorHealth {
             }
 
         }       
-        if ( "Passed" -ne $Status ) { $HypervisorHealth = $false }
        
         Write-Verbose "Testing associated resources"
 
