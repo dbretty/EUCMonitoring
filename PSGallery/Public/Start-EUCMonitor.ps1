@@ -19,10 +19,14 @@ function Start-EUCMonitor {
     Ryan Butler - Pretty much everything
 
 .EXAMPLE
-    None Required
+    cd "C:\Monitoring"
+    Start-EUCMonitor 
+    - or - 
+    Start-EUCMonitor -JSONConfigFilename "path\to\euc-monitoring.json"
+
 #>
     
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     Param
     (
         [Parameter(ValueFromPipeline)][string]$JSONConfigFileName = ("$(get-location)\euc-monitoring.json"),
@@ -42,15 +46,22 @@ function Start-EUCMonitor {
             throw "Error reading JSON.  Please Check File and try again."
         }
 
-        Write-Verbose "Config File Loaded."
-        Write-Verbose "ErrorFile "
+        $OutputLocation = $ConfigObject.Global.OutputLocation
+        $ServerErrorFile = join-path $OutputLocation $ConfigObject.Global.ServerErrorFile
+        $DesktopErrorFile = join-path $OutputLocation $ConfigObject.Global.DesktopErrorFile
+        $InfraErrorFile = join-path $OutputLocation $ConfigObject.Global.InfraErrorFile
 
         Write-Verbose "Testing Output File Location $OutputLocation"
 
         If ((Test-Path $OutputLocation) -eq $False) {
             try {
-                Write-Verbose "Output File Location $OutputLocation Does Not Exist - Creating Directory"
-                New-Item -ItemType directory -Path $OutputLocation -ErrorAction Stop
+                if ( $PSCmdlet.ShouldProcess("ShouldProcess?") ) {
+                    Write-Verbose "Output File Location $OutputLocation Does Not Exist - Creating Directory"
+                    New-Item -ItemType directory -Path $OutputLocation -ErrorAction Stop        
+                }
+                else {
+                    Write-Verbose "Would create output file location $OutputLocation"
+                }
             }
             Catch {
                 Write-Error "Could Not Create Output Directory $OutputLocation Quitting"
@@ -65,7 +76,8 @@ function Start-EUCMonitor {
             $SeriesName = $Series.PSObject.Properties.Name
             # As long as its not the global section of the config file
             if ( "Global" -ne $SeriesName ) {
-
+                # XXX CHANGEME XXX 
+                # Put in Actual ShouldProcess Checks
                 # This is where all the work happens. 
                 $SeriesResult = Test-Series $JSONConfigFileName $SeriesName
 
@@ -80,18 +92,18 @@ function Start-EUCMonitor {
                             # Check to redirect Desktop errors to DesktopErrorFile 
                             
                             if ( "XdServer" -eq $ResultName ) {
-                                "$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $ConfigObject.Global.ServerErrorFile -Append
-                                $SeriesResult.Errors | Out-File $ConfigObject.Global.ServerErrorFile -Append
+                                "$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $ServerErrorFile -Append
+                                $SeriesResult.Errors | Out-File $ServerErrorFile -Append
                             }
                             # And some for ServerErrorFile
                             elseif ( "XdDesktop" -eq $ResultName ) {
-                                "$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $ConfigObject.Global.DesktopErrorFile -Append
-                                $SeriesResult.Errors | Out-File $ConfigObject.Global.DesktopErrorFile -Append
+                                "$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $DesktopErrorFile -Append
+                                $SeriesResult.Errors | Out-File $DesktopErrorFile -Append
                             } 
                             # Or Just assume its the supporting infrastructure.
                             else {
-                                "$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $ConfigObject.Global.InfraErrorFile -Append
-                                $SeriesResult.Errors | Out-File $ConfigObject.Global.InfraErrorFile -Append
+                                "$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $InfraErrorFile -Append
+                                $SeriesResult.Errors | Out-File $InfraErrorFile -Append
                             }
                         }
                     }
