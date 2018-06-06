@@ -69,16 +69,17 @@ function Start-EUCMonitor {
             } 
         }
 
-        foreach ( $Series in $ConfigObject ) {
+        foreach ( $SeriesName in $ConfigObject.PSObject.Properties.Name ) {
 
             # So, this works by iterating over the top elements of the config file and processing them.
             
-            $SeriesName = $Series.PSObject.Properties.Name
+            # $SeriesName = $Series.PSObject.Properties.Name
             # As long as its not the global section of the config file
             if ( "Global" -ne $SeriesName ) {
                 # XXX CHANGEME XXX 
                 # Put in Actual ShouldProcess Checks
                 # This is where all the work happens. 
+                Write-Verbose "Calling Test-Series $JSONConfigFilename $SeriesName"
                 $SeriesResult = Test-Series $JSONConfigFileName $SeriesName
 
                 # As long as we get results, write out any errors to appropriate log file

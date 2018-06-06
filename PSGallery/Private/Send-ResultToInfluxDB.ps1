@@ -26,7 +26,7 @@ function Send-ResultToInfluxDB {
 
     # We want all results to represent the same moment in time, even if that's not true for 
     # collation reasons. This is why this step happens at the end. 
-    $timestamp = Get-InfluxTime(get-date)
+    $timestamp = Get-InfluxTimestamp
     $InfluxURI = Get-InfluxURI $ConfigObject
          
     Write-Verbose "Pushing results to InfluxDB"

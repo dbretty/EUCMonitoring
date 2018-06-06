@@ -31,12 +31,12 @@ function Test-Series {
     Param
     (
         [Parameter(ValueFromPipeline, Mandatory = $true)][string]$JSONConfigFilename,
-        [Parameter(ValueFromPipeline, Mandatory = $true)][string]$SeriesName
+        [Parameter(ValueFromPipeline, Mandatory = $true)][string]$Series
     )
     # There's probably a better way of ensuring one or the other works better.  
 
     # XXX CHANGEME XXX
-    Write-Verbose "Starting Test-Series on $SeriesName."
+    Write-Verbose "Starting Test-Series on $Series."
     # Initialize Empty Results
     Write-Verbose "Initializing Results..."
     $Results = @()
@@ -70,7 +70,8 @@ function Test-Series {
     # Add RdsControllers = @() here when implementing. 
 
     # Make sure we're allowed to run this test. 
-    if ( ($true -eq $Config.Test) -or ("yes" -eq $Config.Test) ) {
+    Write-Verbose "Series Test value is $($Config.Test)"
+    if ( $true -eq $Config.Test) {
 
         # For the Series that have no servers configured, we will populate servers 
         # with either global values, or amongst sets.  I'd like to eventually be able
@@ -94,6 +95,9 @@ function Test-Series {
                 # Test Connection, add the first controller that responds to Servers
                 # as well as XdControllers
                 $Controller = ""
+                if ( $null -eq $Config.Servers ) {
+                    $Config | Add-Member -NotePropertyName Servers -NotePropertyValue @()
+                }
             
                 if ( (Connect-Server $XdSite.PrimaryController ) -eq "Successful" ) {
                     $Controller = $XdSite.PrimaryController 
@@ -141,13 +145,17 @@ function Test-Series {
             $Errors = @()
 
             if ((Connect-Server $ComputerName) -eq "Successful") {
-               
+                Write-Verbose "Series $Series - Connection Successful to $ComputerName"
+
                 # Ports
                 foreach ($Port in $Config.Ports) { 
-                    if ((Test-NetConnection $ComputerName $Port).open -eq "True") {
+                    Write-Verbose "Testing $ComputerName - Port $Port"
+                    if ( (Test-NetConnection $ComputerName $Port).open ) {
+                        Write-Verbose "Success $ComputerName - Port $Port"
                         $PortsUp += $Port   
                     }
                     else {
+                        Write-Verbose "Failure $ComputerName - Port $Port"
                         $State = "DEGRADED"
                         $PortsDown += $Port
                         $Errors += "$Port closed"
@@ -322,8 +330,8 @@ function Test-Series {
             else {
                 Write-Verbose "$ComputerName is down."
                 $State = "DOWN"
-                $PortsDown += $Ports
-                $ServicesDown += $Services
+                $PortsDown += $Config.Ports
+                $ServicesDown += $Config.Services
                     
                 foreach ($Check in $Config.Checks) {
                     $ChecksDown += $Check.PSObject.Properties.Name
@@ -352,5 +360,6 @@ function Test-Series {
         Write-Verbose "Elapsed Time: $(($EndTime-$StartTime).TotalSeconds) Seconds"
     } #else we didn't really want to test, so we don't populate results, which will return an empty array.
 
+    
     return $results
 }
