@@ -29,112 +29,92 @@ function Send-ResultToInfluxDB {
     $timestamp = Get-InfluxTime(get-date)
     $InfluxURI = Get-InfluxURI $ConfigObject
          
+    Write-Verbose "Pushing results to InfluxDB"
     foreach ($result in $Results) {
 
         # XXX CHANGEME XXX 
         #$Series = "TEMPLATE"
         #This assumes influx doesn't care about the order as long as they're grouped
         # Ports Up
-        $PortString = ""
-        foreach ( $Port in $PortsUp ) {
-            if ( $PortString -eq "" ) { $PortString = "Port$Port=1" } 
-            else { $PortString += ",Port$Port=1" }
+        $ParamString = ""
+        foreach ( $Port in $Result.PortsUp ) {
+            if ( $ParamString -eq "" ) { $ParamString = "Port$Port=1" } 
+            else { $ParamString += ",Port$Port=1" }
         }
-        foreach ( $Port in $PortsDown ) {
-            if ( $PortString -eq "" ) { $PortString = "Port$Port=0" } 
-            else { $PortString += ",Port$Port=0" }
+        foreach ( $Port in $Result.PortsDown ) {
+            if ( $ParamString -eq "" ) { $ParamString = "Port$Port=0" } 
+            else { $ParamString += ",Port$Port=0" }
         }
 
-        if ( "" -ne $PortString ) {
-            $PortString = $PortString -replace " ", "\ "
-            $PostParams = "$Series-Ports,Server=$($Result.ComputerName) $PortString $timeStamp"
-            Invoke-RestMethod -Method "POST" -Uri $InfluxUri -Body $postParams
-        }
+ 
         # This assumes influx doesn't care about the order as long as they're grouped.
         # 1 Means Up, 0 means Down.  
         # Services Up
-        $ServiceString = ""
-        foreach ( $Service in $ServicesUp ) {
-            if ( $ServiceString -eq "" ) { $ServiceString = "$Service=1" } 
-            else { $ServiceString += ",$Service=1" }
+
+        foreach ( $Service in $Result.ServicesUp ) {
+            if ( $ParamString -eq "" ) { $ParamString = "$Service=1" } 
+            else { $ParamString += ",$Service=1" }
         }
-        foreach ( $Service in $ServicesDown ) {
-            if ( $ServiceString -eq "" ) { $ServiceString = "$Service=0" } 
-            else { $ServiceString += ",$Service=0" }
+        foreach ( $Service in $Result.ServicesDown ) {
+            if ( $ParamString -eq "" ) { $ParamString = "$Service=0" } 
+            else { $ParamString += ",$Service=0" }
         }
 
-        if ( "" -ne $ServiceString ) {
-            $ServiceString = $ServiceString -replace " ", "\ "
-            $PostParams = "$Series-Services,Server=$($Result.ComputerName) $ServiceString $timeStamp"
-            Invoke-RestMethod -Method "POST" -Uri $InfluxUri -Body $postParams
-        }    
         #This assumes influx doesn't care about the order as long as they're grouped
         # Checks Up
 
-        $CheckString = ""
-        foreach ( $Check in $ChecksUp ) {
-            if ( $CheckString -eq "" ) { $CheckString = "$Check=1" } 
-            else { $CheckString += ",$Check=1" }
+        foreach ( $Check in $Result.ChecksUp ) {
+            if ( $ParamString -eq "" ) { $ParamString = "$Check=1" } 
+            else { $ParamString += ",$Check=1" }
         }
-        foreach ( $Service in $ChecksDown ) {
-            if ( $CheckString -eq "" ) { $CheckString = "$Check=0" } 
-            else { $CheckString += ",$Check=0" }
+        foreach ( $Service in $Result.ChecksDown ) {
+            if ( $ParamString -eq "" ) { $ParamString = "$Check=0" } 
+            else { $ParamString += ",$Check=0" }
         }
 
-        if ( "" -ne $CheckString ) {
-            $CheckString = $ServiceString -replace " ", "\ "
-            $PostParams = "$Series-Checks,Server=$($Result.ComputerName) $ServiceString $timeStamp"
+        # That's all the binary checks.  
+        if ( "" -ne $ParamString ) {
+            $ParamString = $ParamString -replace " ", "\ "
+            $PostParams = "$Series,Server=$($Result.ComputerName) $ParamString $timeStamp"
+            Write-Verbose $PostParams
             Invoke-RestMethod -Method "POST" -Uri $InfluxUri -Body $postParams
         }
 
-        foreach ( $Check in $CheckData ) {
-            $CheckDataString = ""
+        # Stoplight checks
+        if ( "UP" -eq $Result.State ) { $ParamString = "State=2" }
+        elseif ( "DEGRADED" -eq $Result.State ) { $ParamString = "State=1" }
+        else { $ParamString = "State=0" }
 
-            switch ($CheckName) {
-                # XenDesktop Checks
-                # Worker Checks
-                "XdDesktop" { 
+        $PostParams = "$Series-StopLights,Server=$($Result.ComputerName) $ParamString $timeStamp"
+        Invoke-RestMethod -Method "POST" -Uri $InfluxUri -Body $postParams
 
-                }
-                "XdServer" {
-                }
-                "XdSessionInfo" {
-                    $CheckDataString = ""
-                }
-
-                # License Checks
-                "XdLicense" { 
-                    $Success, $Values = Test-XdLicense $ComputerName 
-                }
-
-                # Site/Env Checks
-                "XdDeliveryGroupHealth" { 
-                    Write-Verbose "XdDeliveryGroupHealth CheckData has not been implemented"
-                }
-                "XdCatalogHealth" { }
-                "XdHypervisorHealth" { }
-                                    
-                # Netscaler Checks
-                "Netscaler" { }
-                "NetscalerGateway" { }
-
-                # URL Checks
-                "HTTPUrl" { }
-                "HTTPSUrl" { }
-                "ValidCert" { }
-
-                # PVS
-                "PVSSite" { }
-                "PVSFarm" { }
-
-                Default { }
+        # Unique Numerical Data will follow
+        # ValueName=NumericalValue
+        foreach ( $CheckData in $Result.CheckData ) {
+            $ParamString = ""
+            $CheckDataName = $CheckData.PSObject.Properties.Name
+            $CheckDataValue = $CheckData.PSObject.Properties.Value
+            <#
+                Should look like
+                Results.Series.ComputerName.CheckData.XdDesktop
+                Registered=3
+                Unregistered=2
+                ...
+            #>
+            foreach ( $Sub in $CheckDataValue ) {
+                $SubName = $Sub.PSObject.Properties.Value
+                $SubValue = $Sub.PSObject.Properties.Value
+                if ( $ParamString -eq "" ) { $ParamString = "$SubName=$SubValue" } 
+                else { $ParamString += ",$SubName=$SubValue" }
             }
 
-            if ( "" -ne $CheckDataString ) {
-                $CheckDataString = $ServiceString -replace " ", "\ "
-                $PostParams = "$Series-Checks,Server=$($Result.ComputerName) $ServiceString $timeStamp"
+            if ( "" -ne $ParamString ) {
+                $ParamString = $ServiceString -replace " ", "\ "
+                $PostParams = "$Series-$CheckDataName,Server=$($Result.ComputerName) $ParamString $timeStamp"
+                Write-Verbose $PostParams
                 Invoke-RestMethod -Method "POST" -Uri $InfluxUri -Body $postParams
             }
+            
         }
     }
 }

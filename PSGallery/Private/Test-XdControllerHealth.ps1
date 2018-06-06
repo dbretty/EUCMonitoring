@@ -1,4 +1,5 @@
-function Test-XdCatalogHealth {
+ 
+function Test-XdControllerHealth {
     <#   
 .SYNOPSIS   
     Checks the Status of the Environmental Tests Passed In
@@ -12,11 +13,11 @@ function Test-XdCatalogHealth {
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     Adam Yarborough         1.0             21/03/2018          Function Creation
-    Adam Yarborough         1.1             07/06/2018          Update for object model.
+    Adam Yarborough         1.1             07/06/2018          Function update to new object model
+
 .EXAMPLE
     None Required
 #>
-
 
     [CmdletBinding()]
     Param(
@@ -26,29 +27,29 @@ function Test-XdCatalogHealth {
     #Create array with results
     $Results = @()
     $Errors = @()
-
-    Write-Verbose "Initialize Test Variables"
     $Health = $true
  
-    Write-Verbose "Catalog Env Check started"
-    $XDCatalogs = Get-BrokerCatalog -AdminAddress $AdminAddress 
+    Write-Verbose "Delivery Controllers Env Check started"
+    $XDDeliveryControllers = Get-BrokerController -AdminAddress $AdminAddress
 
-    foreach ( $Catalog in $XDCatalogs ) {
+    Write-Verbose "Variables and Arrays Initialized"
+
+    foreach ( $DeliveryController in $XDDeliveryControllers) {
+        $Status = "Passed"
         Write-Verbose "Initialize Test Variables"
-        Write-Verbose "Testing $($Catalog.Name)"
-        $TestTarget = New-EnvTestDiscoveryTargetDefinition -AdminAddress $AdminAddress -TargetIdType "Catalog" -TestSuiteId "Catalog" -TargetId $Catalog.Uuid
+        Write-Verbose "Testing $($DeliveryController.MachineName)"
+        $TestTarget = New-EnvTestDiscoveryTargetDefinition -AdminAddress $AdminAddress -TargetIdType "Infrastructure" -TestSuiteId "Infrastructure" -TargetId $DeliveryController.Uuid
         $TestResults = Start-EnvTestTask -AdminAddress $AdminAddress -InputObject $TestTarget -RunAsynchronously
         foreach ( $Result in $TestResults.TestResults ) {
             foreach ( $Component in $Result.TestComponents ) {
-                Write-Verbose "$Catalog.Name - $($Component.TestID) - $($Component.TestComponentStatus)"
+                Write-Verbose "$($DeliveryController.MachineName) - $($Component.TestID) - $($Component.TestComponentStatus)"
                 if ( ($Component.TestComponentStatus -ne "CompletePassed") -and ($Component.TestComponentStatus -ne "NotRun") ) {
-                    $Errors += "$Catalog.Name - $($Component.TestID) - $($Component.TestComponentStatus)" 
-                    $Health = $false
+                    $Errors += "$($DeliveryController.MachineName) - $($Component.TestID) - $($Component.TestComponentStatus)" 
+                    $Health = $false 
                 }
-            }            
+            } 
         }
     }
-
     if ( $Health ) {
         return $true
     }
@@ -57,3 +58,4 @@ function Test-XdCatalogHealth {
         return $Results
     }
 }
+

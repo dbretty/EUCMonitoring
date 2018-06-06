@@ -1,4 +1,4 @@
-Function Show-Results {
+Function Show-Result {
     <#
     .SYNOPSIS
     Console based output

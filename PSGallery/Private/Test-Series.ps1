@@ -177,7 +177,9 @@ function Test-Series {
                         $CheckName = $Check.PSObject.Properties.Name
                         $CheckValue = $Check.PSObject.Properties.Name
 
-                        $Success = $false
+                        # IF the check cannot run the test successfully, it returns False.  
+                        # If the check can run the test successfully, but there were problems
+                        # it will populate an Errors property in the returned object.
                         $Values = @()
                 
                         switch ($CheckName) {
@@ -185,53 +187,56 @@ function Test-Series {
                             # Worker Checks
                             "XdDesktop" { 
                                 if ( $ComputerName -in $XdControllers ) { 
-                                    $Success, $Values = Test-XdDesktop $ComputerName $Check.BootThreshold $Check.HighLoad
+                                    $Values = Test-XdDesktop $ComputerName $Check.BootThreshold $Check.HighLoad
                                 }
                             }
                             "XdServer" {
                                 if ( $ComputerName -in $XdControllers ) { 
-                                    $Success, $Values = Test-XdServer $ComputerName $Check.BootThreshold $Check.HighLoad 
+                                    $Values = Test-XdServer $ComputerName $Check.BootThreshold $Check.HighLoad 
                                 }
                             }
                             "XdSessionInfo" {
                                 if ( $ComputerName -in $XdControllers ) {
-                                    $Success, $Values = Test-XdSessions $ComputerName 
+                                    $Values = Test-XdSessions $ComputerName 
                                 }
                             }
 
                             # License Checks
                             "XdLicense" { 
-                                $Success, $Values = Test-XdLicense $ComputerName 
+                                $Values = Test-XdLicense $ComputerName 
                             }
 
                             # Site/Env Checks
                             "XdDeliveryGroupHealth" { 
                                 if ( $true -eq $CheckValue ) { 
-                                    $Success, $Values = Test-XdDeliveryGroupHealth $ComputerName 
+                                    $Values = Test-XdDeliveryGroupHealth $ComputerName 
                                 }
                             }
                             "XdCatalogHealth" { 
                                 if ( $true -eq $CheckValue ) {
-                                    $Success, $Values = Test-XdCatalogsHealth $ComputerName
+                                    $Values = Test-XdCatalogsHealth $ComputerName
                                 }
                             }
                             "XdHypervisorHealth" { 
                                 if ( $true -eq $CheckValue ) {
-                                    $Success, $Values = Test-XdHypervisorHealth $ComputerName
+                                    $Values = Test-XdHypervisorHealth $ComputerName
                                 }
                             }
 
                             # XenServer
                             "XenServer" {
-                                $Success, $Values = Test-XenServer $ComputerName $CheckValue.Username $CheckValue.Password
+                                $XenServerPassword = ConvertTo-SecureString $CheckValue.Password -AsPlainText -Force
+                                $Values = Test-XenServer $ComputerName $CheckValue.Username $XenServerPassword
                             }
            
                             # Netscaler Checks
                             "Netscaler" {
-                                $Success, $Values = Test-Netscaler $ComputerName $CheckValue.Username $CheckValue.Password
+                                $NetScalerPassword = ConvertTo-SecureString $CheckValue.Password -AsPlainText -Force
+                                $Values = Test-Netscaler $ComputerName $CheckValue.Username $NetScalerPassword
                             }
                             "NetscalerGateway" { 
-                                $Success, $Values = Test-NSGateway $ComputerName $CheckValue.Username $CheckValue.Password
+                                $NetScalerPassword = ConvertTo-SecureString $CheckValue.Password -AsPlainText -Force
+                                $Values = Test-NetscalerGateway $ComputerName $CheckValue.Username $NetScalerPassword
                             }
 
                             # PVS - XXX CHANGEME XXX 
@@ -241,14 +246,15 @@ function Test-Series {
                             # URL Checks
                             "HTTPUrl" { 
                                 $Url = "http://$($ComputerName):$($CheckValue.Port)$($CheckValue.Path)"
-                                $Success = Test-URL -Url $Url
+                                $Values = Test-URL -Url $Url
+                                 
                             }
                             "HTTPSUrl" { 
                                 $Url = "https://$($ComputerName):$($CheckValue.Port)$($CheckValue.Path)"
-                                $Success = Test-URL -Url $Url
+                                $Values = Test-URL -Url $Url
                             }
                             "ValidCert" { 
-                                $Success = Test-ValidCert $ComputerName $CheckValue.Port
+                                $Values = Test-ValidCert $ComputerName $CheckValue.Port
                             }
 
                           
@@ -257,26 +263,36 @@ function Test-Series {
                         }
            
                         # Validate Success
-                        if ( $true -eq $Success ) {     
-                            $ChecksUp += $CheckName
-                        } 
-                        else { 
+                        # This is true for empty and $False values  
+                        if ( $false -eq $Values ) {     
                             $ChecksDown += $CheckName
                             $Errors += "$CheckName failed"
                             $State = "DEGRADED"
                         }         
                             
-                        if ( $null -ne $Values ) {
-                            # Do I traverse Values to find Errors?  
-                            # XXX CHANGEME XXX 
+                        # This might be redundant. 
+                        # elseif ( $null -ne Values ) {}
+                        else {
+                            # Gets here with a $True or an object returned. 
+                            # XXX CHANGEME XXX - Review conditions 
+                            $ChecksUp += $CheckName
+                            # Just because we completed the test successfully, doesn't mean it was without
+                            # errors. 
                             if ( $null -ne $Values.Errors ) {
                                 $Errors += $Values.Errors
                                 $State = "DEGRADED"
+                                # XXX CHANGEME XXX Review
+                                # Remove the check's errors since they've been passed to the Series.
+                                $Values.PSObject.Properties.Remove('Errors')
+                                # Maybe $Values = $Values | SelectObject -Property * -ExcludeProperty Errors
                             }
-                            $ChecksData += [PSCustomObject]@{
-                                CheckName = $CheckName
-                                Values    = $Values
-                            }
+                            # Now that we've removed Errors, if there's still data, lets pass it on. 
+                            if ( $null -ne $Values ) {
+                                $ChecksData += [PSCustomObject]@{
+                                    CheckName = $CheckName
+                                    Values    = $Values
+                                }
+                            }                
                         }
                     }
                 } 

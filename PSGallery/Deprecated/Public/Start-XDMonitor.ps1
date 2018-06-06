@@ -509,7 +509,7 @@ function Start-XDMonitor {
         if ($TestNetScalerGateway -eq "yes") {
 <<<<<<< HEAD
 
-<<<<<<< HEAD
+<<<<<<< H
             # Increment Infrastructure Components
             $InfrastructureList += "gateway"
 

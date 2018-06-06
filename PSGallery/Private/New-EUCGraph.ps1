@@ -75,7 +75,7 @@ Broken Stuff.  Total testbed.
 
         if ( $true -eq $Results.Microsoft.AD.Test ) {
             subgraph $subgraph -Attributes @{ Label = 'Microsoft'} {
-                Write-Host "It worked."
+                # Write-Host "It worked."
                 <#                if ( $Results.Microsoft.AD.Results = 0 ) { $color = 'palegreen'}
                 elseif ( $Results.Server.Ups = 0 ) { $color = 'red'}
                 else { $color = 'orange'}

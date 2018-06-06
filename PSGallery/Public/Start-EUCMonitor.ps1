@@ -25,7 +25,7 @@ function Start-EUCMonitor {
     [CmdletBinding()]
     Param
     (
-        [Parameter(ValueFromPipeline, Mandatory = $true)][string]$JSONConfigFileName,
+        [Parameter(ValueFromPipeline, Mandatory = $true)][string]$JSONConfigFileName = ("$(get-location)\euc-monitoring.json"),
         [Parameter(ValueFromPipeline)][switch]$OutputToVar
     )
     
@@ -45,7 +45,7 @@ function Start-EUCMonitor {
         Write-Verbose "Config File Loaded."
         Write-Verbose "ErrorFile "
 
-         Write-Verbose "Testing Output File Location $OutputLocation"
+        Write-Verbose "Testing Output File Location $OutputLocation"
 
         If ((Test-Path $OutputLocation) -eq $False) {
             try {
