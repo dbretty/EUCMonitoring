@@ -114,7 +114,7 @@ function Start-EUCMonitor {
             }
         }
 
-        Write-Verbose "$(ConvertTo-JSON -inputObject $Results -Depth 4)"
+        # Write-Verbose "$(ConvertTo-JSON -inputObject $Results -Depth 4)"
         # Now we should have results, even if blank.
 
         # Output handling
@@ -132,9 +132,9 @@ function Start-EUCMonitor {
         }
 
         # Maybe console formatted data?  Just ideas at the moment.  
-        if ( $ConfigObject.Global.ShowResults.Enabled ) {
-            Show-EUCResult -Results $Results
-        }
+        #if ( $ConfigObject.Global.ShowResults.Enabled ) {
+        Show-EUCResult -Results $Results
+        #}
 
         # Stop the timer and display the output
         $EndTime = (Get-Date)
@@ -145,6 +145,7 @@ function Start-EUCMonitor {
     }
     else {
         write-error "Path not found to json. Run Set-EUCMonitoring to get started."
+        return 
     }
 
     if ( $OutputToVar ) { return $Results }

@@ -27,6 +27,8 @@ function Test-ValidCert {
         [parameter(Mandatory = $true, ValueFromPipeline = $true)][int]$Port
     )
     
+    Write-Verbose "Testing Valid Cert on $Target Port: $Port"
+
     $TCPClient = New-Object -TypeName System.Net.Sockets.TCPClient
 
     try {

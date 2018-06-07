@@ -1,4 +1,4 @@
-function Test-NetConnection {
+function Test-NetConnectionOld {
     <#   
 .SYNOPSIS   
     Tests port on computer. 

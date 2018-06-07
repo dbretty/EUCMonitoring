@@ -26,12 +26,12 @@ Function Show-EUCResult {
     # collation reasons. This is why this step happens at the end. 
     $timeStamp = (get-date)
          
-    Write-Verbose "$(ConvertTo-JSON -inputObject $Results -Depth 4)"
+    Write-Verbose "$(ConvertTo-JSON -inputObject $Results -Depth 6)"
     Write-Verbose "Showing results:"
     foreach ($SeriesName in $Results) { 
 
         $Series = $SeriesName.Series
-        Write-Verbose "Series: $Series"
+        Write-Host "--- Series: $Series ---" -ForegroundColor "Cyan"
 
         foreach ($Result in $SeriesName.Results) {
 
@@ -39,57 +39,50 @@ Function Show-EUCResult {
             #$Series = "TEMPLATE"
             #This assumes influx doesn't care about the order as long as they're grouped
             # Ports Up
-            $ParamString = ""
-            foreach ( $Port in $Result.PortsUp ) {
-                if ( $ParamString -eq "" ) { $ParamString = "Port$Port=1" } 
-                else { $ParamString += ",Port$Port=1" }
-            }
-            foreach ( $Port in $Result.PortsDown ) {
-                if ( $ParamString -eq "" ) { $ParamString = "Port$Port=0" } 
-                else { $ParamString += ",Port$Port=0" }
-            }
+            if ("UP" -eq $Result.State ) { $hostColor = "Green" }
+            elseif ( "DEGRADED" -eq $Result.State) { $hostColor = "Yellow" }
+            else { $hostColor = "red"}
+            Write-Host "Server:   " -NoNewline
+            Write-Host "$($Result.ComputerName)" -ForegroundColor $hostColor
 
+            if ( ($Result.PortsUp.Count -gt 0) -or ($Result.PortsDown.Count -gt 0) ) {
+                Write-Host "Ports:    " -NoNewline
+                foreach ( $Port in $Result.PortsUp ) {
+                    Write-Host "$Port " -ForegroundColor "Green" -NoNewline
+                }
+                foreach ( $Port in $Result.PortsDown ) {
+                    Write-Host "$Port " -ForegroundColor "Red" -NoNewline
+                }
+                Write-Host ""
+            }
  
             # This assumes influx doesn't care about the order as long as they're grouped.
             # 1 Means Up, 0 means Down.  
             # Services Up
-
-            foreach ( $Service in $Result.ServicesUp ) {
-                if ( $ParamString -eq "" ) { $ParamString = "$Service=1" } 
-                else { $ParamString += ",$Service=1" }
-            }
-            foreach ( $Service in $Result.ServicesDown ) {
-                if ( $ParamString -eq "" ) { $ParamString = "$Service=0" } 
-                else { $ParamString += ",$Service=0" }
+            if ( ($Result.ServicesUp.Count -gt 0 ) -or ($Result.ServicesDown.Count -gt 0) ) {
+                Write-Host "Services: " -NoNewline
+                foreach ( $Service in $Result.ServicesUp ) {
+                    Write-Host "$Service " -ForegroundColor "Green" -NoNewline
+                }
+                foreach ( $Service in $Result.ServicesDown ) {
+                    Write-Host "$Service " -ForegroundColor "Red" -NoNewline
+                }
+                Write-Host ""
             }
 
             #This assumes influx doesn't care about the order as long as they're grouped
             # Checks Up
 
-            foreach ( $Check in $Result.ChecksUp ) {
-                if ( $ParamString -eq "" ) { $ParamString = "$Check=1" } 
-                else { $ParamString += ",$Check=1" }
+            if ( ($Result.ChecksUp.Count -gt 0) -or ($Result.ChecksDown.Count -gt 0) ) {
+                Write-Host "Checks:   " -NoNewline
+                foreach ( $Check in $Result.ChecksUp ) {
+                    Write-Host "$Check " -ForegroundColor "Green" -NoNewline
+                }
+                foreach ( $Check in $Result.ChecksDown ) {
+                    Write-Host "$Check " -ForegroundColor "Red" -NoNewline
+                }
+                Write-Host ""
             }
-            foreach ( $Service in $Result.ChecksDown ) {
-                if ( $ParamString -eq "" ) { $ParamString = "$Check=0" } 
-                else { $ParamString += ",$Check=0" }
-            }
-
-            # That's all the binary checks.  
-            if ( "" -ne $ParamString ) {
-                $ParamString = $ParamString -replace " ", "\ "
-                $PostParams = "$Series,Server=$($Result.ComputerName) $ParamString $timeStamp"
-                Write-Verbose $PostParams
-                Write-Output $PostParams
-            }
-
-            # Stoplight checks
-            if ( "UP" -eq $Result.State ) { $ParamString = "State=2" }
-            elseif ( "DEGRADED" -eq $Result.State ) { $ParamString = "State=1" }
-            else { $ParamString = "State=0" }
-
-            $PostParams = "$Series-StopLights,Server=$($Result.ComputerName) $ParamString $timeStamp"
-            Write-Output $PostParams
 
             # Unique Numerical Data will follow
             # ValueName=NumericalValue
@@ -120,6 +113,8 @@ Function Show-EUCResult {
                 }
             
             }
+
         }
+        Write-Host "`n"
     }
 }
