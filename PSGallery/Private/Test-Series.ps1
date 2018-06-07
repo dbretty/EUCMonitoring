@@ -339,6 +339,16 @@ function Test-Series {
                 $Errors += "$ComputerName is down." 
             }
         
+            Write-Verbose "ComputerName: $ComputerName"
+            Write-Verbose "State: $State"
+            Write-Verbose "Ports Up: $PortsUp"
+            Write-Verbose "PortsDown: $PortsDown"
+            Write-Verbose "ServicesUp: $ServicesUp"
+            Write-Verbose "ServicesDown: $ServicesDown"
+            Write-Verbose "ChecksUp: $ChecksUp"
+            Write-Verbose "ChecksDown: $ChecksDown"
+            Write-Verbose "CheckData: $CheckData"
+            Write-Verbose "Errors: $Errors"
             # XXX CHANGEME XXX - Did you alter results?  Was there a good reason?
             $results += [PSCustomObject]@{
                 'ComputerName' = $ComputerName
@@ -354,12 +364,20 @@ function Test-Series {
             }
         } 
 
+        
         $EndTime = (Get-Date)
         Write-Verbose "Test-Series for $Series finished."
         Write-Verbose "Elapsed Time: $(($EndTime-$StartTime).TotalMinutes) Minutes"
         Write-Verbose "Elapsed Time: $(($EndTime-$StartTime).TotalSeconds) Seconds"
+        
+        # Write-Verbose "$(ConvertTo-Json -inputObject $Results)"
+
+        return [PSCustomObject]@{
+            'Series'  = $Series
+            'Results' = $Results
+        }
+
     } #else we didn't really want to test, so we don't populate results, which will return an empty array.
 
-    
-    return $results
+    return $null
 }

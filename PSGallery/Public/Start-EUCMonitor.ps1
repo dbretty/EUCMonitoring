@@ -108,12 +108,13 @@ function Start-EUCMonitor {
                             }
                         }
                     }
-                }
 
-                $Results += $SeriesResult
+                    $Results += $SeriesResult
+                }                
             }
         }
 
+        Write-Verbose "$(ConvertTo-JSON -inputObject $Results -Depth 4)"
         # Now we should have results, even if blank.
 
         # Output handling
@@ -127,17 +128,12 @@ function Start-EUCMonitor {
         # We want all results to represent the same moment in time, even if that's not true for 
         # collation reasons. This is why this step happens at the end. 
         if ( $ConfigObject.Global.Influx.Enabled ) {
-            Send-ResultToInfluxDB $JSONConfigFilename $Results
-        }
-
-        # PSGraph generated data, using the State property in each result 
-        if ( $ConfigObject.Global.Graph.Enabled ) {
-            New-EUCGraph $JSONConfigFilename $Results
+            Send-ResultToInfluxDB -ConfigObject $ConfigObject -Results $Results
         }
 
         # Maybe console formatted data?  Just ideas at the moment.  
         if ( $ConfigObject.Global.ShowResults.Enabled ) {
-            Show-Results $JSONConfigFilename $Results
+            Show-EUCResult -Results $Results
         }
 
         # Stop the timer and display the output

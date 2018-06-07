@@ -1,12 +1,11 @@
-          
-          
-function Send-ResultToInfluxDB {
+Function Show-EUCResult {
     <#
 .SYNOPSIS
-    Starts the main engine behind EUCMonitoring
+    Console based output
+    
 .DESCRIPTION
-    Starts the main engine behind EUCMonitoring
-.PARAMETER JSONConfigFilename
+    Console Based output
+.PARAMETER Results
     The path to the JSON config file.  
 .NOTES
     Current Version:        1.0
@@ -20,24 +19,21 @@ function Send-ResultToInfluxDB {
 #>
     [CmdletBinding()]
     Param(
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ConfigObject,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$Results
     ) 
 
     # We want all results to represent the same moment in time, even if that's not true for 
     # collation reasons. This is why this step happens at the end. 
-    $timestamp = Get-InfluxTimestamp
-    $InfluxURI = Get-InfluxURI $ConfigObject
+    $timeStamp = (get-date)
          
-    Write-Verbose "Pushing results to InfluxDB"
-    
+    Write-Verbose "$(ConvertTo-JSON -inputObject $Results -Depth 4)"
+    Write-Verbose "Showing results:"
     foreach ($SeriesName in $Results) { 
 
         $Series = $SeriesName.Series
         Write-Verbose "Series: $Series"
 
         foreach ($Result in $SeriesName.Results) {
-
 
             # XXX CHANGEME XXX 
             #$Series = "TEMPLATE"
@@ -84,7 +80,7 @@ function Send-ResultToInfluxDB {
                 $ParamString = $ParamString -replace " ", "\ "
                 $PostParams = "$Series,Server=$($Result.ComputerName) $ParamString $timeStamp"
                 Write-Verbose $PostParams
-                Invoke-RestMethod -Method "POST" -Uri $InfluxUri -Body $postParams
+                Write-Output $PostParams
             }
 
             # Stoplight checks
@@ -93,7 +89,7 @@ function Send-ResultToInfluxDB {
             else { $ParamString = "State=0" }
 
             $PostParams = "$Series-StopLights,Server=$($Result.ComputerName) $ParamString $timeStamp"
-            Invoke-RestMethod -Method "POST" -Uri $InfluxUri -Body $postParams
+            Write-Output $PostParams
 
             # Unique Numerical Data will follow
             # ValueName=NumericalValue
@@ -107,7 +103,8 @@ function Send-ResultToInfluxDB {
                 Registered=3
                 Unregistered=2
                 ...
-            #>
+                #>
+
                 foreach ( $Sub in $CheckDataValue ) {
                     $SubName = $Sub.PSObject.Properties.Value
                     $SubValue = $Sub.PSObject.Properties.Value
@@ -119,7 +116,7 @@ function Send-ResultToInfluxDB {
                     $ParamString = $ServiceString -replace " ", "\ "
                     $PostParams = "$Series-$CheckDataName,Server=$($Result.ComputerName) $ParamString $timeStamp"
                     Write-Verbose $PostParams
-                    Invoke-RestMethod -Method "POST" -Uri $InfluxUri -Body $postParams
+                    Write-Output $PostParams
                 }
             
             }
