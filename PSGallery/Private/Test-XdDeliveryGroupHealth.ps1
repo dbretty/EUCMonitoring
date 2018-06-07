@@ -30,27 +30,27 @@ function Test-XdDeliveryGroupHealth {
     Write-Verbose "Initialize Test Variables"
     $Health = $true
 
-    if ($DeliveryGroupCheck -eq "yes") {
-        Write-Verbose "Delivery Groups Env Check started"
-        $XDDeliveryGroups = Get-BrokerDesktopGroup -AdminAddress $AdminAddress
+    
+    Write-Verbose "Delivery Groups Env Check started"
+    $XDDeliveryGroups = Get-BrokerDesktopGroup -AdminAddress $AdminAddress
 
-        foreach ( $DeliveryGroup in $XDDeliveryGroups ) {
+    foreach ( $DeliveryGroup in $XDDeliveryGroups ) {
             
-            Write-Verbose "Testing $($DeliveryGroup.Name)"
-            $TestTarget = New-EnvTestDiscoveryTargetDefinition -AdminAddress $AdminAddress -TargetIdType "DesktopGroup" -TestSuiteId "DesktopGroup" -TargetId $DeliveryGroup.Uuid
-            $TestResults = Start-EnvTestTask -AdminAddress $AdminAddress -InputObject $TestTarget -RunAsynchronously
+        Write-Verbose "Testing $($DeliveryGroup.Name)"
+        $TestTarget = New-EnvTestDiscoveryTargetDefinition -AdminAddress $AdminAddress -TargetIdType "DesktopGroup" -TestSuiteId "DesktopGroup" -TargetId $DeliveryGroup.Uuid
+        $TestResults = Start-EnvTestTask -AdminAddress $AdminAddress -InputObject $TestTarget -RunAsynchronously
 
-            foreach ( $Result in $TestResults.TestResults ) {
-                foreach ( $Component in $Result.TestComponents ) {
-                    Write-Verbose "$($DeliveryGroup.Name) - $($Component.TestID) - $($Component.TestComponentStatus)"
-                    if ( $Component.TestComponentStatus -ne "CompletePassed" -and ($Component.TestComponentStatus -ne "NotRun") ) {
-                        $Errors += "$(DeliveryGroup.Name) - $($Component.TestID) - $($Component.TestComponentStatus)" 
-                        $Health = $false
-                    }
+        foreach ( $Result in $TestResults.TestResults ) {
+            foreach ( $Component in $Result.TestComponents ) {
+                Write-Verbose "$($DeliveryGroup.Name) - $($Component.TestID) - $($Component.TestComponentStatus)"
+                if ( $Component.TestComponentStatus -ne "CompletePassed" -and ($Component.TestComponentStatus -ne "NotRun") ) {
+                    $Errors += "$(DeliveryGroup.Name) - $($Component.TestID) - $($Component.TestComponentStatus)" 
+                    $Health = $false
                 }
             }
         }
     }
+    
     if ( $Health ) {
         return $true
     }

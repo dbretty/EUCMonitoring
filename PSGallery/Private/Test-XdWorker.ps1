@@ -1,4 +1,4 @@
-function Test-Worker {
+function Test-XdWorker {
     <#   
 .SYNOPSIS   
     Checks the Status of the XenDesktop Workers Passed In
@@ -26,7 +26,7 @@ function Test-Worker {
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     David Brett             1.0             29/03/2018          Function Creation
-
+    Adam Yarborough         1.1             07/06/2018          Update to new object model
 .EXAMPLE
     None Required
 #>
@@ -37,11 +37,9 @@ function Test-Worker {
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$Broker,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$WorkerTestMode,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$WorkLoad,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ServerBootThreshold,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ServerHighLoad,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$DesktopBootThreshold,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$DesktopHighLoad,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ErrorFile
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$BootThreshold,
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$HighLoad
+      
     )
 
     #Create array with results
@@ -56,15 +54,11 @@ function Test-Worker {
     # Get Full List Of Delivery Groups
     Write-Verbose "Getting Delivery Groups for Type - $WorkLoad"
     if ($Workload -eq "server") {
-        $BootThreshold = $ServerBootThreshold
-        $HighLoad = $ServerHighLoad
         $DeliveryGroups = Get-BrokerDesktopGroup -AdminAddress $Broker | Where-Object {$_.SessionSupport -eq "MultiSession"} | Select-Object PublishedName, InMaintenanceMode
         $TotalConnectedUsers = (((get-brokersession -MaxRecordCount 5000) | where-object {$_.DesktopKind -eq "Shared" -and $_.SessionState -eq "Active"}) | Measure-Object).Count
         $TotalUsersDisconnected = (((get-brokersession -MaxRecordCount 5000) | where-object {$_.DesktopKind -eq "Shared" -and $_.SessionState -ne "Active"}) | Measure-Object).Count
     }
     else {
-        $BootThreshold = $DesktopBootThreshold
-        $HighLoad = $DesktopHighLoad
         $DeliveryGroups = Get-BrokerDesktopGroup -AdminAddress $Broker | Where-Object {$_.SessionSupport -eq "SingleSession"} | Select-object PublishedName, InMaintenanceMode
         $TotalConnectedUsers = (((get-brokersession -MaxRecordCount 5000) | where-object {$_.DesktopKind -ne "Shared" -and $_.SessionState -eq "Active"}) | Measure-Object).Count
         $TotalUsersDisconnected = (((get-brokersession -MaxRecordCount 5000) | where-object {$_.DesktopKind -ne "Shared" -and $_.SessionState -ne "Active"}) | Measure-Object).Count
@@ -111,21 +105,22 @@ function Test-Worker {
     if ($WorkerTestMode -eq "basic") {
         # Add results to array
         $results += [PSCustomObject]@{
-            'TotalConnectedUsers'            = $TotalConnectedUsers
-            'TotalUsersDisconnected'         = $TotalUsersDisconnected
+            'ConnectedUsers'                 = $TotalConnectedUsers
+            'DisconnectedUsers'              = $TotalUsersDisconnected
             'DeliveryGroupsNotInMaintenance' = $DGNonMaintenanceCount
             'DeliveryGroupsInMaintenance'    = $DGMaintenanceCount
-            'BrokerMachineOn'                = $BMOnCount
-            'BrokerMachineOff'               = $BMOffCount
-            'BrokerMachineRegistered'        = $BMRegisteredCount
-            'BrokerMachineUnRegistered'      = $BMUnRegisteredCount
-            'BrokerMachineInMaintenance'     = $BMMaintenanceCount
+            'BrokerMachinesOn'               = $BMOnCount
+            'BrokerMachinesOff'              = $BMOffCount
+            'BrokerMachinesRegistered'       = $BMRegisteredCount
+            'BrokerMachinesUnRegistered'     = $BMUnRegisteredCount
+            'BrokerMachinesInMaintenance'    = $BMMaintenanceCount
         }
 
         #returns object with test results
         return $results
 
-    } else {
+    }
+    else {
 
 
         # Setup Variables to track the status of the Broker Machines
@@ -208,7 +203,7 @@ function Test-Worker {
             'BrokerMachineUnRegistered'      = $BMUnRegisteredCount
             'BrokerMachineInMaintenance'     = $BMMaintenanceCount
             'BrokerMachinesGood'             = $BrokerGood
-            'BrokerMachinesBad'             = $BrokerBad
+            'BrokerMachinesBad'              = $BrokerBad
         }
 
         #returns object with test results

@@ -88,8 +88,11 @@ Function Show-EUCResult {
             # ValueName=NumericalValue
             foreach ( $CheckData in $Result.CheckData ) {
                 $ParamString = ""
+                
                 $CheckDataName = $CheckData.PSObject.Properties.Name
+                
                 $CheckDataValue = $CheckData.PSObject.Properties.Value
+                Write-Verbose "$CheckDataName is $CheckDataValue"
                 <#
                 Should look like
                 Results.Series.ComputerName.CheckData.XdDesktop

@@ -186,24 +186,26 @@ function Test-Series {
                         foreach ( $Check in $CheckList.PSObject.Properties ) {
                             $CheckName = $Check.Name
                             $CheckValue = $Check.Value
-                            Write-Verbose "$Computername - $CheckName"
+                            Write-Verbose "$Computername performing $CheckName"
                             # IF the check cannot run the test successfully, it returns False.  
                             # If the check can run the test successfully, but there were problems
                             # it will populate an Errors property in the returned object.
                             $Values = @()
                 
                             switch ($CheckName) {
+                                # Need to come back and splat arguments for the longer functions. 
+
                                 # XenDesktop Checks
                                 # Worker Checks
+
                                 "XdDesktop" { 
-                                    if ( $ComputerName -in $XdControllers ) { 
-                                    
-                                        $Values = Test-XdDesktop $ComputerName $CheckValue.BootThreshold $CheckValue.HighLoad
+                                    if ( $ComputerName -in $XdControllers ) {    
+                                        $Values = Test-XdWorker -Broker $ComputerName -WorkerTestMode "basic" -Workload "desktop" -BootThreshold $CheckValue.BootThreshold -HighLoad $CheckValue.HighLoad
                                     }
                                 }
                                 "XdServer" {
                                     if ( $ComputerName -in $XdControllers ) { 
-                                        $Values = Test-XdServer $ComputerName $CheckValue.BootThreshold $CheckValue .HighLoad 
+                                        $Values = Test-XdWorker -Broker $ComputerName -WorkerTestMode "basic" -Workload "server" -BootThreshold $CheckValue.BootThreshold -HighLoad $CheckValue.HighLoad
                                     }
                                 }
                                 "XdSessionInfo" {
@@ -225,7 +227,7 @@ function Test-Series {
                                 }
                                 "XdCatalogHealth" { 
                                     if ( $true -eq $CheckValue ) {
-                                        $Values = Test-XdCatalogsHealth $ComputerName
+                                        $Values = Test-XdCatalogHealth $ComputerName
                                     }
                                 }
                                 "XdHypervisorHealth" { 
@@ -262,11 +264,13 @@ function Test-Series {
                                 # URL Checks
                                 "HTTPUrl" { 
                                     $Url = "http://$($ComputerName):$($CheckValue.Port)$($CheckValue.Path)"
+                                    Write-Verbose "Testing URL: $Url"
                                     $Values = Test-URL -Url $Url
                                  
                                 }
                                 "HTTPSUrl" { 
                                     $Url = "https://$($ComputerName):$($CheckValue.Port)$($CheckValue.Path)"
+                                    Write-Verbose "Testing URL: $Url"
                                     $Values = Test-URL -Url $Url
                                 }
                                 "ValidCert" { 
