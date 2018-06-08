@@ -86,7 +86,8 @@ Function Show-EUCResult {
 
             # Unique Numerical Data will follow
             # ValueName=NumericalValue
-            foreach ( $CheckData in $Result.CheckData ) {
+            Write-Verbose "$(ConvertTo-JSON -inputObject $Result.ChecksData -Depth 6)"
+            foreach ( $CheckData in $Result.ChecksData ) {
                 $ParamString = ""
                 
                 $CheckDataName = $CheckData.PSObject.Properties.Name
@@ -109,7 +110,7 @@ Function Show-EUCResult {
                 }
 
                 if ( "" -ne $ParamString ) {
-                    $ParamString = $ServiceString -replace " ", "\ "
+                    $ParamString = $ParamString -replace " ", "\ "
                     $PostParams = "$Series-$CheckDataName,Server=$($Result.ComputerName) $ParamString $timeStamp"
                     Write-Verbose $PostParams
                     Write-Output $PostParams
