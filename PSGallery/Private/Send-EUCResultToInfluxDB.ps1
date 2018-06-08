@@ -1,6 +1,6 @@
           
           
-function Send-ResultToInfluxDB {
+function Send-EUCResultToInfluxDB {
     <#
 .SYNOPSIS
     Starts the main engine behind EUCMonitoring

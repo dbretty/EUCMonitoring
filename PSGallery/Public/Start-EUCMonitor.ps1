@@ -128,7 +128,7 @@ function Start-EUCMonitor {
         # We want all results to represent the same moment in time, even if that's not true for 
         # collation reasons. This is why this step happens at the end. 
         if ( $ConfigObject.Global.Influx.Enabled ) {
-            Send-ResultToInfluxDB -ConfigObject $ConfigObject -Results $Results
+            Send-EUCResultToInfluxDB -ConfigObject $ConfigObject -Results $Results
         }
 
         # Maybe console formatted data?  Just ideas at the moment.  
