@@ -44,7 +44,19 @@ function Test-XdWorker {
 
     #Create array with results
     $results = @()
+    
+    $ctxsnap = add-pssnapin citrix* -ErrorAction SilentlyContinue
+    $ctxsnap = get-pssnapin citrix* -ErrorAction SilentlyContinue
 
+    if ($null -eq $ctxsnap) {
+        Write-error "XenDesktop Powershell Snapin Load Failed - No XenDesktop Brokering SDK Found"
+        Write-error "Cannot Load XenDesktop Powershell SDK"
+        Return # Fix Termination of Powershell instance https://git.io/vxEGW
+    }
+    else {
+        Write-Verbose "XenDesktop Powershell SDK Snapin Loaded"
+    }
+    
     # Initialize Arrays and Variables
     Write-Verbose "Variables and Arrays Initalized"
 

@@ -9,13 +9,11 @@ function Test-Series {
     A failure at a previous state will assume failure further down and stop tests.  We don't care if a 
     SSL cert check is valid if one of the dependant ports is down. This is subject to change.  
     Not all Test-Series will have additional checks, but this is a placeholder.
-    A side effect of function is, if the Influx section is configured, we will format the output for it
-    in prep.  A Basic configuration is provided. 
 .PARAMETER JSONConfigFilename
     Specify path to your config file to run checks against.  This would be your EUCMonitoring.json, or your
     test configs.  Specifying a JSONConfigFilename override any ConfigObject passed to it.  
-.PARAMETER ConfigObject
-    Specifies the ports to run checks against.  This should already be in the target location.
+.PARAMETER Series
+    Specifies the name of the Series to run against.  
 
 .NOTES
     Current Version:        1.0
@@ -33,7 +31,6 @@ function Test-Series {
         [Parameter(ValueFromPipeline, Mandatory = $true)][string]$JSONConfigFilename,
         [Parameter(ValueFromPipeline, Mandatory = $true)][string]$Series
     )
-    # There's probably a better way of ensuring one or the other works better.  
 
     # XXX CHANGEME XXX
     Write-Verbose "Starting Test-Series on $Series."
@@ -57,9 +54,7 @@ function Test-Series {
         Write-Verbose "Error opening JSON. Please Check File and try again."
         return 
     }
-  
-
-    
+      
     $Config = $ConfigObject.$Series
     if ( $null -eq $Config ) {
         Write-Verbose "Unable to find $Series series in $JSonConfigFilename. We shouldn't get here."
