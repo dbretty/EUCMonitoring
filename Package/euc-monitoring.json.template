@@ -19,7 +19,7 @@
             "Infradonutsize": 160
         },
         "Influx": {
-            "Enabled": true,
+            "Enabled": false,
             "InfluxDB": "EUCMonitoring",
             "InfluxServer": "localhost",
             "Protocol": "http",
@@ -31,39 +31,51 @@
                 "Enabled": false,
                 "Channel": "some-channel",
                 "URI": "https://hooks.slack.com/services/<ID HERE>"
-            },
-            "Spark": {
-                "Enabled": false
             }
         }
     },
     "AD": {
         "test": "no",
-        "Servers": [ "dc.domain.com" ],
-        "Ports": [ 389, 636 ],
-        "Services": [ 
+        "Servers": [
+            "dc.domain.com"
+        ],
+        "Ports": [
+            389,
+            636
+        ],
+        "Services": [
             "Netlogon",
             "ADWS",
             "NTDS"
         ],
         "Checks": {
             "ValidCert": {
-                "Ports": [ 636 ]
+                "Ports": [
+                    636
+                ]
             }
         }
     },
     "SQL": {
         "test": "no",
-        "Servers": [ "sql.domain.com" ],
-        "Ports": [ 1433 ],
+        "Servers": [
+            "sql.domain.com"
+        ],
+        "Ports": [
+            1433
+        ],
         "Services": [
             "MSSQLServer"
         ]
     },
     "AppV": {
         "test": "no",
-        "Servers": [ "appv.domain.com" ],
-        "Ports": [ 8080 ],
+        "Servers": [
+            "appv.domain.com"
+        ],
+        "Ports": [
+            8080
+        ],
         "Services": [
             "W3SVC"
         ]
@@ -71,11 +83,11 @@
     "Worker": {
         "test": "no",
         "XdSites": [
-            { 
+            {
                 "PrimaryController": "ddc1.domain.com",
                 "SecondaryController": "ddc2.domain.com"
             },
-            {     
+            {
                 "PrimaryController": "ddc3.domain.com",
                 "SecondaryController": "ddc4.domain.com"
             }
@@ -88,17 +100,22 @@
             "XdDesktop": {
                 "BootThreshold": 7,
                 "HighLoad": 8000
-            },        
-            "XdDeliveryGroup": true,
-            "XdDDC": true,
-            "XdCatalogs": true,
-            "XdHypervisor": true
+            },
+            "XdDeliveryGroupHealth": false,
+            "XdControllerHealth": false,
+            "XdCatalogHealth": false,
+            "XdHypervisorHealth": false
         }
     },
     "Xenserver": {
         "test": "no",
-        "Servers": [ "pool_master_ip1", "pool_master_ip2" ],
-        "Ports": [ 80 ],
+        "Servers": [
+            "pool_master_ip1",
+            "pool_master_ip2"
+        ],
+        "Ports": [
+            80
+        ],
         "Checks": {
             "XenServer": {
                 "username": "root",
@@ -108,51 +125,79 @@
     },
     "Storefront": {
         "test": "no",
-        "Servers": [ "storefront.domain.com" ],
-        "Ports": [ 80, 443 ],
+        "Servers": [
+            "storefront.domain.com"
+        ],
+        "Ports": [
+            80,
+            443
+        ],
         "Checks": {
             "HTTPUrl": {
-                "Port":  80 ,
+                "Port": 80,
                 "Path": "/Citrix/StoreWeb"
             },
             "HTTPSUrl": {
-                "Port":  443,
+                "Port": 443,
                 "Path": "/Citrix/StoreWeb"
             },
             "ValidCert": {
-                "Ports": [ 443 ]
+                "Ports": [
+                    443
+                ]
             }
         }
     },
     "Licensing": {
         "test": "no",
-        "Servers": [ "license1.domain.com", "license2.domain.com" ],
-        "Ports": [ 7279, 27000, 8082, 8083 ],
+        "Servers": [
+            "license1.domain.com",
+            "license2.domain.com"
+        ],
+        "Ports": [
+            7279,
+            27000,
+            8082,
+            8083
+        ],
         "Checks": {
             "XDLicense": {
-                "Ports": [ 27000 ]
+                "Ports": [
+                    27000
+                ]
             }
         }
     },
     "Director": {
         "test": "no",
-        "Servers": [ "director1.domain.com", "director2.domain.com" ],
-        "Ports": [ 80, 443 ],
+        "Servers": [
+            "director1.domain.com",
+            "director2.domain.com"
+        ],
+        "Ports": [
+            80,
+            443
+        ],
         "Checks": {
             "HTTPUrl": {
-                "Port":  80 ,
+                "Port": 80,
                 "Path": "/Director/LogOn.aspx?cc=true"
             },
             "HTTPSUrl": {
-                "Port":  443 ,
+                "Port": 443,
                 "Path": "/Director/LogOn.aspx?cc=true"
             }
         }
     },
     "Controllers": {
         "test": "no",
-        "Servers": [ "controller1.domain.com", "controller2.domain.com" ],
-        "Ports": [ 80 ],
+        "Servers": [
+            "controller1.domain.com",
+            "controller2.domain.com"
+        ],
+        "Ports": [
+            80
+        ],
         "Services": [
             "CitrixBrokerService",
             "CitrixHighAvailabilityService",
@@ -172,8 +217,13 @@
     },
     "Netscaler": {
         "test": "no",
-        "Servers": [ "netscaler_ip1", "netscaler_ip2" ],
-        "Ports": [ 443 ],
+        "Servers": [
+            "netscaler_ip1",
+            "netscaler_ip2"
+        ],
+        "Ports": [
+            443
+        ],
         "Checks": {
             "Netscaler": {
                 "netscalerusername": "nsroot",
@@ -183,10 +233,14 @@
     },
     "NetscalerGateway": {
         "test": "no",
-        "Servers": [ "netscaler_gateway_ip" ],
-        "Ports": [ 443 ],
+        "Servers": [
+            "netscaler_gateway_ip"
+        ],
+        "Ports": [
+            443
+        ],
         "Checks": {
-            "NSGateway": {
+            "NetscalerGateway": {
                 "Username": "nsroot",
                 "Password": "nsroot"
             }
@@ -194,8 +248,13 @@
     },
     "Provisioning": {
         "test": "no",
-        "Servers": [ "pvs1.domain.com", "pvs2.domain.com" ],
-        "Ports": [ 54321 ],
+        "Servers": [
+            "pvs1.domain.com",
+            "pvs2.domain.com"
+        ],
+        "Ports": [
+            54321
+        ],
         "Services": [
             "BNPXE",
             "BNTFTP",
@@ -206,23 +265,38 @@
         ],
         "Checks": {
             "PVSFarm": {
-                "Name": [ "pvs" ]
+                "Name": [
+                    "pvs"
+                ]
             },
             "PVSSite": {
-                "Name": [ "pvs_site" ]
+                "Name": [
+                    "pvs_site"
+                ]
             }
         }
     },
     "WEM": {
         "test": "no",
-        "Servers": [ "wembroker1.domain.com", "wembroker2.domain.com" ],
-        "Ports": [ 8286 ],
-        "Services": [ "Norskale Infrastructure Service" ]
+        "Servers": [
+            "wembroker1.domain.com",
+            "wembroker2.domain.com"
+        ],
+        "Ports": [
+            8286
+        ],
+        "Services": [
+            "Norskale Infrastructure Service"
+        ]
     },
     "UPS": {
         "test": "no",
-        "Servers": [ "upsserver.domain.com" ],
-        "Ports": [ 7229 ],
+        "Servers": [
+            "upsserver.domain.com"
+        ],
+        "Ports": [
+            7229
+        ],
         "Services": [
             "UpSvc",
             "CitrixXTEServer"
@@ -230,16 +304,26 @@
     },
     "FAS": {
         "test": "no",
-        "Servers": [ "fasserver1.domain.com", "fasserver2.domain.com" ],
-        "Ports": [ 135 ],
+        "Servers": [
+            "fasserver1.domain.com",
+            "fasserver2.domain.com"
+        ],
+        "Ports": [
+            135
+        ],
         "Services": [
             "CitrixFederatedAuthenticationService"
         ]
     },
     "CC": {
         "test": "no",
-        "Servers": [ "ccserver1.domain", "ccserver2.domain" ],
-        "Ports": [ 80 ],
+        "Servers": [
+            "ccserver1.domain",
+            "ccserver2.domain"
+        ],
+        "Ports": [
+            80
+        ],
         "Services": [
             "CitrixWorkspaceCloudADProvider",
             "CitrixWorkspaceCloudAgentDiscovery",
