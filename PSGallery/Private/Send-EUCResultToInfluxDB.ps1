@@ -41,12 +41,12 @@ function Send-ResultToInfluxDB {
          
         Write-Verbose "Pushing results to InfluxDB"
     
-        foreach ($SeriesName in $Results) { 
+        foreach ($SeriesResult in $Results) { 
 
-            $Series = $SeriesName.Series
+            $Series = $SeriesResult.Series
             Write-Verbose "Series: $Series"
 
-            foreach ($Result in $SeriesName.Results) {
+            foreach ($Result in $SeriesResult.Results) {
 
 
                 # XXX CHANGEME XXX 
@@ -107,32 +107,25 @@ function Send-ResultToInfluxDB {
 
                 # Unique Numerical Data will follow
                 # ValueName=NumericalValue
-                foreach ( $CheckData in $Result.CheckData ) {
-                    $ParamString = ""
-                    $CheckDataName = $CheckData.PSObject.Properties.Name
-                    $CheckDataValue = $CheckData.PSObject.Properties.Value
-                    <#
-                Should look like
-                Results.Series.ComputerName.CheckData.XdDesktop
-                Registered=3
-                Unregistered=2
-                ...
-            #>
-                    foreach ( $Sub in $CheckDataValue ) {
-                        $SubName = $Sub.PSObject.Properties.Value
-                        $SubValue = $Sub.PSObject.Properties.Value
-                        if ( $ParamString -eq "" ) { $ParamString = "$SubName=$SubValue" } 
-                        else { $ParamString += ",$SubName=$SubValue" }
+
+                foreach ( $CheckData in $Result.ChecksData ) {
+                    $ParamString = "" 
+                
+                    $CheckDataName = $CheckData.CheckName
+                
+                    $CheckData.Values.PSObject.Properties | ForEach-Object {
+                        if ( $ParamString -eq "" ) { $ParamString = "$($_.Name)=$($_.Value)" } 
+                        else { $ParamString += ",$($_.Name)=$($_.Value)" }
                     }
 
                     if ( "" -ne $ParamString ) {
-                        $ParamString = $ServiceString -replace " ", "\ "
+                        $ParamString = $ParamString -replace " ", "\ "
                         $PostParams = "$Series-$CheckDataName,Server=$($Result.ComputerName) $ParamString $timeStamp"
                         Write-Verbose $PostParams
                         Invoke-RestMethod -Method "POST" -Uri $InfluxUri -Body $postParams
                     }
-            
                 }
+               
             }
         }
     } 

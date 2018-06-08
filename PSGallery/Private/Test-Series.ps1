@@ -150,7 +150,7 @@ function Test-Series {
                 # Ports
                 foreach ($Port in $Config.Ports) { 
                     Write-Verbose "Testing $ComputerName - Port $Port"
-                    if ( Test-NetConnection $ComputerName -Port $Port -InformationLevel Quiet ) {
+                    if ( (Test-NetConnection $ComputerName -Port $Port).TcpTestSucceeded ) {
                         Write-Verbose "Success $ComputerName - Port $Port"
                         $PortsUp += $Port   
                     }
@@ -298,21 +298,23 @@ function Test-Series {
                                 $ChecksUp += $CheckName
                                 # Just because we completed the test successfully, doesn't mean it was without
                                 # errors. 
-                                if ( $Values.Errors.Count -gt 0 ) {
-                                    $Errors += $Values.Errors
-                                    $State = "DEGRADED"
-                                    # XXX CHANGEME XXX Review
-                                    # Remove the check's errors since they've been passed to the Series.
-                                    $Values.PSObject.Properties.Remove('Errors')
-                                    # Maybe $Values = $Values | SelectObject -Property * -ExcludeProperty Errors
-                                }
-                                # Now that we've removed Errors, if there's still data, lets pass it on. 
-                                if ( $null -ne $Values ) {
-                                    $ChecksData += [PSCustomObject]@{
-                                        CheckName = $CheckName
-                                        Values    = $Values
+                                if ("Boolean" -ne $Values.GetType().Name) {
+                                    if ( $Values.Errors.Count -gt 0 ) {
+                                        $Errors += $Values.Errors
+                                        $State = "DEGRADED"
+                                        # XXX CHANGEME XXX Review
+                                        # Remove the check's errors since they've been passed to the Series.
+                                        $Values.PSObject.Properties.Remove('Errors')
+                                        # Maybe $Values = $Values | SelectObject -Property * -ExcludeProperty Errors
                                     }
-                                }                
+                                    # Now that we've removed Errors, if there's still data, lets pass it on. 
+                                    if ( $null -ne $Values ) {
+                                        $ChecksData += [PSCustomObject]@{
+                                            CheckName = $CheckName
+                                            Values    = $Values
+                                        }
+                                    }    
+                                }      
                             }
                         }
                     }

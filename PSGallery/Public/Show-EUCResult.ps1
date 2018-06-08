@@ -26,14 +26,14 @@ Function Show-EUCResult {
     # collation reasons. This is why this step happens at the end. 
     $timeStamp = (get-date)
          
-    Write-Verbose "$(ConvertTo-JSON -inputObject $Results -Depth 6)"
-    Write-Verbose "Showing results:"
-    foreach ($SeriesName in $Results) { 
 
-        $Series = $SeriesName.Series
+    Write-Verbose "Showing results at $timeStamp`:" 
+    foreach ($SeriesResult in $Results) { 
+
+        $Series = $SeriesResult.Series
         Write-Host "--- Series: $Series ---" -ForegroundColor "Cyan"
 
-        foreach ($Result in $SeriesName.Results) {
+        foreach ($Result in $SeriesResult.Results) {
 
             # XXX CHANGEME XXX 
             #$Series = "TEMPLATE"
@@ -86,38 +86,30 @@ Function Show-EUCResult {
 
             # Unique Numerical Data will follow
             # ValueName=NumericalValue
-            Write-Verbose "$(ConvertTo-JSON -inputObject $Result.ChecksData -Depth 6)"
+            # Write-Verbose "$(ConvertTo-JSON -inputObject $Result.ChecksData -Depth 6)"
             foreach ( $CheckData in $Result.ChecksData ) {
                 $ParamString = ""
                 
-                $CheckDataName = $CheckData.PSObject.Properties.Name
+                $CheckDataName = $CheckData.CheckName
+                $CheckData.Values.PSObject.Properties | ForEach-Object {
+                    if ( $ParamString -eq "" ) { $ParamString = "$($_.Name)=$($_.Value)" } 
+                    else { $ParamString += ", $($_.Name)=$($_.Value)" }
+                }
                 
-                $CheckDataValue = $CheckData.PSObject.Properties.Value
-                Write-Verbose "$CheckDataName is $CheckDataValue"
-                <#
-                Should look like
-                Results.Series.ComputerName.CheckData.XdDesktop
-                Registered=3
-                Unregistered=2
-                ...
-                #>
-
-                foreach ( $Sub in $CheckDataValue ) {
-                    $SubName = $Sub.PSObject.Properties.Value
-                    $SubValue = $Sub.PSObject.Properties.Value
-                    if ( $ParamString -eq "" ) { $ParamString = "$SubName=$SubValue" } 
-                    else { $ParamString += ",$SubName=$SubValue" }
-                }
-
                 if ( "" -ne $ParamString ) {
-                    $ParamString = $ParamString -replace " ", "\ "
-                    $PostParams = "$Series-$CheckDataName,Server=$($Result.ComputerName) $ParamString $timeStamp"
-                    Write-Verbose $PostParams
-                    Write-Output $PostParams
+                    $PostParams = "$CheckDataName`: $ParamString"
+                    #             Write-Verbose $PostParams
+                    Write-Host $PostParams
                 }
-            
             }
 
+            <# Decided not to make this part of Show-EUCResult, as things are mostly color coded.
+                Subject to change, as this is mostly for testing anyways.  
+            foreach ( $Err in $Result.Errors ) {
+                Write-Host "$Err " -ForegroundColor "Red" -NoNewline
+            } 
+            Write-Host "`n"
+            #>
         }
         Write-Host "`n"
     }

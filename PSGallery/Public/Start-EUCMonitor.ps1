@@ -132,9 +132,10 @@ function Start-EUCMonitor {
         }
 
         # Maybe console formatted data?  Just ideas at the moment.  
-        #if ( $ConfigObject.Global.ShowResults.Enabled ) {
-        Show-EUCResult -Results $Results
-        #}
+        if ( $ConfigObject.Global.ConsoleResults ) {
+            Show-EUCResult -Results $Results
+        }
+        
 
         # Stop the timer and display the output
         $EndTime = (Get-Date)
