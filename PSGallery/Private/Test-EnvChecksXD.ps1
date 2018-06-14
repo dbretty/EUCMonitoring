@@ -71,6 +71,7 @@ function Test-EnvChecksXD {
             if ( $Status -eq "Passed" ) { $DeliveryController = $true }
             else { $DeliveryController = $false }
         }
+        
     }
 
     if ($DeliveryGroupCheck -eq "yes") {
@@ -171,12 +172,12 @@ function Test-EnvChecksXD {
 
     # Add results to array
     $results += [PSCustomObject]@{
-        'Server'                    = $AdminAddress
-        'DeliveryControllerCheck'   = $DeliveryController
-        'DeliveryGroupCheck'        = $DeliveryGroup
-        'CatalogCheck'              = $Catalog
-        'HypervisorCheck'           = $Hypervisor
-        'HypervisorResourcesCheck'  = $HypervisorResources
+        'Server'                   = $AdminAddress
+        'DeliveryControllerCheck'  = $DeliveryController
+        'DeliveryGroupCheck'       = $DeliveryGroup
+        'CatalogCheck'             = $Catalog
+        'HypervisorCheck'          = $Hypervisor
+        'HypervisorResourcesCheck' = $HypervisorResources
     }
 
     #returns object with test results

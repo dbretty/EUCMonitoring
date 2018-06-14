@@ -43,6 +43,7 @@ function Get-AAAUser {
 
     $Method = "GET"
     $ContentType = "application/json"
+    # XXX CHANGEME XXX Error checking? 
     $UserSessions = Invoke-RestMethod -uri $Url -WebSession $nsSession.WebSession -ContentType $ContentType -Method $Method
 
     Disconnect-NetScaler $NSIP

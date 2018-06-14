@@ -38,6 +38,8 @@ Set-XDCredentials -CustomerId "%Customer ID%" -SecureClientFile "C:\Monitoring\s
 
 NOTE: **xdbrokerprimary/xdbrokerfailover** should be set as the Citrix Cloud Connector, the cloud connectors will proxy the connection directly to the Delivery Controller as they are not directly accessible.
 
+NOTE: xdbrokerprimary/xdbrokerfailover should be set as the Citrix Cloud Connector, the cloud connectors will proxy the connection directly to the Delivery Controller as they are not directly accessible.
+
 ### Installation steps
 
 1. Open up PowerShell on the machine you want to use for monitoring.
@@ -75,11 +77,11 @@ New-EUCMonitoringConfig C:\Monitoring
 
 ```text
 cd C:\Monitoring
-Start-XDMonitor
+Start-EUCMonitor
 ```
 OR
 ```text
-Start-XDMonitor -JsonFile ".\mysettings.json" -LogFile ".\mylog.txt" -CSSFile ".\euc-monitor.css" -Verbose 
+Start-EUCMonitor -JsonFile ".\mysettings.json" -Verbose 
 ```
 
 8. Open up your new dashboard HTML file from the location you specified in your json for web data output

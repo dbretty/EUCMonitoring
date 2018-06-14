@@ -12,6 +12,7 @@ function Test-URL {
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     David Brett             1.0             07/02/2018          Function Creation
+    Adam Yarborough         1.1             05/06/2018          Change to true/false
 
 .EXAMPLE
     None Required
@@ -34,17 +35,18 @@ function Test-URL {
         $HTTP_Response = $HTTP_Request.GetResponse() 
     }
     catch {
-        return "bad"
+        return $false
         break
     }
+    
     #Extract Response Code
     $HTTP_Status = [int]$HTTP_Response.StatusCode
 	
     If ($HTTP_Status -eq 200) { 
-        return "good" 
+        return $true 
     }
     else {
-        return "bad"
-    }./
+        return $false
+    }
 
 }

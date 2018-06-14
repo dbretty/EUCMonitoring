@@ -17,6 +17,7 @@ function New-HtmlReport {
     Name                    Version         Date                Change Detail
     David Brett             1.0             12/03/2018          Function Creation
     David Brett             1.1             29/03/2018          Updating function to cater for the new object
+    Adam Yarborough         1.2             05/06/2018          Updated object definition modeling
 .EXAMPLE
     None Required
 #> 
