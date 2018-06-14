@@ -26,20 +26,38 @@ function New-HtmlReport {
     
     Param
     (
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$HTMLOutputFile,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$HTMLOutputLocation,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$EUCMonitoring,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$CSSFile,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$RefreshDuration
+        [Parameter(ValueFromPipeline)]
+        [ValidateScript( { Test-Path -Type Leaf -Include '*.json' -Path $_ } )]
+        [string]$JSONFile = ("$(get-location)\euc-monitoring.json"),
+        [Parameter(ValueFromPipeline)]
+        [ValidateScript( { Test-Path -Type Leaf -Include '*.css' -Path $_ } )]
+        [string]$CSSFile = ("$(get-location)\euc-monitoring.css"),
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$Results
     )
 
     # Generate HTML Output File
-    $HTMLOutputFileFull = Join-Path -Path $HTMLOutputLocation -ChildPath $HTMLOutputFile
+    #$HTMLOutputFileFull = Join-Path -Path $HTMLOutputLocation -ChildPath $HTMLOutputFile
+    $StartTime = (Get-Date)
+
+    try {
+        $ConfigObject = Get-Content -Raw -Path $JSONFile | ConvertFrom-Json -ErrorAction Stop
+    }
+    catch {
+        throw "Error reading JSON.  Please Check File and try again."
+    }
+ 
+    $HTMLOutputLocation = $ConfigObject.Global.WebData.OutputLocation
+    $HTMLOutputFile = $ConfigObject.Global.WebData.htmloutputfile
+    $HTMLOutputFileFull = Join-Path -Path $ConfigObject.Global.WebData.OutputLocation -ChildPath $HTMLOutputFile
+
+    $UpColor = $ConfigObject.Global.WebData.UpColour
+    $DownColor = $ConfigObject.Global.WebData.DownColour
 
     # If outfile exists - delete it
     if (test-path $HTMLOutputFileFull) {
         Remove-Item $HTMLOutputFileFull
     }
+
     # Write HTML Header Information
     "<html>" | Out-File $HTMLOutputFileFull -Append
     "<head>" | Out-File $HTMLOutputFileFull -Append
@@ -50,7 +68,9 @@ function New-HtmlReport {
     $CSSData | Out-File $HTMLOutputFileFull -Append
     "</style>" | Out-File $HTMLOutputFileFull -Append
     
+
     # Add automatic refresh in seconds. 
+    $RefreshDuration = $ConfigObject.Global.WebData.RefreshDuration
     if ( $RefreshDuration -ne 0 ) {
         '<meta http-equiv="refresh" content="' + $RefreshDuration + '" >' | Out-File $HTMLOutputFileFull -Append
     }
@@ -62,7 +82,7 @@ function New-HtmlReport {
     "<table border='0' width='100%'' cellspacing='0' cellpadding='0'>" | Out-File $HTMLOutputFileFull -Append
     "<tr>" | Out-File $HTMLOutputFileFull -Append
     "<td class='title-info'>" | Out-File $HTMLOutputFileFull -Append
-    "Citrix XenDesktop Platform Monitoring" | Out-File $HTMLOutputFileFull -Append
+    "EUC Monitoring" | Out-File $HTMLOutputFileFull -Append
     "</td>" | Out-File $HTMLOutputFileFull -Append
     "<td width='40%' align=right valign=top>" | Out-File $HTMLOutputFileFull -Append
     "<img src='logo.png'>" | Out-File $HTMLOutputFileFull -Append
@@ -73,6 +93,50 @@ function New-HtmlReport {
     # Write Infrastructure Table Header
     "<table border='0' width='100%'' cellspacing='0' cellpadding='0'>" | Out-File $HTMLOutputFileFull -Append
     "<tr>" | Out-File $HTMLOutputFileFull -Append
+
+
+    # Infrastructure Donuts
+    Write-Verbose "Showing results at $timeStamp`:" 
+    $InfraData = ""
+    foreach ($SeriesResult in $Results) { 
+
+        $Up = 0
+        $Down = 0
+
+        $Series = $SeriesResult.Series
+
+        if ( "Worker" -ne $Series ) {
+            foreach ($Result in $SeriesResult.Results) {
+                "<td width='$ColumnPercent%' align=center valign=top>" | Out-File $HTMLOutputFileFull -Append
+                # XXX TODO XXX Needs Parameters
+                New-DonutHTML  | Out-File $HTMLOutputFileFull -Append
+
+            }
+        }
+    }
+
+    # XXX TODO XXX
+    # Output the infrastructure data.  This would be the checkdata values from netscalers, etc...
+    
+
+
+    # Worker Donuts
+    foreach ($SeriesResult in $Results) { 
+
+        $Series = $SeriesResult.Series
+        #      Write-Host "--- Series: $Series ---" -ForegroundColor "Cyan"
+        if ( "Worker" -eq $Series ) {
+            foreach ($Result in $SeriesResult.Results) {
+                # XXX TODO XXX Needs Parameters
+                New-DonutHTML  -Worker | Out-File $HTMLOutputFileFull -Append
+            }
+        }
+    }
+
+    # XXX TODO XXX
+    # Output the worker data.  This would be checkdata values from workers like session counts, etc..
+
+
 
     # Work out the column width for Infrastructure
     #$ColumnPercent = 100 / [int]($EUCMonitoring.infrastructurelist).count
@@ -319,4 +383,6 @@ function New-HtmlReport {
     # Write HTML Footer Information
     "</body>" | Out-File $HTMLOutputFileFull -Append
     "</html>" | Out-File $HTMLOutputFileFull -Append
+
+
 }

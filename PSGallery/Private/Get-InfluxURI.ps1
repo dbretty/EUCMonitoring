@@ -6,9 +6,9 @@ function Get-InfluxURI {
     Creates a URI for the EUCMonitoring instance from JSON data or passed Object
 .DESCRIPTION 
     Creates a URI for the EUCMonitoring instance from JSON data or passed Object
-.PARAMETER JSONConfigFilename
+.PARAMETER JSONFile
     Specify path to your config file to run checks against.  This would be your EUCMonitoring.json, or your
-    test configs.  Specifying a JSONConfigFilename override any ConfigObject passed to it.  This is mainly 
+    test configs.  Specifying a JSONFile override any ConfigObject passed to it.  This is mainly 
     used in unit testing to validate the test suites before production. 
 .PARAMETER ConfigObject
     Specifies the ports to run checks against.  This should already be in the target location.
@@ -22,7 +22,7 @@ function Get-InfluxURI {
     Adam Yarborough         1.0             22/02/2018          Function Creation
     
 .EXAMPLE
-    Test-Template -JSonConfigFilename "C:\Monitoring\EUCMonitoring.json"
+    Test-Template -JSONFile "C:\Monitoring\EUCMonitoring.json"
 #>
     [CmdletBinding()]
     Param
@@ -35,8 +35,8 @@ function Get-InfluxURI {
     # Initialize Empty Results
 
     <#
-    if ( $JSONConfigFilename ) {
-        $ConfigObject = Get-Content -Raw -Path $JSONConfigFilename | ConvertFrom-Json
+    if ( $JSONFile ) {
+        $ConfigObject = Get-Content -Raw -Path $JSONFile | ConvertFrom-Json
     }    
 
 #>
