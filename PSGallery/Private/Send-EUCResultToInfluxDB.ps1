@@ -6,7 +6,7 @@ function Send-EUCResultToInfluxDB {
     Starts the main engine behind EUCMonitoring
 .DESCRIPTION
     Starts the main engine behind EUCMonitoring
-.PARAMETER JSONConfigFilename
+.PARAMETER JSONFile
     The path to the JSON config file.  
 .NOTES
     Current Version:        1.0
@@ -21,14 +21,14 @@ function Send-EUCResultToInfluxDB {
     [CmdletBinding()]
     Param(
         #        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ConfigObject,
-        [parameter(ValueFromPipeline = $true)]$JSONConfigFileName = ("$(get-location)\euc-monitoring.json"),
+        [parameter(ValueFromPipeline = $true)]$JSONFile = ("$(get-location)\euc-monitoring.json"),
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$Results
     ) 
 
-    if ( test-path $JSONConfigFilename ) {
+    if ( test-path $JSONFile ) {
 
         try {
-            $ConfigObject = Get-Content -Raw -Path $JSONConfigFilename | ConvertFrom-Json -ErrorAction Stop
+            $ConfigObject = Get-Content -Raw -Path $JSONFile | ConvertFrom-Json -ErrorAction Stop
         }
         catch {
             throw "Error reading JSON.  Please Check File and try again."

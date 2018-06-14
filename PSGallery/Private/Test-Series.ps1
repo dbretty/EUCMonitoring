@@ -9,9 +9,9 @@ function Test-Series {
     A failure at a previous state will assume failure further down and stop tests.  We don't care if a 
     SSL cert check is valid if one of the dependant ports is down. This is subject to change.  
     Not all Test-Series will have additional checks, but this is a placeholder.
-.PARAMETER JSONConfigFilename
+.PARAMETER JSONFile
     Specify path to your config file to run checks against.  This would be your EUCMonitoring.json, or your
-    test configs.  Specifying a JSONConfigFilename override any ConfigObject passed to it.  
+    test configs.  Specifying a JSONFile override any ConfigObject passed to it.  
 .PARAMETER Series
     Specifies the name of the Series to run against.  
 
@@ -23,28 +23,31 @@ function Test-Series {
     Adam Yarborough         1.0             17/05/2018          Function Creation
     
 .EXAMPLE
-    Test-Template -JSonConfigFilename "C:\Monitoring\EUCMonitoring.json"
+    Test-Template -JSONFile "C:\Monitoring\EUCMonitoring.json"
 #>
     [CmdletBinding()]
     Param
     (
-        [Parameter(ValueFromPipeline, Mandatory = $true)][string]$JSONConfigFilename,
+        [Parameter(ValueFromPipeline, Mandatory = $true)][string]$JSONFile,
         [Parameter(ValueFromPipeline, Mandatory = $true)][string]$Series
     )
 
+    #    begin { Write-Debug "$PSCmdLet.MyInvocation.MyCommand.Name) Begin Executsion $( $cmdstart = (get-date) )"}
+
+    #    process {
     # XXX CHANGEME XXX
     Write-Verbose "Starting Test-Series on $Series."
     # Initialize Empty Results
     Write-Verbose "Initializing Results..."
     $Results = @()
 
-    Write-Verbose "Loading config from $JSonConfigFilename"
+    Write-Verbose "Loading config from $JSONFile"
     # Set up tests
-    if ( test-path $JSONConfigFilename ) {
+    if ( test-path $JSONFile ) {
         $StartTime = (Get-Date)
 
         try {
-            $ConfigObject = Get-Content -Raw -Path $JSONConfigFilename | ConvertFrom-Json -ErrorAction Stop
+            $ConfigObject = Get-Content -Raw -Path $JSONFile | ConvertFrom-Json -ErrorAction Stop
         }
         catch {
             throw "Error reading JSON.  Please Check File and try again."
@@ -57,7 +60,7 @@ function Test-Series {
       
     $Config = $ConfigObject.$Series
     if ( $null -eq $Config ) {
-        Write-Verbose "Unable to find $Series series in $JSonConfigFilename. We shouldn't get here."
+        Write-Verbose "Unable to find $Series series in $JSONFile. We shouldn't get here."
         return $Results
     }
    
@@ -145,7 +148,7 @@ function Test-Series {
                 # Ports
                 foreach ($Port in $Config.Ports) { 
                     Write-Verbose "Testing $ComputerName - Port $Port"
-                    if ( (Test-NetConnection $ComputerName -Port $Port).TcpTestSucceeded ) {
+                    if ( Test-NetConnection $ComputerName -Port $Port -InformationLevel Quiet ) {
                         Write-Verbose "Success $ComputerName - Port $Port"
                         $PortsUp += $Port   
                     }
@@ -388,4 +391,5 @@ function Test-Series {
     } #else we didn't really want to test, so we don't populate results, which will return an empty array.
 
     return $null
+    #}    
 }
