@@ -30,9 +30,9 @@ function Start-EUCMonitor {
     [CmdletBinding(SupportsShouldProcess)]
     Param
     (
-        [ValidateScript( { Test-Path -Type Leaf -Include '*.json' -Path $_ } )]
+        #    [ValidateScript( { Test-Path -Type Leaf -Include '*.json' -Path $_ } )]
         [Parameter(ValueFromPipeline)][string]$JSONFile = ("$(get-location)\euc-monitoring.json"),
-        [ValidateScript( { Test-Path -Type Leaf -Include '*.css' -Path $_ } )]
+        #    [ValidateScript( { Test-Path -Type Leaf -Include '*.css' -Path $_ } )]
         [Parameter(ValueFromPipeline)][string]$CSSFile = ("$(get-location)\euc-monitoring.css"),
         [Parameter(ValueFromPipeline)][string]$LogFile = ("$(get-location)\euc-monitoring.log"),
         [Parameter(ValueFromPipeline)][switch]$OutputToVar

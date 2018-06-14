@@ -8,6 +8,7 @@
             "controlup": "no"
         },
         "WebData": {
+            "enabled", true,
             "htmldatafile": "htmldata.txt",
             "htmloutputfile": "index.html",
             "refreshduration": 0,

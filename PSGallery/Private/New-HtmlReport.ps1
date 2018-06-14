@@ -46,9 +46,9 @@ function New-HtmlReport {
         throw "Error reading JSON.  Please Check File and try again."
     }
  
-    $HTMLOutputLocation = $ConfigObject.Global.WebData.OutputLocation
+    $HTMLOutputLocation = $ConfigObject.Global.OutputLocation
     $HTMLOutputFile = $ConfigObject.Global.WebData.htmloutputfile
-    $HTMLOutputFileFull = Join-Path -Path $ConfigObject.Global.WebData.OutputLocation -ChildPath $HTMLOutputFile
+    $HTMLOutputFileFull = Join-Path -Path $HTMLOutputLocation -ChildPath $HTMLOutputFile
 
     $UpColor = $ConfigObject.Global.WebData.UpColour
     $DownColor = $ConfigObject.Global.WebData.DownColour
@@ -94,48 +94,116 @@ function New-HtmlReport {
     "<table border='0' width='100%'' cellspacing='0' cellpadding='0'>" | Out-File $HTMLOutputFileFull -Append
     "<tr>" | Out-File $HTMLOutputFileFull -Append
 
-
+    $Height = 50
+    $Width = 50
     # Infrastructure Donuts
     Write-Verbose "Showing results at $timeStamp`:" 
     $InfraData = ""
-    foreach ($SeriesResult in $Results) { 
+    $Errors = ""
 
+    # XXX CHANGEME XXX ColumnPercent needs to be dynamic for infrastructure. 
+    $ColumnPercent = 10
+    foreach ($SeriesResult in $Results) { 
+        $DonutStroke = $ConfigObject.Global.WebData.InfraDonutStroke
+        $Height = $ConfigObject.Global.WebData.InfraDonutSize
+        $Width = $Height
         $Up = 0
         $Down = 0
-
         $Series = $SeriesResult.Series
 
         if ( "Worker" -ne $Series ) {
-            foreach ($Result in $SeriesResult.Results) {
-                "<td width='$ColumnPercent%' align=center valign=top>" | Out-File $HTMLOutputFileFull -Append
-                # XXX TODO XXX Needs Parameters
-                New-DonutHTML  | Out-File $HTMLOutputFileFull -Append
 
+            foreach ($Result in $SeriesResult.Results) {
+                $Up += $Result.PortsUp.Count + $Result.ServicesUp.Count + $Result.ChecksUp.Count
+                $Down += $Result.Errors.Count 
+                # XXX Something to populate InfraData here...
+
+                $Errors += "$($Result.ComputerName) - $($Result.Errors)`n"
             }
+            "<td width='$ColumnPercent%' align=center valign=top>" | Out-File $HTMLOutputFileFull -Append
+            # XXX TODO XXX Needs Parameters
+            Get-DonutHTML $Height $Width $UpColor $DownColor $DonutStroke $Series $Up $Down | Out-File $HTMLOutputFileFull -Append
+            "</td>" | Out-File $HTMLOutputFileFull -Append
         }
     }
-
     # XXX TODO XXX
     # Output the infrastructure data.  This would be the checkdata values from netscalers, etc...
+    if ($null -ne $InfraData) {
+        "<td>" | Out-File $HTMLOutputFileFull -Append
+        $InfraData | Out-File $HTMLOutputFileFull -Append
+        "</td>" | Out-File $HTMLOutputFileFull -Append
+    }
+    "</tr>" | Out-File $HTMLOutputFileFull -Append
+
+
     
+    # Worker Object Heights, this is for reference. 
+    # Write Infrastructure Table Header
+    "<table border='0' width='100%'' cellspacing='0' cellpadding='0'>" | Out-File $HTMLOutputFileFull -Append
+    "<tr>" | Out-File $HTMLOutputFileFull -Append
 
-
+    # XXX CHANGEME XXX ColumnPercent needs to be dynamic for workers
+    $ColumnPercent = 35
     # Worker Donuts
+    $WorkerData = ""
     foreach ($SeriesResult in $Results) { 
-
+        $DonutStroke = $ConfigObject.Global.WebData.WorkerDonutStroke
+        $Height = $ConfigObject.Global.WebData.WorkerDonutSize
+        $Width = $Height
+        #    $Up = 0
+        #   $Down = 0
         $Series = $SeriesResult.Series
-        #      Write-Host "--- Series: $Series ---" -ForegroundColor "Cyan"
+
         if ( "Worker" -eq $Series ) {
+
             foreach ($Result in $SeriesResult.Results) {
-                # XXX TODO XXX Needs Parameters
-                New-DonutHTML  -Worker | Out-File $HTMLOutputFileFull -Append
+                $Up = $Result.PortsUp.Count + $Result.ServicesUp.Count + $Result.ChecksUp.Count
+                $Down = $Result.Errors.Count 
+                # XXX Something to populate WorkerData
+                foreach ( $CheckData in $Result.ChecksData ) {
+                    $ParamString = ""
+                
+                    $CheckDataName = $CheckData.CheckName
+                    $CheckData.Values.PSObject.Properties | ForEach-Object {
+                        if ( $ParamString -eq "" ) { $ParamString = "$($_.Name)=$($_.Value)" } 
+                        else { $ParamString += ", $($_.Name)=$($_.Value)" }
+                    }
+                
+                    
+                    "<td width='$ColumnPercent%' align=center valign=top>" | Out-File $HTMLOutputFileFull -Append
+                    # XXX Might need to move the Donut HTML part to the foreach, so that workers are separated. 
+                    Get-DonutHTML $Height $Width $UpColor $DownColor $DonutStroke $CheckDataName $Up $Down -Worker | Out-File $HTMLOutputFileFull -Append
+                    "</td>" | Out-File $HTMLOutputFileFull -Append
+                    if ( "" -ne $ParamString ) {
+                        "<td>" | Out-File $HTMLOutputFileFull -Append
+                        $WorkerData = "Broker $($Result.ComputerName)`: $ParamString"
+                        #             Write-Verbose $PostParams
+                        $PostParams | Out-File $HTMLOutputFileFull -Append
+                        "</td>" | Out-File $HTMLOutputFileFull -Append
+                    }
+                }
+
+
+                $Errors += "$($Result.ComputerName) $($Result.Errors)"
             }
+
         }
     }
+    "</tr>" | Out-File $HTMLOutputFileFull -Append
 
     # XXX TODO XXX
     # Output the worker data.  This would be checkdata values from workers like session counts, etc..
-
+    <#  if ($null -ne $WorkerData) {
+        "<td>" | Out-File $HTMLOutputFileFull -Append
+        $WorkerData | Out-File $HTMLOutputFileFull -Append
+        "</td>" | Out-File $HTMLOutputFileFull -Append
+    } #>
+    if ($null -ne $Errors) {
+        "<td>" | Out-File $HTMLOutputFileFull -Append
+        $Errors | Out-File $HTMLOutputFileFull -Append
+        "</td>" | Out-File $HTMLOutputFileFull -Append
+    }
+    "</tr>" | Out-File $HTMLOutputFileFull -Append
 
 
     # Work out the column width for Infrastructure
@@ -213,6 +281,8 @@ function New-HtmlReport {
     # Define Error Pane
     "<td class='monitoring-info'>" | Out-File $HTMLOutputFileFull -Append
     
+    <# XXX 
+
     # Output Monitoring Data - Server
     if (!$null -eq $EUCMonitoring.server) {
         # Title    
@@ -252,7 +322,9 @@ function New-HtmlReport {
         "</div>" | Out-File $HTMLOutputFileFull -Append
         "<br>" | Out-File $HTMLOutputFileFull -Append
     }
+     #>
 
+    <# XXX 
     
     # Output Monitoring Data - Desktop
     if (!$null -eq $EUCMonitoring.desktop) {
@@ -294,6 +366,10 @@ function New-HtmlReport {
         "<br>" | Out-File $HTMLOutputFileFull -Append
     }
 
+    #>
+    
+    <# XXX 
+
     # Output Monitoring Data - NetScaler Gateway
     if (!$null -eq $EUCMonitoring.NetScalerGateway) {
         # Title
@@ -314,6 +390,10 @@ function New-HtmlReport {
         "</div>" | Out-File $HTMLOutputFileFull -Append
         "<br>" | Out-File $HTMLOutputFileFull -Append
     }
+
+    #>
+
+    <# XXX 
 
     # Output Monitoring Data - Infrastructure Errors
     $InfraData = Join-Path -Path $HTMLOutputLocation -ChildPath "infra-errors.txt"
@@ -369,6 +449,8 @@ function New-HtmlReport {
         "<br>" | Out-File $HTMLOutputFileFull -Append
     }
   
+    #> 
+
     "<div class='info-text'>" | Out-File $HTMLOutputFileFull -Append
     $LastRun = Get-Date
     "Last Run Date: $LastRun" | Out-File $HTMLOutputFileFull -Append
@@ -384,5 +466,8 @@ function New-HtmlReport {
     "</body>" | Out-File $HTMLOutputFileFull -Append
     "</html>" | Out-File $HTMLOutputFileFull -Append
 
-
+    $EndTime = (Get-Date)
+    Write-Verbose "New-HtmlReport finished."
+    Write-Verbose "Elapsed Time: $(($EndTime-$StartTime).TotalMinutes) Minutes"
+    Write-Verbose "Elapsed Time: $(($EndTime-$StartTime).TotalSeconds) Seconds"
 }
