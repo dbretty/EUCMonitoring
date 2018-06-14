@@ -244,12 +244,16 @@ function Test-Series {
            
                                 # Netscaler Checks
                                 "Netscaler" {
-                                    $NetScalerPassword = ConvertTo-SecureString $CheckValue.Password -AsPlainText -Force
-                                    $Values = Test-Netscaler $ComputerName $CheckValue.Username $NetScalerPassword
+                                    $NetScalerUserName = $configobject.Netscaler.creds.username
+                                    $NetScalerPasswordPlain = $configobject.Netscaler.creds.password
+                                    $NetScalerPassword = ConvertTo-SecureString $NetScalerPasswordPlain -AsPlainText -Force
+                                    $Values = Test-Netscaler $ComputerName $NetScalerUserName $NetScalerPassword
                                 }
                                 "NetscalerGateway" { 
-                                    $NetScalerPassword = ConvertTo-SecureString $CheckValue.Password -AsPlainText -Force
-                                    $Values = Test-NetscalerGateway $ComputerName $CheckValue.Username $NetScalerPassword
+                                    $NetScalerUserName = $configobject.NetscalerGateway.creds.username
+                                    $NetScalerPasswordPlain = $configobject.NetscalerGateway.creds.password
+                                    $NetScalerPassword = ConvertTo-SecureString $NetScalerPasswordPlain -AsPlainText -Force
+                                    $Values = Test-NetscalerGateway $ComputerName $NetScalerUserName $NetScalerPassword
                                 }
 
                                 # PVS - XXX CHANGEME XXX 

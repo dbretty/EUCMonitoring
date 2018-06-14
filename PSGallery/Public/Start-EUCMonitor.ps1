@@ -79,38 +79,40 @@ function Start-EUCMonitor {
                 # XXX CHANGEME XXX 
                 # Put in Actual ShouldProcess Checks
                 # This is where all the work happens. 
-                Write-Verbose "Calling Test-Series $JSONConfigFilename $SeriesName"
-                $SeriesResult = Test-Series $JSONConfigFileName $SeriesName
+                if ($ConfigObject.$SeriesName.test) {
+                    Write-Verbose "Calling Test-Series $JSONConfigFilename $SeriesName"
+                    $SeriesResult = Test-Series $JSONConfigFileName $SeriesName
 
-                # As long as we get results, write out any errors to appropriate log file
-                if ( $null -ne $SeriesResult ) {
+                    # As long as we get results, write out any errors to appropriate log file
+                    if ( $null -ne $SeriesResult ) {
 
-                    foreach ( $Result in $SeriesResult ) {
-                        
-                        if ( $null -ne $Result.Errors ) {
-                            $ResultName = $Result.PSObject.Properties.Name
-                    
-                            # Check to redirect Desktop errors to DesktopErrorFile 
+                        foreach ( $Result in $SeriesResult ) {
                             
-                            if ( "XdServer" -eq $ResultName ) {
-                                "$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $ServerErrorFile -Append
-                                $SeriesResult.Errors | Out-File $ServerErrorFile -Append
-                            }
-                            # And some for ServerErrorFile
-                            elseif ( "XdDesktop" -eq $ResultName ) {
-                                "$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $DesktopErrorFile -Append
-                                $SeriesResult.Errors | Out-File $DesktopErrorFile -Append
-                            } 
-                            # Or Just assume its the supporting infrastructure.
-                            else {
-                                "$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $InfraErrorFile -Append
-                                $SeriesResult.Errors | Out-File $InfraErrorFile -Append
+                            if ( $null -ne $Result.Errors ) {
+                                $ResultName = $Result.PSObject.Properties.Name
+                        
+                                # Check to redirect Desktop errors to DesktopErrorFile 
+                                
+                                if ( "XdServer" -eq $ResultName ) {
+                                    "$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $ServerErrorFile -Append
+                                    $SeriesResult.Errors | Out-File $ServerErrorFile -Append
+                                }
+                                # And some for ServerErrorFile
+                                elseif ( "XdDesktop" -eq $ResultName ) {
+                                    "$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $DesktopErrorFile -Append
+                                    $SeriesResult.Errors | Out-File $DesktopErrorFile -Append
+                                } 
+                                # Or Just assume its the supporting infrastructure.
+                                else {
+                                    "$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $InfraErrorFile -Append
+                                    $SeriesResult.Errors | Out-File $InfraErrorFile -Append
+                                }
                             }
                         }
-                    }
 
-                    $Results += $SeriesResult
-                }                
+                        $Results += $SeriesResult
+                    }     
+                }           
             }
         }
 
@@ -132,7 +134,7 @@ function Start-EUCMonitor {
         }
 
         # Maybe console formatted data?  Just ideas at the moment.  
-        if ( $ConfigObject.Global.ConsoleResults ) {
+        if ( $ConfigObject.Global.ConsoleResults.Enabled ) {
             Show-EUCResult -Results $Results
         }
         
