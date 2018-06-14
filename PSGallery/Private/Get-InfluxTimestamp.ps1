@@ -5,9 +5,9 @@ function Get-InfluxTimestamp {
     Checks the ports and services of a Windows Server.
 .DESCRIPTION 
     Checks the ports and services of a Windows Server.  
-.PARAMETER JSONConfigFilename
+.PARAMETER JSONFile
     Specify path to your config file to run checks against.  This would be your EUCMonitoring.json, or your
-    test configs.  Specifying a JSONConfigFilename override any ConfigObject passed to it.  This is mainly 
+    test configs.  Specifying a JSONFile override any ConfigObject passed to it.  This is mainly 
     used in unit testing to validate the test suites before production. 
 .PARAMETER ConfigObject
     Specifies the ports to run checks against.  This should already be in the target location.
@@ -21,7 +21,7 @@ function Get-InfluxTimestamp {
     Adam Yarborough         1.0             22/02/2018          Function Creation
     
 .EXAMPLE
-    Test-Template -JSonConfigFilename "C:\Monitoring\EUCMonitoring.json"
+    Test-Template -JSONFile "C:\Monitoring\EUCMonitoring.json"
 #>
     $utcDate = $DateTime.ToUniversalTime()
     # Convert to a Unix time as a double, noticed that it gets all the seconds down in the decimal if cast as a double.
