@@ -104,15 +104,21 @@ function New-HtmlReport {
         $Down = 0
 
         $Series = $SeriesResult.Series
-        # Write-Host "--- Series: $Series ---" -ForegroundColor "Cyan"
+
         if ( "Worker" -ne $Series ) {
             foreach ($Result in $SeriesResult.Results) {
                 "<td width='$ColumnPercent%' align=center valign=top>" | Out-File $HTMLOutputFileFull -Append
+                # XXX TODO XXX Needs Parameters
                 New-DonutHTML  | Out-File $HTMLOutputFileFull -Append
 
             }
         }
     }
+
+    # XXX TODO XXX
+    # Output the infrastructure data.  This would be the checkdata values from netscalers, etc...
+    
+
 
     # Worker Donuts
     foreach ($SeriesResult in $Results) { 
@@ -121,10 +127,17 @@ function New-HtmlReport {
         Write-Host "--- Series: $Series ---" -ForegroundColor "Cyan"
         if ( "Worker" -eq $Series ) {
             foreach ($Result in $SeriesResult.Results) {
+                # XXX TODO XXX Needs Parameters
                 New-DonutHTML  -Worker | Out-File $HTMLOutputFileFull -Append
             }
         }
     }
+
+    # XXX TODO XXX
+    # Output the worker data.  This would be checkdata values from workers like session counts, etc..
+
+
+
     # Work out the column width for Infrastructure
     #$ColumnPercent = 100 / [int]($EUCMonitoring.infrastructurelist).count
     #foreach ($InfService in $InfrastructureList) {
