@@ -178,7 +178,7 @@ function New-HtmlReport {
                         "<td>" | Out-File $HTMLOutputFileFull -Append
                         $WorkerData = "Broker $($Result.ComputerName)`: $ParamString"
                         #             Write-Verbose $PostParams
-                        $PostParams | Out-File $HTMLOutputFileFull -Append
+                        $WorkerData | Out-File $HTMLOutputFileFull -Append
                         "</td>" | Out-File $HTMLOutputFileFull -Append
                     }
                 }
