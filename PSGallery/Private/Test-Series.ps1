@@ -101,13 +101,13 @@ function Test-Series {
                     $Controller = $XdSite.PrimaryController 
                     $Config.Servers += $Controller
                     $XdControllers += $Controller
-                    Write-Verbose "Adding XD Controller $XDController"
+                    Write-Verbose "Adding XD Controller $Controller"
                 }
                 elseif ( (Connect-Server $XdSite.SecondaryController) -eq "Successful") {
                     $Controller = $XdSite.SecondaryController       
                     $Config.Servers += $Controller
                     $XdControllers += $Controller
-                    Write-Verbose "Adding XD Controller $XDController"             
+                    Write-Verbose "Adding XD Controller $Controller"             
                 }
                 else {                    
                     Write-Verbose "Could not connect to any controllers in $XDSite"
