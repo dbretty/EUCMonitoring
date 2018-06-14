@@ -124,7 +124,7 @@ function New-HtmlReport {
     foreach ($SeriesResult in $Results) { 
 
         $Series = $SeriesResult.Series
-        Write-Host "--- Series: $Series ---" -ForegroundColor "Cyan"
+        #      Write-Host "--- Series: $Series ---" -ForegroundColor "Cyan"
         if ( "Worker" -eq $Series ) {
             foreach ($Result in $SeriesResult.Results) {
                 # XXX TODO XXX Needs Parameters
