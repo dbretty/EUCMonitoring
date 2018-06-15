@@ -51,9 +51,7 @@
         ],
         "Checks": {
             "ValidCert": {
-                "Ports": [
-                    636
-                ]
+                "Port": 636
             }
         }
     },
@@ -143,9 +141,7 @@
                 "Path": "/Citrix/StoreWeb"
             },
             "ValidCert": {
-                "Ports": [
-                    443
-                ]
+                "Port": 443
             }
         }
     },
