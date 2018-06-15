@@ -23,6 +23,7 @@ function Get-InfluxTimestamp {
 .EXAMPLE
     Test-Template -JSONFile "C:\Monitoring\EUCMonitoring.json"
 #>
+    $DateTime = Get-Date 
     $utcDate = $DateTime.ToUniversalTime()
     # Convert to a Unix time as a double, noticed that it gets all the seconds down in the decimal if cast as a double.
     $unixTime = [double]((Get-Date -Date $utcDate -UFormat %s))
