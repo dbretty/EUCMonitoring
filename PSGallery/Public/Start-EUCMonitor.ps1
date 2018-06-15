@@ -13,7 +13,7 @@ function Start-EUCMonitor {
     Name                    Version         Date                Change Detail
     Adam Yarborough         1.0             17/05/2018          Function Creation
 .CREDITS 
-    David Brett - Original creation, Netscaler, Controller, Director, Storefront
+    David Brett - Original creation and design, Netscaler, Controller, Director, Storefront, XenServer
     James Kindon - AD, Controller, FAS, PVS, SQL, UPS, WEM
     David Wilkinson - AppV, CC, 
     Ryan Butler - Pretty much everything testing, automation, sanity checks, cleaning 
@@ -40,8 +40,6 @@ function Start-EUCMonitor {
     
     $Results = @()
 
-    
-    
     $StartTime = (Get-Date)
 
     try {
@@ -79,50 +77,6 @@ function Start-EUCMonitor {
     foreach ( $SeriesName in $ConfigObject.PSObject.Properties.Name ) {
 
         # So, this works by iterating over the top elements of the config file and processing them.
-            
-<<<<<<< HEAD
-            # $SeriesName = $Series.PSObject.Properties.Name
-            # As long as its not the global section of the config file
-            if ( "Global" -ne $SeriesName ) {
-                # XXX CHANGEME XXX 
-                # Put in Actual ShouldProcess Checks
-                # This is where all the work happens. 
-                if ($ConfigObject.$SeriesName.test) {
-                    Write-Verbose "Calling Test-Series $JSONConfigFilename $SeriesName"
-                    $SeriesResult = Test-Series $JSONConfigFileName $SeriesName
-
-                    # As long as we get results, write out any errors to appropriate log file
-                    if ( $null -ne $SeriesResult ) {
-
-                        foreach ( $Result in $SeriesResult ) {
-                            
-                            if ( $null -ne $Result.Errors ) {
-                                $ResultName = $Result.PSObject.Properties.Name
-                        
-                                # Check to redirect Desktop errors to DesktopErrorFile 
-                                
-                                if ( "XdServer" -eq $ResultName ) {
-                                    "$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $ServerErrorFile -Append
-                                    $SeriesResult.Errors | Out-File $ServerErrorFile -Append
-                                }
-                                # And some for ServerErrorFile
-                                elseif ( "XdDesktop" -eq $ResultName ) {
-                                    "$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $DesktopErrorFile -Append
-                                    $SeriesResult.Errors | Out-File $DesktopErrorFile -Append
-                                } 
-                                # Or Just assume its the supporting infrastructure.
-                                else {
-                                    "$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $InfraErrorFile -Append
-                                    $SeriesResult.Errors | Out-File $InfraErrorFile -Append
-                                }
-                            }
-                        }
-
-                        $Results += $SeriesResult
-                    }     
-                }           
-            }
-=======
         # $SeriesName = $Series.PSObject.Properties.Name
         # As long as its not the global section of the config file
         if ( "Global" -ne $SeriesName ) {
@@ -161,7 +115,6 @@ function Start-EUCMonitor {
 
                 $Results += $SeriesResult
             }                
->>>>>>> 6455f214ebe6a7fb65bcb0db2584feb4c92df0bb
         }
     }
 
@@ -182,18 +135,10 @@ function Start-EUCMonitor {
         Send-EUCResultToInfluxDB -ConfigObject $ConfigObject -Results $Results
     }
 
-<<<<<<< HEAD
-        # Maybe console formatted data?  Just ideas at the moment.  
-        if ( $ConfigObject.Global.ConsoleResults.Enabled ) {
-            Show-EUCResult -Results $Results
-        }
-=======
-    # Maybe console formatted data?  Just ideas at the moment.  
-    if ( $ConfigObject.Global.ConsoleResults ) {
+    # Maybe console formatted data 
+    if ( $ConfigObject.Global.ConsoleResults.Enabled ) {
         Show-EUCResult -Results $Results
     }
->>>>>>> 6455f214ebe6a7fb65bcb0db2584feb4c92df0bb
-        
 
     # Stop the timer and display the output
     $EndTime = (Get-Date)

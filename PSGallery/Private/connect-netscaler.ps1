@@ -3,7 +3,7 @@ function Connect-NetScaler {
     .SYNOPSIS 
         Logs into a Citrix NetScaler.
     .DESCRIPTION 
-        Logs into a NetScaler ADC and creates a global variable called $NSSession to be used to invoke NITRO Commands.
+        Logs into a NetScaler ADC and returns variable called $NSSession to be used to invoke NITRO Commands.
     .PARAMETER NSIP 
         Citrix NetScaler NSIP.
     .PARAMETER UserName 
@@ -17,43 +17,18 @@ function Connect-NetScaler {
     .CHANGE LOG
         David Brett - 15/03/2017 - Initial Script Creation
         Ryan Butler - 27/03/2017 - Change to nssession scope 
+        David Brett - 14/06/2018 - Edited the Function to remove positional parameters and cleaned up old code
 #> 
 
-    [cmdletbinding(
-        DefaultParameterSetName = '',
-        ConfirmImpact = 'low'
-    )]
-
-    Param (
-        [Parameter(
-            Mandatory = $False,
-            Position = 0,
-            ParameterSetName = '',
-            ValueFromPipeline = $True)]
-        [string]$NSIP,
-        [Parameter(
-            Mandatory = $False,
-            Position = 1,
-            ParameterSetName = '',
-            ValueFromPipeline = $True)]
-        [string]$UserName,
-        [Parameter(
-            Mandatory = $False,
-            Position = 2,
-            ParameterSetName = '',
-            ValueFromPipeline = $True)]
-        [System.Security.SecureString]$Password
+    [CmdletBinding()]
+    Param
+    (
+        [parameter(Mandatory = $false, ValueFromPipeline = $true)]$NSIP,
+        [parameter(Mandatory = $false, ValueFromPipeline = $true)]$UserName,
+        [parameter(Mandatory = $false, ValueFromPipeline = $true)][System.Security.SecureString]$Password,
     )
 
-    # Check to see if parameters were passed in, if not then prompt the user for them
-    if ($NSIP -eq "") {$NSIP = read-host "Enter NetScaler IP"}
-    if ($UserName -eq "") {$UserName = read-host "Enter NetScaler User Name"}
-    if ($Password -eq "") {
-        $SecurePassword = read-host "Enter NetScaler Password" -AsSecureString
-        $BasePassword = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecurePassword)
-        $Password = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BasePassword)
-    }
-
+    # Strip the Secure Password back to a basic text password
     $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)
     $UnsecurePassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
 
@@ -69,6 +44,7 @@ function Connect-NetScaler {
     }
 
     # Connect to NetScaler
+    Write-Verbose "Connecting to NetScaler using NITRO"
     Invoke-RestMethod -uri "$NSIP/nitro/v1/config/login" -body $PayLoad -SessionVariable saveSession -Headers @{"Content-Type" = "application/vnd.com.citrix.netscaler.login+json"} -Method POST
 
     # Build Script NetScaler Session Variable

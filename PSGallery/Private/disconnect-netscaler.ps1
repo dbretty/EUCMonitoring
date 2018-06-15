@@ -11,21 +11,14 @@ function Disconnect-NetScaler {
     Author: David Brett
     Date Created: 15/03/2017 
 .CHANGE LOG
-    David Brett - 15/03/2017 - Initial Script Creation 
+    David Brett     1.0     15/03/2017          Initial Script Creation 
+    David Brett     1.1     14/06/2018          Edited the Function to remove positional parameters and cleaned out old code        
 #> 
 
-    [cmdletbinding(
-        DefaultParameterSetName = '',
-        ConfirmImpact = 'low'
-    )]
-
-    Param (
-        [Parameter(
-            Mandatory = $False,
-            Position = 0,
-            ParameterSetName = '',
-            ValueFromPipeline = $True)]
-        [string]$NSIP
+    [CmdletBinding()]
+    Param
+    (
+        [parameter(Mandatory = $false, ValueFromPipeline = $true)]$NSIP
     )
 
     # Validate That the IP Address is valid
@@ -46,7 +39,4 @@ function Disconnect-NetScaler {
     # Logout of the NetScaler
     Invoke-RestMethod -uri "$NSIP/nitro/v1/config/logout" -body $PayLoad -WebSession $NSSession.WebSession -Headers @{"Content-Type" = "application/vnd.com.citrix.netscaler.logout+json"} -Method POST
 
-    # Clear the Global Variable for the NetScaler Session
-    # Remove-Variable -name nsSession -Scope global -force
-    # Write-Verbose "NetScaler Session Cleared and Logged Out"
 }

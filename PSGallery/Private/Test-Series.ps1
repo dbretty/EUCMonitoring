@@ -21,9 +21,10 @@ function Test-Series {
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     Adam Yarborough         1.0             17/05/2018          Function Creation
+    David Brett             1.1             16/06/2018          Updated Switch statement to splat the @params
     
 .EXAMPLE
-    Test-Template -JSONFile "C:\Monitoring\EUCMonitoring.json"
+    Test-Series -JSONFile "C:\Monitoring\EUCMonitoring.json"
 #>
     [CmdletBinding()]
     Param
@@ -31,8 +32,6 @@ function Test-Series {
         [Parameter(ValueFromPipeline, Mandatory = $true)][string]$JSONFile,
         [Parameter(ValueFromPipeline, Mandatory = $true)][string]$Series
     )
-
-    #    begin { Write-Debug "$PSCmdLet.MyInvocation.MyCommand.Name) Begin Executsion $( $cmdstart = (get-date) )"}
 
     #    process {
     # XXX CHANGEME XXX
@@ -191,29 +190,40 @@ function Test-Series {
                             $Values = @()
                 
                             switch ($CheckName) {
-                                # Need to come back and splat arguments for the longer functions. 
-
-                                # XenDesktop Checks
-                                # Worker Checks
-
                                 "XdDesktop" { 
                                     if ( $ComputerName -in $XdControllers ) {    
-                                        $Values = Test-XdWorker -Broker $ComputerName -WorkerTestMode "basic" -Workload "desktop" -BootThreshold $CheckValue.BootThreshold -HighLoad $CheckValue.HighLoad
+                                        $parms = @{
+                                            'Broker'=$ComputerName;
+                                            'WorkerTestMode'='basic';
+                                            'Workload'='desktop';
+                                            'BootThreshold'=$CheckValue.BootThreshold;
+                                            'HighLoad'=$CheckValue.HighLoad
+                                        }
+                                        $Values = Test-XdWorker @params
                                     }
                                 }
                                 "XdServer" {
                                     if ( $ComputerName -in $XdControllers ) { 
-                                        $Values = Test-XdWorker -Broker $ComputerName -WorkerTestMode "basic" -Workload "server" -BootThreshold $CheckValue.BootThreshold -HighLoad $CheckValue.HighLoad
+                                        $parms = @{
+                                            'Broker'=$ComputerName;
+                                            'WorkerTestMode'='basic';
+                                            'Workload'='server';
+                                            'BootThreshold'=$CheckValue.BootThreshold;
+                                            'HighLoad'=$CheckValue.HighLoad
+                                        }
+                                        $Values = Test-XdWorker @params
                                     }
                                 }
                                 "XdSessionInfo" {
                                     if ( $ComputerName -in $XdControllers ) {
+                                        # Function Not Yet Complate
                                         $Values = Test-XdSessions $ComputerName 
                                     }
                                 }
 
                                 # License Checks
                                 "XdLicense" { 
+                                    # Function Not Yet Complate
                                     $Values = Test-XdLicense $ComputerName 
                                 }
 
@@ -278,8 +288,6 @@ function Test-Series {
                                 "ValidCert" { 
                                     $Values = Test-ValidCert $ComputerName $CheckValue.Port
                                 }
-
-                          
 
                                 Default { }
                             }

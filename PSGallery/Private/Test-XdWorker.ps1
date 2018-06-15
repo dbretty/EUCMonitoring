@@ -44,6 +44,7 @@ function Test-XdWorker {
 
     #Create array with results
     $results = @()
+    $errors = @()
     
     $ctxsnap = add-pssnapin citrix* -ErrorAction SilentlyContinue
     $ctxsnap = get-pssnapin citrix* -ErrorAction SilentlyContinue
@@ -111,7 +112,7 @@ function Test-XdWorker {
     $BMUnRegistered = $BrokerMachines | Where-Object {($_.RegistrationState -eq "Unregistered" -and $_.PowerState -match "On")}
     foreach ($Machine in $BMUnRegistered) {
         $Name = $Machine.hostedmachinename
-        "$Name is not registered with a XenDesktop Controller" | Out-File $ErrorFile -Append
+        $errors += "$Name is not registered with a XenDesktop Controller"
     }
 
     if ($WorkerTestMode -eq "basic") {
@@ -127,6 +128,9 @@ function Test-XdWorker {
             'BrokerMachinesUnRegistered'     = $BMUnRegisteredCount
             'BrokerMachinesInMaintenance'    = $BMMaintenanceCount
         }
+
+        # Add errors to array
+        $results += $errors
 
         #returns object with test results
         return $results
@@ -161,45 +165,46 @@ function Test-XdWorker {
                         $CurrentLoad = $Load.LoadIndex
                         If ($CurrentLoad -lt $HighLoad) {
                             Write-Verbose "$Machine has acceptable load - $CurrentLoad"
-                            If ($ControlUp -eq "yes") {
-                                $CurrentServiceStatus = Test-Service $Machine cuAgent 
-                                If ($CurrentServiceStatus -ne "Running") {
-                                    $BrokerBad ++
-                                    Write-Verbose "Control Up Agent is not running on $Machine"
-                                    "Control Up Agent is not running on $Machine" | Out-File $ErroFileFullPath -Append
-                                }
-                                else {
-                                    $BrokerGood ++    
-                                    Write-Verbose "Control Up Agent is running on $Machine"                             
-                                }
-                            }
-                            else {
+                            #If ($ControlUp -eq "yes") {
+                            #    $CurrentServiceStatus = Test-Service $Machine cuAgent 
+                            #    If ($CurrentServiceStatus -ne "Running") {
+                            #        $BrokerBad ++
+                            #        Write-Verbose "Control Up Agent is not running on $Machine"
+                            #        "Control Up Agent is not running on $Machine" | Out-File $ErroFileFullPath -Append
+                            #    }
+                            #    else {
+                            #        $BrokerGood ++    
+                            #        Write-Verbose "Control Up Agent is running on $Machine"                             
+                            #    }
+                            #}
                                 $BrokerGood ++
-                                Write-Verbose "Control Up Not Enabled - Skipping Check"
-                            }
+                            #else {
+                            #    $BrokerGood ++
+                            #    Write-Verbose "Control Up Not Enabled - Skipping Check"
+                            #}
                         }
                         else {
                             $BrokerBad ++
                             Write-Verbose "$Machine has unacceptable load - $CurrentLoad"
-                            "$Machine has a high load of $CurrentLoad" | Out-File $ErrorFile -Append
+                            $errors += "$Machine has a high load of $CurrentLoad"
                         }
                     }
                     else {
                         $BrokerBad ++
                         Write-Verbose "$Machine has NOT had Windows Activated"
-                        "$Machine is not activated" | Out-File $ErrorFile -Append
+                        $errors += "$Machine is not activated"
                     }
                 }
                 else {
                     $BrokerBad ++
                     Write-Verbose "$Machine has NOT been booted within the boot threashold of $BootThreshold"
-                    "$Machine has not been booted in $Uptime days" | Out-File $ErrorFile -Append
+                    $errors += "$Machine has not been booted in $Uptime days"
                 }
             }
             else {
                 $BrokerBad ++
                 Write-Verbose "$Machine is down"
-                "$Machine is down" | Out-File $ErrorFile -Append
+                $errors += "$Machine is down"
             }
         }
 
@@ -217,6 +222,9 @@ function Test-XdWorker {
             'BrokerMachinesGood'             = $BrokerGood
             'BrokerMachinesBad'              = $BrokerBad
         }
+
+        # Add errors to array
+        $results += $errors
 
         #returns object with test results
         return $results

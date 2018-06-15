@@ -12,11 +12,13 @@ function Connect-Server {
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     David Brett             1.0             07/02/2018          Function Creation
+    David Brett             1.2             14/06/2018          Edited the Function and switched from positional parameters
 
 .EXAMPLE
     None Required
 #>
 
+    [CmdletBinding()]
     Param
     (
         [parameter(Mandatory = $true, ValueFromPipeline = $true)][String[]]$ServerName

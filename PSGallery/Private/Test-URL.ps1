@@ -13,11 +13,13 @@ function Test-URL {
     Name                    Version         Date                Change Detail
     David Brett             1.0             07/02/2018          Function Creation
     Adam Yarborough         1.1             05/06/2018          Change to true/false
+    David Brett             1.2             16/06/2018          Updated Function Parameters
 
 .EXAMPLE
     None Required
 #>
 
+    [CmdletBinding()]
     Param
     (
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$Url

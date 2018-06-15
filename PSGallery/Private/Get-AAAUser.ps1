@@ -19,10 +19,12 @@ function Get-AAAUser {
     Name                    Version         Date                Change Detail
     David Brett             1.0             14/03/2018          Function Creation
     David Brett             1.2             29/03/2018          Edit NSSession Scope
+    David Brett             1.3             15/06/2018          Added Error Checking for the Call to get the Users From the NetScaler
 .EXAMPLE
     None Required
 #> 
 
+    [CmdletBinding()]
     Param
     (
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$NSIP,
@@ -43,10 +45,14 @@ function Get-AAAUser {
 
     $Method = "GET"
     $ContentType = "application/json"
-    # XXX CHANGEME XXX Error checking? 
     $UserSessions = Invoke-RestMethod -uri $Url -WebSession $nsSession.WebSession -ContentType $ContentType -Method $Method
-
+    
     Disconnect-NetScaler $NSIP
 
+    if ($null -eq $UserSessions) {
+        write-verbose "Could not pull back user sessions from the NetScaler - returning -1"
+        $UserSessions = "-1" 
+    }
+    
     return $UserSessions
 }

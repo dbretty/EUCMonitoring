@@ -14,6 +14,7 @@ function Test-ValidCert {
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     Adam Yarborough         1.0             22/02/2018          Function Creation
+    David Brett             1.1             16/06/2018          Updated Function Parameters
 .CREDIT
     Original code by Rob VandenBrink, https://bit.ly/2IDf5Gd
 .OUTPUT
@@ -22,6 +23,7 @@ function Test-ValidCert {
     None Required
 #>
 
+    [CmdletBinding()]
     param ( 
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$Target, 
         [parameter(Mandatory = $true, ValueFromPipeline = $true)][int]$Port

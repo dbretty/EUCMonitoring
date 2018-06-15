@@ -16,14 +16,19 @@ function Get-CTXLicenseCount {
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     Adam Yarborough         1.0             22/02/2018          Function Creation
+    David Brett             1.1             16/06/2018          Updated Parameter fields for consistency
     
 .EXAMPLE
     None Required
 #>
-    Param ( 
-        $ComputerName,
-        $LicenseType
+
+    [CmdletBinding()]
+    Param
+    (
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ComputerName,
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$LicenseType
     )
+
     begin {}
 
     process {
@@ -48,6 +53,4 @@ function Get-CTXLicenseCount {
     }
 
     end {}
-
-
 }
