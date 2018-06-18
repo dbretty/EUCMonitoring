@@ -84,7 +84,7 @@ function Send-EUCResultToInfluxDB {
                     if ( $ParamString -eq "" ) { $ParamString = "$Check=1" } 
                     else { $ParamString += ",$Check=1" }
                 }
-                foreach ( $Service in $Result.ChecksDown ) {
+                foreach ( $Check in $Result.ChecksDown ) {
                     if ( $ParamString -eq "" ) { $ParamString = "$Check=0" } 
                     else { $ParamString += ",$Check=0" }
                 }

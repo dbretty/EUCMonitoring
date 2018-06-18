@@ -50,8 +50,8 @@ function Get-DonutHTML {
     $HTML = "<svg width='$DonutWidth' height='$DonutHeight' viewBox='0 0 42 42' class='donut'>" 
     # "<svg width='100%' height='100%' viewBox='0 0 42 42' class='donut'>" | Out-File $DonutFile -Append
     $HTML += "<circle class='donut-hole' cx='21' cy='21' r='15.91549430918954' fill='#fff'></circle>"
-    $HTML += "<circle class='donut-ring' cx='21' cy='21' r='15.91549430918954' fill='transparent' stroke='$DonutGood' stroke-width='$DonutStroke'></circle>" 
-    $HTML += "<circle class='donut-segment' cx='21' cy='21' r='15.91549430918954' fill='transparent' stroke='$DonutBad' stroke-width='$DonutStroke' stroke-dasharray='$SeriesUpCount $SeriesDownCount' stroke-dashoffset='25'></circle>" 
+    $HTML += "<circle class='donut-ring' cx='21' cy='21' r='15.91549430918954' fill='transparent' stroke='$DonutGoodColour' stroke-width='$DonutStroke'></circle>" 
+    $HTML += "<circle class='donut-segment' cx='21' cy='21' r='15.91549430918954' fill='transparent' stroke='$DonutBadColour' stroke-width='$DonutStroke' stroke-dasharray='$SeriesUpCount $SeriesDownCount' stroke-dashoffset='25'></circle>" 
         
     if ( $Worker ) {
         $HTML += "<g class='worker-chart-text'>" 
@@ -62,10 +62,10 @@ function Get-DonutHTML {
         $HTML += "<text x='50%' y='50%' class='chart-label'>"      
     }
         
-    "$SeriesName" 
-    "</text>"
-    "</g>"
-    "</svg>" 
+    $HTML += "$SeriesName" 
+    $HTML += "</text>"
+    $HTML += "</g>"
+    $HTML += "</svg>" 
 
     $HTML
 }
