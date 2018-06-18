@@ -71,8 +71,10 @@ function Test-XdHypervisorHealth {
     if ( $Health ) {
         return $true
     }
-    else { 
-        $Results += $Errors
+    else {
+        $Results += [PSCustomObject]@{
+            'Errors' = $Errors
+        }
         return $Results
     }
 }

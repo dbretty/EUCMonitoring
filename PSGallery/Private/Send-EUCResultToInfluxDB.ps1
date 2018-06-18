@@ -14,13 +14,13 @@ function Send-EUCResultToInfluxDB {
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     Adam Yarborough            1.0          17/05/2018          Function Creation
-
+    Adam Yarborough            1.1          18/05/2018          Stoplights checks added to base series
+                                                                Cleanup
 .EXAMPLE
     None Required
 #>
     [CmdletBinding()]
     Param(
-        #        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ConfigObject,
         [parameter(ValueFromPipeline = $true)]$JSONFile = ("$(get-location)\euc-monitoring.json"),
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$Results
     ) 
@@ -48,9 +48,7 @@ function Send-EUCResultToInfluxDB {
 
             foreach ($Result in $SeriesResult.Results) {
 
-
-                # XXX CHANGEME XXX 
-                #$Series = "TEMPLATE"
+                Write-Verbose "Populating results for $($Result.Computername)"
                 #This assumes influx doesn't care about the order as long as they're grouped
                 # Ports Up
                 $ParamString = ""
@@ -91,26 +89,31 @@ function Send-EUCResultToInfluxDB {
 
                 # That's all the binary checks.  
                 if ( "" -ne $ParamString ) {
+                    # Stoplight checks
+                    if ( "UP" -eq $Result.State ) { $ParamString += ",State=2" }
+                    elseif ( "DEGRADED" -eq $Result.State ) { $ParamString += ",State=1" }
+                    else { $ParamString += ",State=0" }
+
                     $ParamString = $ParamString -replace " ", "\ "
                     $PostParams = "$Series,Server=$($Result.ComputerName) $ParamString $timeStamp"
                     Write-Verbose $PostParams
                     Invoke-RestMethod -Method "POST" -Uri $InfluxUri -Body $postParams
                 }
 
-                # Stoplight checks
-                if ( "UP" -eq $Result.State ) { $ParamString = "State=2" }
-                elseif ( "DEGRADED" -eq $Result.State ) { $ParamString = "State=1" }
-                else { $ParamString = "State=0" }
-
+                <# 
+                No longer separating the State into a stoplights thing. Just grabbing with the group. 
                 $PostParams = "$Series-StopLights,Server=$($Result.ComputerName) $ParamString $timeStamp"
                 Invoke-RestMethod -Method "POST" -Uri $InfluxUri -Body $postParams
+                #> 
 
                 # Unique Numerical Data will follow
                 # ValueName=NumericalValue
 
-                foreach ( $CheckData in $Result.ChecksData ) {
-                    $ParamString = "" 
                 
+                foreach ( $CheckData in $Result.ChecksData ) {
+                    Write-Verbose "Populating additional check data"
+
+                    $ParamString = "" 
                     $CheckDataName = $CheckData.CheckName
                 
                     $CheckData.Values.PSObject.Properties | ForEach-Object {

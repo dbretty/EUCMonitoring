@@ -55,7 +55,9 @@ function Test-XdDeliveryGroupHealth {
         return $true
     }
     else {
-        $Results += $Errors
+        $Results += [PSCustomObject]@{
+            'Errors' = $Errors
+        }
         return $Results
     }
 }

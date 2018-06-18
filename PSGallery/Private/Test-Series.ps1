@@ -87,41 +87,64 @@ function Test-Series {
             # sites the checks will be done to all up servers.  This will then funnel down
             # to the foreach loop.  
 
-            # RdsSites in place for eventual support. 
 
-            foreach ( $XdSite in $Config.XdSites ) {
-                # Test Connection, add the first controller that responds to Servers
-                # as well as XdControllers
-                $Controller = ""
-                if ( $null -eq $Config.Servers ) {
-                    $Config | Add-Member -NotePropertyName Servers -NotePropertyValue @()
-                }
+            if ( $Config.XdSites ) {
+                foreach ( $XdSite in $Config.XdSites ) {
+                    # Test Connection, add the first controller that responds to Servers
+                    # as well as XdControllers
+                    $Controller = ""
+                    if ( $null -eq $Config.Servers ) {
+                        $Config | Add-Member -NotePropertyName Servers -NotePropertyValue @()
+                    }
             
-                if ( (Connect-Server $XdSite.PrimaryController ) -eq "Successful" ) {
-                    $Controller = $XdSite.PrimaryController 
-                    $Config.Servers += $Controller
-                    $XdControllers += $Controller
-                    Write-Verbose "Adding XD Controller $Controller"
-                }
-                elseif ( (Connect-Server $XdSite.SecondaryController) -eq "Successful") {
-                    $Controller = $XdSite.SecondaryController       
-                    $Config.Servers += $Controller
-                    $XdControllers += $Controller
-                    Write-Verbose "Adding XD Controller $Controller"             
-                }
-                else {                    
-                    Write-Verbose "Could not connect to any controllers in $XDSite"
-                    $Errors += "Could not connect to any controllers in $XDSite."
+                    if ( (Connect-Server $XdSite.PrimaryController ) -eq "Successful" ) {
+                        $Controller = $XdSite.PrimaryController 
+                        $Config.Servers += $Controller
+                        $XdControllers += $Controller
+                        Write-Verbose "Adding XD Controller $Controller"
+                    }
+                    elseif ( (Connect-Server $XdSite.SecondaryController) -eq "Successful") {
+                        $Controller = $XdSite.SecondaryController       
+                        $Config.Servers += $Controller
+                        $XdControllers += $Controller
+                        Write-Verbose "Adding XD Controller $Controller"             
+                    }
+                    else {                    
+                        Write-Verbose "Could not connect to any controllers in $XDSite"
+                        $Errors += "Could not connect to any controllers in $XDSite."
+                    }
                 }
             }
 
-            <# - Not valid yet... but soon hopefully.
-            foreach ( $RdsSite in $Config.RdsSites  ) {
-                # Test connection, add the first controller that responds to Servers
-                # as well as RdsServers
-            }
-            #>
+            # ! This is more of a placeholder than anything, as we haven't implemented
+            # ! RDS Checks yet. 
+            if ( $Config.RdsSites ) {
+                foreach ( $RdsSite in $Config.RdsSites ) {
+                    # Test Connection, add the first controller that responds to Servers
+                    # as well as XdControllers
+                    $Controller = ""
+                    if ( $null -eq $Config.Servers ) {
+                        $Config | Add-Member -NotePropertyName Servers -NotePropertyValue @()
+                    }
             
+                    if ( (Connect-Server $RdsSite.PrimaryController ) -eq "Successful" ) {
+                        $Controller = $RdsSite.PrimaryController 
+                        $Config.Servers += $Controller
+                        $RdsControllers += $Controller
+                        Write-Verbose "Adding RDS Controller $Controller"
+                    }
+                    elseif ( (Connect-Server $RdsSite.SecondaryController) -eq "Successful") {
+                        $Controller = $RdsSite.SecondaryController       
+                        $Config.Servers += $Controller
+                        $RdsControllers += $Controller
+                        Write-Verbose "Adding RDS Controller $Controller"             
+                    }
+                    else {                    
+                        Write-Verbose "Could not connect to any controllers in $RDSSite"
+                        $Errors += "Could not connect to any controllers in $RDSSite."
+                    }
+                }
+            }
 
         } #END WORKER
     
@@ -137,8 +160,8 @@ function Test-Series {
             $PortsDown = @()
             $ServicesUp = @()
             $ServicesDown = @()
-            $ChecksUp = @()     # These are additional and might not be used. 
-            $ChecksDown = @()   # These are additional and might not be used.
+            $ChecksUp = @()      
+            $ChecksDown = @()   
             $ChecksData = @()
             $Errors = @()
 
@@ -179,7 +202,7 @@ function Test-Series {
                 # information, so update that function as well. 
 
                 if ( $State -eq "UP") {
-                    # XXX CHANGEME XXX 
+                    # ! There's probably a more elegant way of doing this.  
                     foreach ($CheckList in $Config.Checks) {
                         foreach ( $Check in $CheckList.PSObject.Properties ) {
                             $CheckName = $Check.Name
@@ -305,7 +328,6 @@ function Test-Series {
                             # elseif ( $null -ne Values ) {}
                             else {
                                 # Gets here with a $True or an object returned. 
-                                # XXX CHANGEME XXX - Review conditions 
                                 $ChecksUp += $CheckName
                                 # Just because we completed the test successfully, doesn't mean it was without
                                 # errors. 
@@ -313,7 +335,7 @@ function Test-Series {
                                     if ( $Values.Errors.Count -gt 0 ) {
                                         $Errors += $Values.Errors
                                         $State = "DEGRADED"
-                                        # XXX CHANGEME XXX Review
+                                        # ! Review
                                         # Remove the check's errors since they've been passed to the Series.
                                         $Values.PSObject.Properties.Remove('Errors')
                                         # Maybe $Values = $Values | SelectObject -Property * -ExcludeProperty Errors
@@ -340,7 +362,7 @@ function Test-Series {
 
                 # Finalize State by making sure if no tests passed, it's the same as being down. If degraded,
                 # There's no need to do further checks 
-                # XXX CHANGEME XXX - Validate this is correct.  
+                # ! Validate this is correct.  
                 if ( "DEGRADED" -eq $State ) {
                     if ( ($null -eq $ServicesUp) -and ($null -eq $PortsUp) -and ($null -eq $ChecksUp) ) {
                         Write-Verbose "$ComputerName is effectively down."
@@ -350,7 +372,7 @@ function Test-Series {
                 }
             }
             # Server is down - not responding to ping
-            # XXX CHANGEME XXX - Anything else to be set / returned? 
+            # ! Anything else to be set / returned? 
             else {
                 Write-Verbose "$ComputerName is down."
                 $State = "DOWN"
@@ -373,7 +395,8 @@ function Test-Series {
             Write-Verbose "ChecksDown: $ChecksDown"
             Write-Verbose "CheckData: $CheckData"
             Write-Verbose "Errors: $Errors"
-            # XXX CHANGEME XXX - Did you alter results?  Was there a good reason?
+            
+            # ! Did you alter results?  Was there a good reason?
             $results += [PSCustomObject]@{
                 'ComputerName' = $ComputerName
                 'State'        = $State
