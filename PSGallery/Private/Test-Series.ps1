@@ -22,6 +22,7 @@ function Test-Series {
     Name                    Version         Date                Change Detail
     Adam Yarborough         1.0             17/05/2018          Function Creation
     David Brett             1.1             16/06/2018          Updated Switch statement to splat the @params
+                                                                Added TestMode as a JSON Parameter to switch between basic and advanced tests
     
 .EXAMPLE
     Test-Series -JSONFile "C:\Monitoring\EUCMonitoring.json"
@@ -192,24 +193,24 @@ function Test-Series {
                             switch ($CheckName) {
                                 "XdDesktop" { 
                                     if ( $ComputerName -in $XdControllers ) {    
-                                        $parms = @{
-                                            'Broker'=$ComputerName;
-                                            'WorkerTestMode'='basic';
-                                            'Workload'='desktop';
-                                            'BootThreshold'=$CheckValue.BootThreshold;
-                                            'HighLoad'=$CheckValue.HighLoad
+                                        $params = @{
+                                            Broker         = $ComputerName;
+                                            WorkerTestMode = $CheckValue.testmode;
+                                            Workload       = 'desktop';
+                                            BootThreshold  = $CheckValue.BootThreshold;
+                                            HighLoad       = $CheckValue.HighLoad
                                         }
                                         $Values = Test-XdWorker @params
                                     }
                                 }
                                 "XdServer" {
                                     if ( $ComputerName -in $XdControllers ) { 
-                                        $parms = @{
-                                            'Broker'=$ComputerName;
-                                            'WorkerTestMode'='basic';
-                                            'Workload'='server';
-                                            'BootThreshold'=$CheckValue.BootThreshold;
-                                            'HighLoad'=$CheckValue.HighLoad
+                                        $params = @{
+                                            Broker         = $ComputerName;
+                                            WorkerTestMode = $CheckValue.testmode;
+                                            Workload       = 'server';
+                                            BootThreshold  = $CheckValue.BootThreshold;
+                                            HighLoad       = $CheckValue.HighLoad
                                         }
                                         $Values = Test-XdWorker @params
                                     }

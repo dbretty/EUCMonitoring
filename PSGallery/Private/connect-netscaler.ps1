@@ -25,11 +25,11 @@ function Connect-NetScaler {
     (
         [parameter(Mandatory = $false, ValueFromPipeline = $true)]$NSIP,
         [parameter(Mandatory = $false, ValueFromPipeline = $true)]$UserName,
-        [parameter(Mandatory = $false, ValueFromPipeline = $true)][System.Security.SecureString]$Password,
+        [parameter(Mandatory = $false, ValueFromPipeline = $true)][System.Security.SecureString]$NSPassword
     )
 
     # Strip the Secure Password back to a basic text password
-    $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)
+    $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($NSPassword)
     $UnsecurePassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
 
     # Validate That the IP Address is valid

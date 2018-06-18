@@ -74,6 +74,11 @@ function Start-EUCMonitor {
         } 
     }
 
+    # Remove the old error files from the system
+    If ((Test-Path $ServerErrorFile) -eq $true) { Remove-Item $ServerErrorFile -Force }
+    If ((Test-Path $DesktopErrorFile) -eq $true) { Remove-Item $DesktopErrorFile -Force }
+    If ((Test-Path $InfraErrorFile) -eq $true) { Remove-Item $InfraErrorFile -Force }
+
     foreach ( $SeriesName in $ConfigObject.PSObject.Properties.Name ) {
 
         # So, this works by iterating over the top elements of the config file and processing them.
@@ -87,32 +92,33 @@ function Start-EUCMonitor {
             $SeriesResult = Test-Series $JSONFile $SeriesName
 
             # As long as we get results, write out any errors to appropriate log file
-            if ( $null -ne $SeriesResult ) {
-
-                foreach ( $Result in $SeriesResult ) {
-                        
+            if ( $null -ne $SeriesResult ) { 
+                $ResultName = $SeriesResult.Series
+                foreach ( $Result in $SeriesResult.Results ) {
+                    $ComputerName =  $Result.ComputerName
                     if ( $null -ne $Result.Errors ) {
-                        $ResultName = $Result.PSObject.Properties.Name
-                    
-                        # Check to redirect Desktop errors to DesktopErrorFile 
-                            
-                        if ( "XdServer" -eq $ResultName ) {
-                            "$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $ServerErrorFile -Append
-                            $SeriesResult.Errors | Out-File $ServerErrorFile -Append
-                        }
-                        # And some for ServerErrorFile
-                        elseif ( "XdDesktop" -eq $ResultName ) {
-                            "$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $DesktopErrorFile -Append
-                            $SeriesResult.Errors | Out-File $DesktopErrorFile -Append
-                        } 
-                        # Or Just assume its the supporting infrastructure.
-                        else {
-                            "$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $InfraErrorFile -Append
-                            $SeriesResult.Errors | Out-File $InfraErrorFile -Append
+                        foreach ($errorline in $result.Errors) {
+                            $ErrorDetails = $errorline
+                            $ErrorMessage = "$ResultName - $ComputerName - $ErrorDetails"
+                            # Check to redirect Desktop errors to DesktopErrorFile   
+                            if ( "XdServer" -eq $ResultName ) {
+                                #"$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $ServerErrorFile -Append
+                                $ErrorMessage | Out-File $ServerErrorFile -Append
+
+                            }
+                            # And some for ServerErrorFile
+                            elseif ( "XdDesktop" -eq $ResultName ) {
+                                #"$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $DesktopErrorFile -Append
+                                $ErrorMessage | Out-File $DesktopErrorFile -Append
+                            } 
+                            # Or Just assume its the supporting infrastructure.
+                            else {
+                                #"$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $InfraErrorFile -Append
+                                $ErrorMessage | Out-File $InfraErrorFile -Append
+                            }
                         }
                     }
                 }
-
                 $Results += $SeriesResult
             }                
         }
