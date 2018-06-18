@@ -95,7 +95,7 @@ function Start-EUCMonitor {
             if ( $null -ne $SeriesResult ) { 
                 $ResultName = $SeriesResult.Series
                 foreach ( $Result in $SeriesResult.Results ) {
-                    $ComputerName =  $Result.ComputerName
+                    $ComputerName = $Result.ComputerName
                     if ( $null -ne $Result.Errors ) {
                         foreach ($errorline in $result.Errors) {
                             $ErrorDetails = $errorline
@@ -142,7 +142,7 @@ function Start-EUCMonitor {
     }
 
     # Maybe console formatted data 
-    if ( $ConfigObject.Global.ConsoleResults.Enabled ) {
+    if ( $ConfigObject.Global.ConsoleResults ) {
         Show-EUCResult -Results $Results
     }
 

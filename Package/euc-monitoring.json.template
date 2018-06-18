@@ -4,6 +4,7 @@
         "ServerErrorFile": "server-errors.txt",
         "DesktopErrorFile": "desktop-errors.txt",
         "InfraErrorFile": "infra-errors.txt",
+        "ConsoleResults": true,
         "ThirdParty": {
             "controlup": "no"
         },

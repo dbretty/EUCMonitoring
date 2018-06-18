@@ -23,6 +23,18 @@ function Test-XdCatalogHealth {
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$AdminAddress
     )
 
+    $ctxsnap = add-pssnapin Citrix.EnvTest* -ErrorAction SilentlyContinue
+    $ctxsnap = get-pssnapin Citrix.EnvTest* -ErrorAction SilentlyContinue
+
+    if ($null -eq $ctxsnap) {
+        Write-error "XenDesktop Powershell Snapin Load Failed - No XenDesktop Brokering SDK Found"
+        Write-error "Cannot Load Citrix.EnvTest.* Powershell SDK"
+        Return $false
+    }
+    else {
+        Write-Verbose "XenDesktop Powershell SDK Snapin Loaded"
+    }
+    
     #Create array with results
     $Results = @()
     $Errors = @()

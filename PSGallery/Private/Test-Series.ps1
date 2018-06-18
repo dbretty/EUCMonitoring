@@ -240,14 +240,14 @@ function Test-Series {
                                 }
                                 "XdSessionInfo" {
                                     if ( $ComputerName -in $XdControllers ) {
-                                        # Function Not Yet Complate
+                                        # ! Function Not Yet Complate
                                         $Values = Test-XdSessions $ComputerName 
                                     }
                                 }
 
                                 # License Checks
                                 "XdLicense" { 
-                                    # Function Not Yet Complate
+                                    # ! Function Not Yet Complate
                                     $Values = Test-XdLicense $ComputerName 
                                 }
 
@@ -273,19 +273,33 @@ function Test-Series {
                                     }
                                 }
 
+                                # ! Placeholder
+                                "RdsDesktop" {
+                                    if ( $ComputerName -in $RdsControllers ) { }
+                                }
+                                "RdsServer" {
+                                    if ( $ComputerName -in $RdsControllers ) { }
+                                }
+                                "RdsSessionInfo" {
+                                    if ( $ComputerName -in $RdsControllers ) { }
+                                }
+
                                 # XenServer
+                                # ! Not Tested
                                 "XenServer" {
                                     $XenServerPassword = ConvertTo-SecureString $CheckValue.Password -AsPlainText -Force
                                     $Values = Test-XenServer $ComputerName $CheckValue.Username $XenServerPassword
                                 }
            
                                 # Netscaler Checks
+                                # ! Currently doesn't work with .json template
                                 "Netscaler" {
                                     $NetScalerUserName = $configobject.Netscaler.creds.username
                                     $NetScalerPasswordPlain = $configobject.Netscaler.creds.password
                                     $NetScalerPassword = ConvertTo-SecureString $NetScalerPasswordPlain -AsPlainText -Force
                                     $Values = Test-Netscaler $ComputerName $NetScalerUserName $NetScalerPassword
                                 }
+                                # ! Currently doesn't work with .json template
                                 "NetscalerGateway" { 
                                     $NetScalerUserName = $configobject.NetscalerGateway.creds.username
                                     $NetScalerPasswordPlain = $configobject.NetscalerGateway.creds.password
@@ -293,7 +307,8 @@ function Test-Series {
                                     $Values = Test-NetscalerGateway $ComputerName $NetScalerUserName $NetScalerPassword
                                 }
 
-                                # PVS - XXX CHANGEME XXX 
+                                # PVS 
+                                # ! Not yet fully implemented.  
                                 "PVSSite" { }
                                 "PVSFarm" { }
 
