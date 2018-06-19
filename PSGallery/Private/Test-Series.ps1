@@ -258,7 +258,7 @@ function Test-Series {
 
                                 # Site/Env Checks
                                 "XdDeliveryGroupHealth" { 
-                                    if ( $true -eq $CheckValue ) { 
+                                    if ( ($true -eq $CheckValue) -and ($ComputerName -in $XdControllers) ) { 
                                         $Values = Test-XdDeliveryGroupHealth $ComputerName 
                                     }
                                     else {
@@ -266,7 +266,7 @@ function Test-Series {
                                     }
                                 }
                                 "XdCatalogHealth" { 
-                                    if ( $true -eq $CheckValue ) {
+                                    if ( ($true -eq $CheckValue) -and ($ComputerName -in $XdControllers) ) {
                                         $Values = Test-XdCatalogHealth $ComputerName
                                     }
                                     else {
@@ -274,7 +274,7 @@ function Test-Series {
                                     }
                                 }
                                 "XdHypervisorHealth" { 
-                                    if ( $true -eq $CheckValue ) {
+                                    if ( ($true -eq $CheckValue) -and ($ComputerName -in $XdControllers) ) {
                                         $Values = Test-XdHypervisorHealth $ComputerName
                                     }
                                     else {
@@ -282,7 +282,7 @@ function Test-Series {
                                     }
                                 }
                                 "XdControllerHealth" { 
-                                    if ( $true -eq $CheckValue ) { 
+                                    if ( ($true -eq $CheckValue) -and ($ComputerName -in $XdControllers) ) { 
                                         $Values = Test-XdControllerHealth $ComputerName 
                                     }
                                     else {
