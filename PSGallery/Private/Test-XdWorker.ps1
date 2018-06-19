@@ -77,6 +77,8 @@ function Test-XdWorker {
         $TotalUsersDisconnected = (((get-brokersession -MaxRecordCount 5000) | where-object {$_.DesktopKind -ne "Shared" -and $_.SessionState -ne "Active"}) | Measure-Object).Count
     }
 
+    $SiteName = (Get-BrokerSite -AdminAddress $Broker).Name
+
     # Work out the number of Delivery Groups in Maintenance Mode and write them back to the HTML Data File
     $DGFullCount = ($DeliveryGroups | Measure-Object).Count
     $DGMaintenanceCount = ($DeliveryGroups | Where-Object {$_.InMaintenanceMode -match "True"} | Measure-Object).Count
@@ -118,6 +120,7 @@ function Test-XdWorker {
     if ($WorkerTestMode -eq "basic") {
         # Add results to array
         $results += [PSCustomObject]@{
+            'SiteName'                       = $SiteName
             'ConnectedUsers'                 = $TotalConnectedUsers
             'DisconnectedUsers'              = $TotalUsersDisconnected
             'DeliveryGroupsNotInMaintenance' = $DGNonMaintenanceCount
@@ -177,7 +180,7 @@ function Test-XdWorker {
                             #        Write-Verbose "Control Up Agent is running on $Machine"                             
                             #    }
                             #}
-                                $BrokerGood ++
+                            $BrokerGood ++
                             #else {
                             #    $BrokerGood ++
                             #    Write-Verbose "Control Up Not Enabled - Skipping Check"
@@ -210,6 +213,7 @@ function Test-XdWorker {
 
         # Add results to array
         $results += [PSCustomObject]@{
+            'SiteName'                       = $SiteName
             'TotalConnectedUsers'            = $TotalConnectedUsers
             'TotalUsersDisconnected'         = $TotalUsersDisconnected
             'DeliveryGroupsNotInMaintenance' = $DGNonMaintenanceCount

@@ -248,7 +248,12 @@ function Test-Series {
                                 # License Checks
                                 "XdLicense" { 
                                     # ! Function Not Yet Complate
-                                    $Values = Test-XdLicense $ComputerName 
+                                    if ( $true -eq $CheckValue ) { 
+                                        $Values = Test-XdLicense $ComputerName 
+                                    }
+                                    else {
+                                        $Values = "SKIP CHECK"                                     
+                                    }
                                 }
 
                                 # Site/Env Checks

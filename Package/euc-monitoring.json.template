@@ -134,6 +134,15 @@
             80,
             443
         ],
+        "Services": [
+            "CitrixConfigurationReplication",
+            "CitrixCredentialWallet",
+            "CitrixDefaultDomainService",
+            "CitrixSubscriptionsStore",
+            "NetTcpPortSharing",
+            "WAS",
+            "W3SVC"
+        ],
         "Checks": {
             "HTTPUrl": {
                 "Port": 80,
@@ -148,7 +157,7 @@
             }
         }
     },
-    "Licensing": {
+    "XdLicensing": {
         "test": "no",
         "Servers": [
             "license1.domain.com",
@@ -160,12 +169,12 @@
             8082,
             8083
         ],
+        "Services": [
+            "Citrix Licensing",
+            "CitrixWebServicesforLicensing"
+        ],
         "Checks": {
-            "XDLicense": {
-                "Ports": [
-                    27000
-                ]
-            }
+            "XDLicense": true
         }
     },
     "Director": {
@@ -189,7 +198,7 @@
             }
         }
     },
-    "Controllers": {
+    "XdControllers": {
         "test": "no",
         "Servers": [
             "controller1.domain.com",

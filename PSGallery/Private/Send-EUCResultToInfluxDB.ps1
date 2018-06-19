@@ -113,17 +113,22 @@ function Send-EUCResultToInfluxDB {
                 foreach ( $CheckData in $Result.ChecksData ) {
                     Write-Verbose "Populating additional check data"
 
+                    $SeriesString = "$Series-$CheckDataName,Server=$($Result.ComputerName)"
                     $ParamString = "" 
                     $CheckDataName = $CheckData.CheckName
                 
                     $CheckData.Values.PSObject.Properties | ForEach-Object {
-                        if ( $ParamString -eq "" ) { $ParamString = "$($_.Name)=$($_.Value)" } 
-                        else { $ParamString += ",$($_.Name)=$($_.Value)" }
+                        # We take string data as tags.
+                        if ($_.Value -is [string]) { $SeriesString += ",$($_.Name)=$($_.Value)" }
+                        else {
+                            if ( $ParamString -eq "" ) { $ParamString = "$($_.Name)=$($_.Value)" } 
+                            else { $ParamString += ",$($_.Name)=$($_.Value)" }
+                        }
                     }
 
                     if ( "" -ne $ParamString ) {
                         $ParamString = $ParamString -replace " ", "\ "
-                        $PostParams = "$Series-$CheckDataName,Server=$($Result.ComputerName) $ParamString $timeStamp"
+                        $PostParams = "$SeriesString $ParamString $timeStamp"
                         Write-Verbose $PostParams
                         Invoke-RestMethod -Method "POST" -Uri $InfluxUri -Body $postParams
                     }
