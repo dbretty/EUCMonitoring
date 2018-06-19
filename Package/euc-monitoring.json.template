@@ -94,10 +94,12 @@
         ],
         "Checks": {
             "XdServer": {
+                "TestMode": "basic",
                 "BootThreshold": 7,
                 "HighLoad": 8000
             },
             "XdDesktop": {
+                "TestMode": "basic",
                 "BootThreshold": 7,
                 "HighLoad": 8000
             },

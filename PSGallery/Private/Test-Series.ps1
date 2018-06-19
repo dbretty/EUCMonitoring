@@ -256,20 +256,32 @@ function Test-Series {
                                     if ( $true -eq $CheckValue ) { 
                                         $Values = Test-XdDeliveryGroupHealth $ComputerName 
                                     }
+                                    else {
+                                        $Values = "SKIP CHECK"                                     
+                                    }
                                 }
                                 "XdCatalogHealth" { 
                                     if ( $true -eq $CheckValue ) {
                                         $Values = Test-XdCatalogHealth $ComputerName
+                                    }
+                                    else {
+                                        $Values = "SKIP CHECK"                                     
                                     }
                                 }
                                 "XdHypervisorHealth" { 
                                     if ( $true -eq $CheckValue ) {
                                         $Values = Test-XdHypervisorHealth $ComputerName
                                     }
+                                    else {
+                                        $Values = "SKIP CHECK"                                     
+                                    }
                                 }
                                 "XdControllerHealth" { 
                                     if ( $true -eq $CheckValue ) { 
                                         $Values = Test-XdControllerHealth $ComputerName 
+                                    }
+                                    else {
+                                        $Values = "SKIP CHECK"                                     
                                     }
                                 }
 
@@ -338,7 +350,12 @@ function Test-Series {
                                 $Errors += "$CheckName failed"
                                 $State = "DEGRADED"
                             }         
-                            
+
+                            # No need to have a check 
+                            elseif ( "SKIP CHECK" -eq $Values ) {
+                                Write-Verbose "Skipping $CheckName"
+                            }
+
                             # This might be redundant. 
                             # elseif ( $null -ne Values ) {}
                             else {
