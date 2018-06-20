@@ -43,13 +43,13 @@ function Test-XdWorker {
     )
 
     Begin { 
-        $ctxsnap = add-pssnapin citrix.* -ErrorAction SilentlyContinue
-        $ctxsnap = get-pssnapin citrix.* -ErrorAction SilentlyContinue
+        $ctxsnap = Add-PSSnapin Citrix.Broker.* -ErrorAction SilentlyContinue
+        $ctxsnap = Get-PSSnapin Citrix.Broker.* -ErrorAction SilentlyContinue
 
         if ($null -eq $ctxsnap) {
-            Write-error "XenDesktop Powershell Snapin Load Failed - No XenDesktop Brokering SDK Found"
-            Write-error "Cannot Load XenDesktop Powershell SDK"
-            Return # Fix Termination of Powershell instance https://git.io/vxEGW
+            Write-Error "XenDesktop Powershell Snapin Load Failed"
+            Write-Error "Cannot Load XenDesktop Powershell SDK"
+            Return 
         }
         else {
             Write-Verbose "XenDesktop Powershell SDK Snapin Loaded"

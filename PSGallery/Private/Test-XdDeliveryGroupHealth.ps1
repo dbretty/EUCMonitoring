@@ -24,12 +24,12 @@ function Test-XdDeliveryGroupHealth {
     )
 
     Begin { 
-        $ctxsnap = add-pssnapin Citrix.EnvTest.* -ErrorAction SilentlyContinue
-        $ctxsnap = get-pssnapin Citrix.EnvTest.* -ErrorAction SilentlyContinue
+        $ctxsnap = Add-PSSnapin Citrix.EnvTest.* -ErrorAction SilentlyContinue
+        $ctxsnap = Get-PSSnapin Citrix.EnvTest.* -ErrorAction SilentlyContinue
 
         if ($null -eq $ctxsnap) {
-            Write-error "XenDesktop Powershell Snapin Load Failed - No XenDesktop Brokering SDK Found"
-            Write-error "Cannot Load Citrix.EnvTest.* Powershell SDK"
+            Write-Error "XenDesktop Powershell Snapin Load Failed"
+            Write-Error "Cannot Load Citrix.EnvTest.* Powershell SDK"
             Return $false
         }
         else {
