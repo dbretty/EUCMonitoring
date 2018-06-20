@@ -121,6 +121,7 @@ function Test-XdWorker {
             # Add results to array
             $results += [PSCustomObject]@{
                 'SiteName'                       = $SiteName
+                'WorkLoad'                       = $WorkLoad
                 'ConnectedUsers'                 = $TotalConnectedUsers
                 'DisconnectedUsers'              = $TotalUsersDisconnected
                 'DeliveryGroupsNotInMaintenance' = $DGNonMaintenanceCount
@@ -210,6 +211,7 @@ function Test-XdWorker {
             # Add results to array
             $results += [PSCustomObject]@{
                 'SiteName'                       = $SiteName
+                'WorkLoad'                       = $WorkLoad
                 'TotalConnectedUsers'            = $TotalConnectedUsers
                 'TotalUsersDisconnected'         = $TotalUsersDisconnected
                 'DeliveryGroupsNotInMaintenance' = $DGNonMaintenanceCount
