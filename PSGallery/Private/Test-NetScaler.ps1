@@ -46,12 +46,12 @@ function Test-NetScaler {
     $vServerDown = 0
     $NetScalerUp = 0
     $NetScalerDown = 0
-    $vserverresults = $null
+    #    $vserverresults = $null
 
     # If NetScaler is UP then log to Console and Increment UP Count
     if ((Connect-Server $NetScaler) -eq "Successful") {
         Write-Verbose "NetScaler - $NetScaler is up"
-        $netscalerPing = $true
+        #        $netscalerPing = $true
         $NetScalerUp ++
 
         # If NetScaler up log Log in and grab vServer Status
