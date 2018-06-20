@@ -43,10 +43,10 @@ function Test-NetScaler {
 
     # Initialize Arrays and Variables
     #$netscalerPing = $false
-    $vServerUp = 0
-    $vServerDown = 0
-    $NetScalerUp = 0
-    $NetScalerDown = 0
+    #    $vServerUp = 0
+    #    $vServerDown = 0
+    #    $NetScalerUp = 0
+    #    $NetScalerDown = 0
     #    $vserverresults = $null
 
     # If NetScaler is UP then log to Console and Increment UP Count
@@ -76,7 +76,7 @@ function Test-NetScaler {
         $vServerName = $vServer.name
         if ($vServer.State -eq "UP") {
             Write-Verbose "$vServerName is up"
-            $vServerUp++
+            #            $vServerUp++
             if ($vserver.vslbhealth -ne 100) {
                 Write-Verbose "$vServerName is Degraded"
                 $Errors += "$vServerName is Degraded"
@@ -85,7 +85,7 @@ function Test-NetScaler {
         else {
             Write-Verbose "$vServerName is Down"
             $Errors += "$vServerName is Down"
-            $vServerDown++
+            #           $vServerDown++
         }
         $Results += [PSCustomObject]@{
             'vServerName'   = $vServerName
