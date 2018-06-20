@@ -14,7 +14,8 @@ Function Test-XdLicense {
     #>
     [CmdletBinding()]
     Param(
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$AdminAddress
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$LicenseServer,
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$LicenseType
     )
     
     Begin { 
@@ -32,9 +33,34 @@ Function Test-XdLicense {
     }
 
     Process {
+        $Results = @()
+        $Errors = @()
 
-        Write-Output "Not complete."
+        $Cert = Get-LicCertificate -AdminAddress $LicenseServer
 
+        $TotalAvailable = 0
+        $TotalIssued = 0
+
+        $LicResults = Get-LicInventory -AdminAddress $LicenseServer -CertHash $cert.CertHash
+        foreach ($License in $LicResults) {
+            if ($License.LicenseProductName -eq $LicenseType) {
+                $TotalIssued += $License.LicensesInUse
+                $TotalAvailable += ($License.LicensesAvailable - $License.LicenseOverdraft)
+            }
+        }
+
+        Write-Verbose "TotalIssued    = $TotalIssued"
+        Write-Verbose "TotalAvailable = $TotalAvailable"
+        Write-Verbose "LicenseType    = $LicenseType"
+
+        $Results += [PSCustomObject]@{
+            'TotalIssued'    = $TotalIssued
+            'TotalAvailable' = $TotalAvailable
+            'LicenseType'    = $LicenseType
+            'Errors'         = $Errors
+        }
+
+        return $Results
     }
 
     End { }

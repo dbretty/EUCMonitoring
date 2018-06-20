@@ -94,13 +94,13 @@ function Test-XenServer {
 
         $results += [PSCustomObject]@{
             'PoolMaster' = $poolmaster
-            'HostsUp' = $HostsUp
-            'HostsDown' = $HostsDown
+            'HostsUp'    = $HostsUp
+            'HostsDown'  = $HostsDown
+            'Errors'     = $Errors
         }
 
-    #Returns test results
-    $Results += $Errors
-    return $results
+        #Returns test results
+        return $results
     
     }
 

@@ -100,9 +100,10 @@
             },
             "XdDesktop": {
                 "TestMode": "basic",
-                "BootThreshold": 31,
+                "BootThreshold": 7,
                 "HighLoad": 8000
             },
+            "XdSessionInfo": true,
             "XdDeliveryGroupHealth": false,
             "XdControllerHealth": false,
             "XdCatalogHealth": false,
@@ -128,8 +129,7 @@
     "Storefront": {
         "test": "no",
         "Servers": [
-            "storefront1.domain.com",
-            "storefront2.domain.com"
+            "storefront.domain.com"
         ],
         "Ports": [
             80,
@@ -175,7 +175,9 @@
             "CitrixWebServicesforLicensing"
         ],
         "Checks": {
-            "XDLicense": true
+            "XDLicense": {
+                "LicenseType": "XDT"
+            }
         }
     },
     "Director": {
@@ -274,16 +276,7 @@
             "StreamService"
         ],
         "Checks": {
-            "PVSFarm": {
-                "Name": [
-                    "pvs"
-                ]
-            },
-            "PVSSite": {
-                "Name": [
-                    "pvs_site"
-                ]
-            }
+            "PVSStats": true
         }
     },
     "WEM": {
