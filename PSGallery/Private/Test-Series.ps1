@@ -310,15 +310,15 @@ function Test-Series {
                                     # Netscaler Checks
                                     # ! Currently doesn't work with .json template
                                     "Netscaler" {
-                                        $NetScalerUserName = $configobject.Netscaler.creds.username
-                                        $NetScalerPasswordPlain = $configobject.Netscaler.creds.password
+                                        $NetScalerUserName =  $CheckValue.username
+                                        $NetScalerPasswordPlain = $CheckValue.password
                                         $NetScalerPassword = ConvertTo-SecureString $NetScalerPasswordPlain -AsPlainText -Force
                                         $Values = Test-Netscaler $ComputerName $NetScalerUserName $NetScalerPassword
                                     }
                                     # ! Currently doesn't work with .json template
                                     "NetscalerGateway" { 
-                                        $NetScalerUserName = $configobject.NetscalerGateway.creds.username
-                                        $NetScalerPasswordPlain = $configobject.NetscalerGateway.creds.password
+                                        $NetScalerUserName = $CheckValue.username
+                                        $NetScalerPasswordPlain = $CheckValue.password
                                         $NetScalerPassword = ConvertTo-SecureString $NetScalerPasswordPlain -AsPlainText -Force
                                         $Values = Test-NetscalerGateway $ComputerName $NetScalerUserName $NetScalerPassword
                                     }
