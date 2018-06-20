@@ -243,9 +243,9 @@ function Test-Series {
                                         }
                                     }
                                     "XdSessionInfo" {
-                                        if ( $ComputerName -in $XdControllers ) {
+                                        if ( ($true -eq $CheckValue) -and ($ComputerName -in $XdControllers) ) {
                                             # ! Function Not Yet Complate
-                                            $Values = Test-XdSessions $ComputerName 
+                                            $Values = Test-XdSessionInfo $ComputerName 
                                         }
                                     }
 
@@ -373,7 +373,9 @@ function Test-Series {
                                     # Just because we completed the test successfully, doesn't mean it was without
                                     # errors. 
                                     if ("Boolean" -ne $Values.GetType().Name) {
+                                        <#
                                         if ( $Values.Errors.Count -gt 0 ) {
+                                            Write-Verbose "Found Errors in $CheckName returned Values"
                                             $Errors += $Values.Errors
                                             $State = "DEGRADED"
                                             # ! Review
@@ -381,12 +383,29 @@ function Test-Series {
                                             $Values.PSObject.Properties.Remove('Errors')
                                             # Maybe $Values = $Values | SelectObject -Property * -ExcludeProperty Errors
                                         }
-                                        # Now that we've removed Errors, if there's still data, lets pass it on. 
-                                        if ( $null -ne $Values ) {
-                                            $ChecksData += [PSCustomObject]@{
-                                                CheckName = $CheckName
-                                                Values    = $Values
-                                            }
+                                        #>
+                                        
+                                        # if ( $null -ne $Values ) {
+                                        $Values | ForEach-Object {
+                                            if ( $_.Errors.Count -gt 0 ) {
+                                                Write-Verbose "Found Errors in $CheckName returned Values"
+                                                $Errors += $_.Errors
+                                                $State = "DEGRADED"
+                                                # ! Review
+                                            } 
+                                            # if ( )
+                                            # Remove the check's errors since they've been passed to the Series.
+                                            # Write-Verbose "Removing Errors from Values"
+                                            # This works whether or not the property exists.  
+                                            $_.PSObject.Properties.Remove('Errors')
+                                            # }    
+                                            # Now that we've removed Errors, if there's still data, lets pass it on. 
+                                            if ( $null -ne $_ ) {
+                                                $ChecksData += [PSCustomObject]@{
+                                                    CheckName = $CheckName
+                                                    Values    = $_
+                                                }
+                                            }                
                                         }    
                                     }      
                                 }

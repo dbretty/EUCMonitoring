@@ -127,6 +127,7 @@ function Send-EUCResultToInfluxDB {
                     }
 
                     if ( "" -ne $ParamString ) {
+                        $SeriesString = $SeriesString -replace " ", "\ "
                         $ParamString = $ParamString -replace " ", "\ "
                         $PostParams = "$SeriesString $ParamString $timeStamp"
                         Write-Verbose $PostParams

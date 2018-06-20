@@ -18,8 +18,6 @@ function Test-XdWorker {
     Desktop Boot Threshold
 .PARAMETER DesktopHighLoad 
     Desktop High Load
-.PARAMETER ErrorFile 
-    Infrastructure Error File to Log To
 .NOTES
     Current Version:        1.0
     Creation Date:          29/03/2018
@@ -132,18 +130,14 @@ function Test-XdWorker {
                 'BrokerMachinesRegistered'       = $BMRegisteredCount
                 'BrokerMachinesUnRegistered'     = $BMUnRegisteredCount
                 'BrokerMachinesInMaintenance'    = $BMMaintenanceCount
+                'Errors'                         = $Errors
             }
-
-            # Add errors to array
-            $results += $errors
 
             #returns object with test results
             return $results
 
         }
         else {
-
-
             # Setup Variables to track the status of the Broker Machines
             $BrokerGood = 0
             $BrokerBad = 0
@@ -227,10 +221,8 @@ function Test-XdWorker {
                 'BrokerMachineInMaintenance'     = $BMMaintenanceCount
                 'BrokerMachinesGood'             = $BrokerGood
                 'BrokerMachinesBad'              = $BrokerBad
+                'Errors'                         = $Errors
             }
-
-            # Add errors to array
-            $results += $errors
 
             #returns object with test results
             return $results
