@@ -41,9 +41,10 @@ function Test-NetscalerGateway {
     Write-Verbose "Current NetScaler Gateway Users: $TotalUsers"
 
     $gwresults += [PSCustomObject]@{
-    #    'NetScalerGateway' = $NetScalerHostingGateway
-        'ICAUsers'         = $ICAUsers
-        'VPNUsers'         = $VPNUsers
+        #    'NetScalerGateway' = $NetScalerHostingGateway
+        'ICAUsers'          = $ICAUsers
+        'VPNUsers'          = $VPNUsers
+        'TotalGatewayUsers' = $TotalUsers
     }
     return $gwresults
 }
