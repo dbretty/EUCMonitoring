@@ -23,6 +23,7 @@ function Test-Series {
     Adam Yarborough         1.0             17/05/2018          Function Creation
     David Brett             1.1             16/06/2018          Updated Switch statement to splat the @params
                                                                 Added TestMode as a JSON Parameter to switch between basic and advanced tests
+    Adam Yarborough         1.2             20/06/2018          Multi-result ChecksData support, cleanup
     
 .EXAMPLE
     Test-Series -JSONFile "C:\Monitoring\EUCMonitoring.json"
@@ -310,7 +311,7 @@ function Test-Series {
                                     # Netscaler Checks
                                     # ! Currently doesn't work with .json template
                                     "Netscaler" {
-                                        $NetScalerUserName =  $CheckValue.username
+                                        $NetScalerUserName = $CheckValue.username
                                         $NetScalerPasswordPlain = $CheckValue.password
                                         $NetScalerPassword = ConvertTo-SecureString $NetScalerPasswordPlain -AsPlainText -Force
                                         $Values = Test-Netscaler $ComputerName $NetScalerUserName $NetScalerPassword
@@ -325,8 +326,7 @@ function Test-Series {
 
                                     # PVS 
                                     # ! Not yet fully implemented.  
-                                    "PVSSite" { }
-                                    "PVSFarm" { }
+                                    "PVSStats" { }
 
                                     # URL Checks
                                     "HTTPUrl" { 

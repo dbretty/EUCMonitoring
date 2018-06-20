@@ -16,6 +16,7 @@ function Send-EUCResultToInfluxDB {
     Adam Yarborough            1.0          17/05/2018          Function Creation
     Adam Yarborough            1.1          18/05/2018          Stoplights checks added to base series
                                                                 Cleanup
+    Adam Yarborough            1.2          20/06/2018          Added strings as tag support. 
 .EXAMPLE
     None Required
 #>

@@ -25,6 +25,7 @@ function Test-XdWorker {
     Name                    Version         Date                Change Detail
     David Brett             1.0             29/03/2018          Function Creation
     Adam Yarborough         1.1             07/06/2018          Update to new object model
+    Adam Yarborough         1.2             20/06/2018          Updated Objects, begin/process/end
 .EXAMPLE
     None Required
 #>

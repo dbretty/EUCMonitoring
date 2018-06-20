@@ -1,16 +1,21 @@
 Function Test-XdLicense {
     <#
     .SYNOPSIS
-    Console based output
+Returns some simple stats on a License Server
     
     .DESCRIPTION
-    Long description
+Returns some simple stats on a License Server
     
-    .EXAMPLE
-    An example
+    .PARAMETER LicenseServer
+Target License server to grab information from.
+    .PARAMETER LicenseType
+Citrix License Type, commonly XDT / MPS
+
     
     .NOTES
-    General notes
+    .CHANGE CONTROL
+    Name                    Version         Date                Change Detail
+    Adam Yarborough         1.0             20/06/2018          Function Creation
     #>
     [CmdletBinding()]
     Param(

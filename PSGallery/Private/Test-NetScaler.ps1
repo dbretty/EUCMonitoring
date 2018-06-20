@@ -59,7 +59,8 @@ function Test-NetScaler {
         if ($null -eq $nsession) {
             write-verbose "Could not log into the NetScaler"
             return
-        } else {
+        }
+        else {
             Write-Verbose "NetScaler - $NetScaler Logged In"
         }
 
@@ -75,15 +76,20 @@ function Test-NetScaler {
                 $vServerUp++
                 if ($vserver.vslbhealth -ne 100) {
                     Write-Verbose "$vServerName is Degraded"
+                    $Errors += "$vServerName is Degraded"
                 }
             }
             else {
                 Write-Verbose "$vServerName is Down"
+                $Errors += "$vServerName is Down"
                 $vServerDown++
             }
-            $vserverresults += [PSCustomObject]@{"Service" = $vServerName
-                "State"                                    = $vServer.State
-            }                
+            <#
+            $vserverresults += [PSCustomObject]@{
+                "Service" = $vServerName
+                "State"   = $vServer.State
+            } 
+            #>               
         }
     }
     else {
@@ -92,12 +98,12 @@ function Test-NetScaler {
     }
     
     $results += [PSCustomObject]@{
-        'NetScaler'      = $NetScaler
-        'NetScalerPing'  = $netscalerPing
-        'NetScalersUp'   = $NetScalerUp
-        'NetScalersDown' = $NetScalerDown
-        'vServerUp'      = $vServerUp
-        'vServerDown'    = $vServerDown
+        # ! Review, are these needed? 
+        #        'NetScalersUp'   = $NetScalerUp
+        #        'NetScalersDown' = $NetScalerDown
+        'vServerUp'   = $vServerUp
+        'vServerDown' = $vServerDown
+        'Errors'      = $Errors
         #'vServices'      = $vserverresults
     }
     

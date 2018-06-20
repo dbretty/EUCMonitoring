@@ -13,6 +13,7 @@ function Test-XdHypervisorHealth {
     Name                    Version         Date                Change Detail
     Adam Yarborough         1.0             21/03/2018          Function Creation
     Adam Yarborough         1.1             07/06/2018          Update for object model.
+    Adam Yarborough         1.2             20/06/2018          Begin/Process/End
 .EXAMPLE
     None Required
 #>
