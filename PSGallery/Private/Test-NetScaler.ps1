@@ -36,7 +36,7 @@ function Test-NetScaler {
     )
 
     #Create empty array
-    $results = @()
+    $Results = @()
 
     # Run NetScaler Tests
     Write-Verbose "Testing NetScaler Virtual Servers"
@@ -73,6 +73,7 @@ function Test-NetScaler {
     Write-Verbose "Looping through vServers to check status"
     #    $vserverresults = @()
     foreach ($vServer in $vServers.lbvserver) {
+        $Errors = @()
         $vServerName = $vServer.name
         if ($vServer.State -eq "UP") {
             Write-Verbose "$vServerName is up"
@@ -89,7 +90,7 @@ function Test-NetScaler {
         }
         $Results += [PSCustomObject]@{
             'vServerName'   = $vServerName
-            'vServerHealth' = $vServer.vslbhealth
+            'vServerHealth' = [int]$vServer.vslbhealth
             'Errors'        = $Errors
         }
         <#
@@ -120,5 +121,5 @@ function Test-NetScaler {
     Disconnect-NetScaler -NSIP $NetScaler|Out-Null
 
     #Returns test results
-    return $results
+    return $Results
 }

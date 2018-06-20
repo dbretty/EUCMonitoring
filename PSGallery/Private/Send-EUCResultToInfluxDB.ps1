@@ -117,7 +117,7 @@ function Send-EUCResultToInfluxDB {
                     $ParamString = "" 
                     $CheckDataName = $CheckData.CheckName
                     $SeriesString = "$Series-$CheckDataName,Server=$($Result.ComputerName)"
-
+                    
                     $CheckData.Values.PSObject.Properties | ForEach-Object {
                         # We take string data as tags.
                         if ($_.Value -is [string]) { $SeriesString += ",$($_.Name)=$($_.Value)" }
