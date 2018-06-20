@@ -12,19 +12,30 @@ Function Test-XdLicense {
     .NOTES
     General notes
     #>
-    $ctxsnap = add-pssnapin Citrix.Licensing* -ErrorAction SilentlyContinue
-    $ctxsnap = get-pssnapin Citrix.Licensing* -ErrorAction SilentlyContinue
+    [CmdletBinding()]
+    Param(
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$AdminAddress
+    )
+    
+    Begin { 
+        $ctxsnap = add-pssnapin Citrix.Licensing.* -ErrorAction SilentlyContinue
+        $ctxsnap = get-pssnapin Citrix.Licensing.* -ErrorAction SilentlyContinue
 
-    if ($null -eq $ctxsnap) {
-        Write-error "Citrix Licensing Powershell Snapin Load Failed - No XenDesktop Brokering SDK Found"
-        Write-error "Cannot Load Citrix Licensing Powershell SDK"
-        Return $false 
+        if ($null -eq $ctxsnap) {
+            Write-error "Citrix Licensing Powershell Snapin Load Failed - No XenDesktop Brokering SDK Found"
+            Write-error "Cannot Load Citrix Licensing Powershell SDK"
+            Return $false 
+        }
+        else {
+            Write-Verbose "Citrix Licensing SDK Snapin Loaded"
+        }
     }
-    else {
-        Write-Verbose "Citrix Licensing SDK Snapin Loaded"
+
+    Process {
+
+        Write-Output "Not complete."
+
     }
 
-
-
-    Write-Output "Not complete."
+    End { }
 }

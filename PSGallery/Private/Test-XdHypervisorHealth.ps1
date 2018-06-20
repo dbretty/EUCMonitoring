@@ -22,71 +22,77 @@ function Test-XdHypervisorHealth {
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$AdminAddress
     )
 
-    $ctxsnap = add-pssnapin Citrix.EnvTest* -ErrorAction SilentlyContinue
-    $ctxsnap = get-pssnapin Citrix.EnvTest* -ErrorAction SilentlyContinue
+    Begin {
+        $ctxsnap = add-pssnapin Citrix.EnvTest.* -ErrorAction SilentlyContinue
+        $ctxsnap = get-pssnapin Citrix.EnvTest.* -ErrorAction SilentlyContinue
 
-    if ($null -eq $ctxsnap) {
-        Write-error "XenDesktop Powershell Snapin Load Failed - No XenDesktop Brokering SDK Found"
-        Write-error "Cannot Load Citrix.EnvTest.* Powershell SDK"
-        Return $false
+        if ($null -eq $ctxsnap) {
+            Write-error "XenDesktop Powershell Snapin Load Failed - No XenDesktop Brokering SDK Found"
+            Write-error "Cannot Load Citrix.EnvTest.* Powershell SDK"
+            Return $false
+        }
+        else {
+            Write-Verbose "XenDesktop Powershell SDK Snapin Loaded"
+        }
     }
-    else {
-        Write-Verbose "XenDesktop Powershell SDK Snapin Loaded"
-    }
-    
-    #Create array with results
-    $Results = @()
-    $Errors = @()
 
-    Write-Verbose "XdHypervisor Check started"
-    $HypervisorConnections = Get-HypScopedObject -AdminAddress $AdminAddress
-    Write-Verbose "Initialize Test Variables"
+    Process { 
+        #Create array with results
+        $Results = @()
+        $Errors = @()
 
-    $Health = $true
+        Write-Verbose "XdHypervisor Check started"
+        $HypervisorConnections = Get-HypScopedObject -AdminAddress $AdminAddress
+        Write-Verbose "Initialize Test Variables"
+
+        $Health = $true
         
-    foreach ($Connection in $HypervisorConnections) {
-        Write-Verbose "Testing $($Connection.Name)"
+        foreach ($Connection in $HypervisorConnections) {
+            Write-Verbose "Testing $($Connection.Name)"
         
-        $TestTarget = New-EnvTestDiscoveryTargetDefinition -AdminAddress $AdminAddress -TargetIdType "HypervisorConnection" -TestSuiteId "HypervisorConnection" -TargetId $Connection.HypHypervisorConnectionUid
-        $TestResults = Start-EnvTestTask -AdminAddress $AdminAddress -InputObject $TestTarget -RunAsynchronously 
-        foreach ( $Result in $TestResults.TestResults ) {
-            foreach ( $Component in $Result.TestComponents ) {
-                Write-Verbose "$($Connection.Name) - $($Component.TestID) - $($Component.TestComponentStatus)"
-                if ( ($Component.TestComponentStatus -ne "CompletePassed") -and ($Component.TestComponentStatus -ne "NotRun") ) {
-                    $Errors += "$($Connection.Name) - $($Component.TestID) - $($Component.TestComponentStatus)" 
-                    $Health = $false
-                }
-            }
-
-        }       
-       
-        Write-Verbose "Testing associated resources"
-
-        $HypervisorResources = Get-ChildItem XDHyp:\HostingUnits\* -AdminAddress $AdminAddress | Where-Object HypervisorConnection -like $Connection.Name
-
-        # Check the resources
-        foreach ($Resource in $HypervisorResources ) {
-            $TestTarget = New-EnvTestDiscoveryTargetDefinition -AdminAddress $AdminAddress -TargetIdType "HostingUnit" -TestSuiteId "HostingUnit" -TargetId $Resource.HostingUnitUid
+            $TestTarget = New-EnvTestDiscoveryTargetDefinition -AdminAddress $AdminAddress -TargetIdType "HypervisorConnection" -TestSuiteId "HypervisorConnection" -TargetId $Connection.HypHypervisorConnectionUid
             $TestResults = Start-EnvTestTask -AdminAddress $AdminAddress -InputObject $TestTarget -RunAsynchronously 
             foreach ( $Result in $TestResults.TestResults ) {
-                Write-Verbose "$($Connection.Name) - $($Resource.HostingUnitName) - $($Component.TestID) - $($Component.TestComponentStatus)"
                 foreach ( $Component in $Result.TestComponents ) {
+                    Write-Verbose "$($Connection.Name) - $($Component.TestID) - $($Component.TestComponentStatus)"
                     if ( ($Component.TestComponentStatus -ne "CompletePassed") -and ($Component.TestComponentStatus -ne "NotRun") ) {
-                        $Errors += "$($Connection.Name) - $($Resource.HostingUnitName) - $($Component.TestID) - $($Component.TestComponentStatus)"    
+                        $Errors += "$($Connection.Name) - $($Component.TestID) - $($Component.TestComponentStatus)" 
                         $Health = $false
+                    }
+                }
+
+            }       
+       
+            Write-Verbose "Testing associated resources"
+
+            $HypervisorResources = Get-ChildItem XDHyp:\HostingUnits\* -AdminAddress $AdminAddress | Where-Object HypervisorConnection -like $Connection.Name
+
+            # Check the resources
+            foreach ($Resource in $HypervisorResources ) {
+                $TestTarget = New-EnvTestDiscoveryTargetDefinition -AdminAddress $AdminAddress -TargetIdType "HostingUnit" -TestSuiteId "HostingUnit" -TargetId $Resource.HostingUnitUid
+                $TestResults = Start-EnvTestTask -AdminAddress $AdminAddress -InputObject $TestTarget -RunAsynchronously 
+                foreach ( $Result in $TestResults.TestResults ) {
+                    Write-Verbose "$($Connection.Name) - $($Resource.HostingUnitName) - $($Component.TestID) - $($Component.TestComponentStatus)"
+                    foreach ( $Component in $Result.TestComponents ) {
+                        if ( ($Component.TestComponentStatus -ne "CompletePassed") -and ($Component.TestComponentStatus -ne "NotRun") ) {
+                            $Errors += "$($Connection.Name) - $($Resource.HostingUnitName) - $($Component.TestID) - $($Component.TestComponentStatus)"    
+                            $Health = $false
+                        }
                     }
                 }
             }
         }
-    }
     
-    if ( $Health ) {
-        return $true
-    }
-    else {
-        $Results += [PSCustomObject]@{
-            'Errors' = $Errors
+        if ( $Health ) {
+            return $true
         }
-        return $Results
+        else {
+            $Results += [PSCustomObject]@{
+                'Errors' = $Errors
+            }
+            return $Results
+        }
     }
+
+    End { }
 }

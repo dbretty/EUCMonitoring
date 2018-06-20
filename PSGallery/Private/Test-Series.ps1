@@ -65,6 +65,7 @@ function Test-Series {
     }
    
     $XdControllers = @()
+    $RdsControllers = @()
     # Add RdsControllers = @() here when implementing. 
 
     # Make sure we're allowed to run this test. 

@@ -100,7 +100,7 @@
             },
             "XdDesktop": {
                 "TestMode": "basic",
-                "BootThreshold": 7,
+                "BootThreshold": 31,
                 "HighLoad": 8000
             },
             "XdDeliveryGroupHealth": false,
@@ -128,7 +128,8 @@
     "Storefront": {
         "test": "no",
         "Servers": [
-            "storefront.domain.com"
+            "storefront1.domain.com",
+            "storefront2.domain.com"
         ],
         "Ports": [
             80,
