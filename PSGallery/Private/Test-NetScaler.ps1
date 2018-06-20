@@ -41,7 +41,7 @@ function Test-NetScaler {
     Write-Verbose "Testing NetScaler Virtual Servers"
 
     # Initialize Arrays and Variables
-    $netscalerPing = $false
+    #$netscalerPing = $false
     $vServerUp = 0
     $vServerDown = 0
     $NetScalerUp = 0
@@ -68,7 +68,7 @@ function Test-NetScaler {
             
         # Loop Through vServers and check Status
         Write-Verbose "Looping through vServers to check status"
-        $vserverresults = @()
+        #    $vserverresults = @()
         foreach ($vServer in $vServers.lbvserver) {
             $vServerName = $vServer.name
             if ($vServer.State -eq "UP") {
