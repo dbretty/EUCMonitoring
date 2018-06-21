@@ -1,6 +1,6 @@
 {
     "Global": {
-        "OutputLocation": "c:\\webdata",
+        "OutputLocation": "c:\\WebData",
         "ServerErrorFile": "server-errors.txt",
         "DesktopErrorFile": "desktop-errors.txt",
         "InfraErrorFile": "infra-errors.txt",
