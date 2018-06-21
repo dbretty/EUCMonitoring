@@ -345,7 +345,8 @@ function Test-Series {
                                         $Values = Test-ValidCert $ComputerName $CheckValue.Port
                                     }
 
-                                    Default { }
+                                    # Instead of a continue here, do nothing so that the test CheckName fails.  
+                                    Default { Write-Verbose "Could not find test function for $CheckName" }
                                 }
            
                                 # Validate Success

@@ -74,7 +74,7 @@ function Test-XenServer {
                 Write-Verbose "XenServer Host - $XenHostName is up"
 
                 # If Host Management Port is UP log to Console and Increment UP Port Count
-                if (Test-NetConnection -ComputerName $XenIP -Port 80) {
+                if ( Test-NetConnection -ComputerName $XenIP -Port 80 -InformationLevel Quiet ) {
                     Write-Verbose "$XenHostName Management Port is up: Port - 80"
                     $HostsUp ++
                 }

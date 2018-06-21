@@ -164,6 +164,7 @@ function New-HtmlReport {
                     $ParamString = ""
                 
                     $CheckDataName = $CheckData.CheckName
+                    if ( $CheckDataName -notin "XdServer", "XdDesktop" ) { continue }
                     $CheckData.Values.PSObject.Properties | ForEach-Object {
                         if ( $ParamString -eq "" ) { $ParamString = "$($_.Name)=$($_.Value)" } 
                         else { $ParamString += ", $($_.Name)=$($_.Value)" }
