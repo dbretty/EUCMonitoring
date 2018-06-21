@@ -238,8 +238,8 @@
         ],
         "Checks": {
             "Netscaler": {
-                "netscalerusername": "nsroot",
-                "netscalerpassword": "nsroot"
+                "Username": "nsroot",
+                "Password": "nsroot"
             }
         }
     },
