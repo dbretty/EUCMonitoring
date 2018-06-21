@@ -217,7 +217,8 @@ function Test-Series {
                                 # If the check can run the test successfully, but there were problems
                                 # it will populate an Errors property in the returned object.
                                 $Values = @()
-                
+                                
+                                # ! Should we have a check enabled?
                                 switch ($CheckName) {
                                     "XdDesktop" { 
                                         if ( $ComputerName -in $XdControllers ) {    
@@ -309,14 +310,14 @@ function Test-Series {
                                     }
            
                                     # Netscaler Checks
-                                    # ! Currently doesn't work with .json template
+                                    # ! Changed to reflect JSON template
                                     "Netscaler" {
                                         $NetScalerUserName = $CheckValue.username
                                         $NetScalerPasswordPlain = $CheckValue.password
                                         $NetScalerPassword = ConvertTo-SecureString $NetScalerPasswordPlain -AsPlainText -Force
                                         $Values = Test-Netscaler $ComputerName $NetScalerUserName $NetScalerPassword
                                     }
-                                    # ! Currently doesn't work with .json template
+                                    # ! Changed to reflect JSON template
                                     "NetscalerGateway" { 
                                         $NetScalerUserName = $CheckValue.username
                                         $NetScalerPasswordPlain = $CheckValue.password
