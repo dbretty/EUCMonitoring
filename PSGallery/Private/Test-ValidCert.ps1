@@ -43,10 +43,12 @@ function Test-ValidCert {
             $SSLStream.AuthenticateAsClient($Target)
             $Certificate = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2($SSLStream.RemoteCertificate)
         } 
+        catch { Write-Verbose "Could not authenticate as client to $Target on $Port" }
         finally {
             $SSLStream.Dispose()
         }
-    }
+    } 
+    catch { Write-Verbose "Could not connect to $Target on $Port to test Cert" }
     finally {
         $TCPClient.Dispose()
     }

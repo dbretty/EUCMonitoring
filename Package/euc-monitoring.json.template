@@ -274,10 +274,7 @@
             "PVSTSB",
             "soapserver",
             "StreamService"
-        ],
-        "Checks": {
-            "PVSStats": true
-        }
+        ]
     },
     "WEM": {
         "test": "no",

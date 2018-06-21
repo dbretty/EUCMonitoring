@@ -2580,7 +2580,7 @@
                 "type": "fill"
               }
             ],
-            "measurement": "XDControllers",
+            "measurement": "XdDControllers",
             "orderByTime": "ASC",
             "policy": "default",
             "refId": "A",
