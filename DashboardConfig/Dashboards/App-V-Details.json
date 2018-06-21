@@ -570,5 +570,14 @@
     "title": "APP-V Details",
     "uid": "H7C5raNmk",
     "version": 5
-  }
+  },
+  "folderID": 0,
+  "inputs": [
+    {
+      "name": "DS_EUCMONITORING",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "value": "EUCMonitoring"
+    }
+  ]
 }

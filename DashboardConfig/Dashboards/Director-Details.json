@@ -558,14 +558,15 @@
     "timezone": "",
     "title": "Director Details",
     "uid": "mZwM4BHmk",
-    "version": 2,
-    "folderID": 0,
-    "inputs": [
-      {
-        "name": "DS_EUCMONITORING",
-        "type": "datasource",
-        "pluginId": "influxdb",
-        "value": "EUCMonitoring"
-      }
-    ]
-  }
+    "version": 2
+  },
+  "folderID": 0,
+  "inputs": [
+    {
+      "name": "DS_EUCMONITORING",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "value": "EUCMonitoring"
+    }
+  ]
+}
