@@ -1,9 +1,10 @@
 {
     "Global": {
-        "OutputLocation": "c:\\webdata",
+        "OutputLocation": "c:\\WebData",
         "ServerErrorFile": "server-errors.txt",
         "DesktopErrorFile": "desktop-errors.txt",
         "InfraErrorFile": "infra-errors.txt",
+        "ConsoleResults": true,
         "ThirdParty": {
             "controlup": "no"
         },
@@ -93,13 +94,16 @@
         ],
         "Checks": {
             "XdServer": {
+                "TestMode": "basic",
                 "BootThreshold": 7,
                 "HighLoad": 8000
             },
             "XdDesktop": {
+                "TestMode": "basic",
                 "BootThreshold": 7,
                 "HighLoad": 8000
             },
+            "XdSessionInfo": true,
             "XdDeliveryGroupHealth": false,
             "XdControllerHealth": false,
             "XdCatalogHealth": false,
@@ -131,6 +135,15 @@
             80,
             443
         ],
+        "Services": [
+            "CitrixConfigurationReplication",
+            "CitrixCredentialWallet",
+            "CitrixDefaultDomainService",
+            "CitrixSubscriptionsStore",
+            "NetTcpPortSharing",
+            "WAS",
+            "W3SVC"
+        ],
         "Checks": {
             "HTTPUrl": {
                 "Port": 80,
@@ -145,7 +158,7 @@
             }
         }
     },
-    "Licensing": {
+    "XdLicensing": {
         "test": "no",
         "Servers": [
             "license1.domain.com",
@@ -157,11 +170,13 @@
             8082,
             8083
         ],
+        "Services": [
+            "Citrix Licensing",
+            "CitrixWebServicesforLicensing"
+        ],
         "Checks": {
             "XDLicense": {
-                "Ports": [
-                    27000
-                ]
+                "LicenseType": "XDT"
             }
         }
     },
@@ -186,7 +201,7 @@
             }
         }
     },
-    "Controllers": {
+    "XdControllers": {
         "test": "no",
         "Servers": [
             "controller1.domain.com",
@@ -223,8 +238,8 @@
         ],
         "Checks": {
             "Netscaler": {
-                "netscalerusername": "nsroot",
-                "netscalerpassword": "nsroot"
+                "Username": "nsroot",
+                "Password": "nsroot"
             }
         }
     },
@@ -259,19 +274,7 @@
             "PVSTSB",
             "soapserver",
             "StreamService"
-        ],
-        "Checks": {
-            "PVSFarm": {
-                "Name": [
-                    "pvs"
-                ]
-            },
-            "PVSSite": {
-                "Name": [
-                    "pvs_site"
-                ]
-            }
-        }
+        ]
     },
     "WEM": {
         "test": "no",

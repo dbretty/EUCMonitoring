@@ -13,6 +13,7 @@ function Test-XdCatalogHealth {
     Name                    Version         Date                Change Detail
     Adam Yarborough         1.0             21/03/2018          Function Creation
     Adam Yarborough         1.1             07/06/2018          Update for object model.
+    Adam Yarborough         1.2             20/06/2018          Begin/Process/End
 .EXAMPLE
     None Required
 #>
@@ -23,37 +24,57 @@ function Test-XdCatalogHealth {
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$AdminAddress
     )
 
-    #Create array with results
-    $Results = @()
-    $Errors = @()
+    Begin {
+        $ctxsnap = Add-PSSnapin Citrix.EnvTest.* -ErrorAction SilentlyContinue
+        $ctxsnap = Get-PSSnapin Citrix.EnvTest.* -ErrorAction SilentlyContinue
 
-    Write-Verbose "Initialize Test Variables"
-    $Health = $true
- 
-    Write-Verbose "Catalog Env Check started"
-    $XDCatalogs = Get-BrokerCatalog -AdminAddress $AdminAddress 
+        if ($null -eq $ctxsnap) {
+            Write-Error "XenDesktop Powershell Snapin Load Failed"
+            Write-Error "Cannot Load Citrix.EnvTest.* Powershell SDK"
+            Return $false
+        }
+        else {
+            Write-Verbose "XenDesktop Powershell SDK Snapin Loaded"
+        }
+    }
+    
+    Process { 
+        #Create array with results
+        $Results = @()
+        $Errors = @()
 
-    foreach ( $Catalog in $XDCatalogs ) {
         Write-Verbose "Initialize Test Variables"
-        Write-Verbose "Testing $($Catalog.Name)"
-        $TestTarget = New-EnvTestDiscoveryTargetDefinition -AdminAddress $AdminAddress -TargetIdType "Catalog" -TestSuiteId "Catalog" -TargetId $Catalog.Uuid
-        $TestResults = Start-EnvTestTask -AdminAddress $AdminAddress -InputObject $TestTarget -RunAsynchronously
-        foreach ( $Result in $TestResults.TestResults ) {
-            foreach ( $Component in $Result.TestComponents ) {
-                Write-Verbose "$Catalog.Name - $($Component.TestID) - $($Component.TestComponentStatus)"
-                if ( ($Component.TestComponentStatus -ne "CompletePassed") -and ($Component.TestComponentStatus -ne "NotRun") ) {
-                    $Errors += "$Catalog.Name - $($Component.TestID) - $($Component.TestComponentStatus)" 
-                    $Health = $false
-                }
-            }            
+        $Health = $true
+ 
+        Write-Verbose "Catalog Env Check started"
+        $XDCatalogs = Get-BrokerCatalog -AdminAddress $AdminAddress 
+
+        foreach ( $Catalog in $XDCatalogs ) {
+            Write-Verbose "Initialize Test Variables"
+            Write-Verbose "Testing $($Catalog.Name)"
+            $TestTarget = New-EnvTestDiscoveryTargetDefinition -AdminAddress $AdminAddress -TargetIdType "Catalog" -TestSuiteId "Catalog" -TargetId $Catalog.Uuid
+            $TestResults = Start-EnvTestTask -AdminAddress $AdminAddress -InputObject $TestTarget -RunAsynchronously
+            foreach ( $Result in $TestResults.TestResults ) {
+                foreach ( $Component in $Result.TestComponents ) {
+                    Write-Verbose "$Catalog.Name - $($Component.TestID) - $($Component.TestComponentStatus)"
+                    if ( ($Component.TestComponentStatus -ne "CompletePassed") -and ($Component.TestComponentStatus -ne "NotRun") ) {
+                        $Errors += "$Catalog.Name - $($Component.TestID) - $($Component.TestComponentStatus)" 
+                        $Health = $false
+                    }
+                }            
+            }
+        }
+
+        if ( $Health ) {
+            return $true
+        }
+        else {
+            $Results += [PSCustomObject]@{
+                'Errors' = $Errors
+            }
+            return $Results
         }
     }
 
-    if ( $Health ) {
-        return $true
-    }
-    else {
-        $Results += $Errors
-        return $Results
-    }
+    End { }
 }

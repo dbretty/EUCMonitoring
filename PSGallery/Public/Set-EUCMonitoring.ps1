@@ -24,43 +24,44 @@
     .EXAMPLE
         None Required
     #>
-        [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High")]
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High")]
         
-        Param
-        (
-            [parameter(Mandatory = $false, ValueFromPipeline = $true)]$MonitoringPath = (get-location), #gets current directory location
-            [parameter(Mandatory = $false, ValueFromPipeline = $true)][switch]$QuickConfig # Determines if they need a walkthrough. 
-        )
+    Param
+    (
+        [parameter(Mandatory = $false, ValueFromPipeline = $true)]$MonitoringPath = (get-location), #gets current directory location
+        [parameter(Mandatory = $false, ValueFromPipeline = $true)][switch]$QuickConfig # Determines if they need a walkthrough. 
+    )
     
     
-        #New-Item -Path "HKLM:\Software" -Name "EUCMonitoring" -Force
-        #New-ItemProperty -Path "HKLM:\Software\EUCMonitoring" -Name "FileLocation" -Value $MonitoringPat
+    #New-Item -Path "HKLM:\Software" -Name "EUCMonitoring" -Force
+    #New-ItemProperty -Path "HKLM:\Software\EUCMonitoring" -Name "FileLocation" -Value $MonitoringPat
     
     
-        if(test-path $MonitoringPath){
-            Write-Verbose "Monitoring Directory $MonitoringPath Already Present"
-        } else {
-            New-Item $MonitoringPath -ItemType Directory
-            Write-Verbose "EUC Monitoring Directory Created $MonitoringPath"
-        }
+    if ( test-path $MonitoringPath ) {
+        Write-Verbose "Monitoring Directory $MonitoringPath Already Present"
+    }
+    else {
+        New-Item $MonitoringPath -ItemType Directory
+        Write-Verbose "EUC Monitoring Directory Created $MonitoringPath"
+    }
     
-        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-        #Files needed to check and downloads
-        $filesneeded = @("euc-monitoring.css","euc-monitoring.json.template","euc-monitoring-json-ref.txt")
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    #Files needed to check and downloads
+    $filesneeded = @("euc-monitoring.css", "euc-monitoring.json.template", "euc-monitoring-json-ref.txt")
         
-        foreach ($needed in $filesneeded)
-        {
-            Write-Verbose "Checking for $needed"
-            if(test-path "$MonitoringPath\$needed"){
-                Write-Verbose "$needed already Present"
-            } else {
-                Write-Verbose "Pulling $needed"
-                Invoke-WebRequest -Uri "https://raw.githubusercontent.com/dbretty/eucmonitoring/master/Package/$needed" -OutFile "$MonitoringPath\$needed"
-            }
+    foreach ( $needed in $filesneeded ) {
+        Write-Verbose "Checking for $needed"
+        if ( test-path "$MonitoringPath\$needed" ) {
+            Write-Verbose "$needed already Present"
         }
-    
-        # Feature Request: Add Quick Config https://git.io/vxz4I
-        if ($QuickConfig -eq $true) {
-            New-EUCMonitoringConfig -MonitorPath $MonitoringPath 
+        else {
+            Write-Verbose "Pulling $needed"
+            Invoke-WebRequest -Uri "https://raw.githubusercontent.com/dbretty/eucmonitoring/master/Package/$needed" -OutFile "$MonitoringPath\$needed"
         }
     }
+    
+    # Feature Request: Add Quick Config https://git.io/vxz4I
+    if ( $QuickConfig -eq $true ) {
+        New-EUCMonitoringConfig -MonitorPath $MonitoringPath 
+    }
+}
