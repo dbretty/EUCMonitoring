@@ -220,7 +220,7 @@
                 "type": "fill"
               }
             ],
-            "measurement": "XdLicensing-XdLicense",
+            "measurement": "XdLicensing-XDLicense",
             "orderByTime": "ASC",
             "policy": "default",
             "refId": "B",
@@ -408,6 +408,8 @@
             "measurement": "Worker-XdServer",
             "orderByTime": "ASC",
             "policy": "default",
+            "query": "SELECT last(\"BrokerMachineRegistered\") AS \"Registered\", last(\"BrokerMachineUnRegistered\") AS \"Unregistered\", last(\"BrokerMachinesGood\") AS \"Good Health\", last(\"BrokerMachinesBad\") AS \"Bad Health\", last(\"BrokerMachineInMaintenance\") AS \"Maint Mode\" FROM \"Worker-XdServer\" WHERE $timeFilter GROUP BY time($__interval), \"SiteName\" fill(previous)",
+            "rawQuery": false,
             "refId": "A",
             "resultFormat": "time_series",
             "select": [
@@ -443,42 +445,6 @@
                 {
                   "params": [
                     "Unregistered"
-                  ],
-                  "type": "alias"
-                }
-              ],
-              [
-                {
-                  "params": [
-                    "BrokerMachinesGood"
-                  ],
-                  "type": "field"
-                },
-                {
-                  "params": [],
-                  "type": "last"
-                },
-                {
-                  "params": [
-                    "Good Health"
-                  ],
-                  "type": "alias"
-                }
-              ],
-              [
-                {
-                  "params": [
-                    "BrokerMachinesBad"
-                  ],
-                  "type": "field"
-                },
-                {
-                  "params": [],
-                  "type": "last"
-                },
-                {
-                  "params": [
-                    "Bad Health"
                   ],
                   "type": "alias"
                 }
@@ -571,6 +537,57 @@
               [
                 {
                   "params": [
+                    "BrokerMachineInMaintenance"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "last"
+                },
+                {
+                  "params": [
+                    "Maint Mode"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "tags": []
+          },
+          {
+            "alias": "[[tag_SiteName]] - Server - [[col]]",
+            "groupBy": [
+              {
+                "params": [
+                  "$__interval"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "SiteName"
+                ],
+                "type": "tag"
+              },
+              {
+                "params": [
+                  "previous"
+                ],
+                "type": "fill"
+              }
+            ],
+            "measurement": "Worker-XdServer",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": "SELECT last(\"BrokerMachineRegistered\") AS \"Registered\", last(\"BrokerMachineUnRegistered\") AS \"Unregistered\", last(\"BrokerMachineInMaintenance\") AS \"Maint Mode\" FROM \"Worker-XdServer\" WHERE $timeFilter GROUP BY time($__interval), \"SiteName\" fill(previous)\n",
+            "rawQuery": false,
+            "refId": "C",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
                     "BrokerMachinesGood"
                   ],
                   "type": "field"
@@ -603,11 +620,42 @@
                   ],
                   "type": "alias"
                 }
-              ],
+              ]
+            ],
+            "tags": []
+          },
+          {
+            "alias": "[[tag_SiteName]] - Desktop - [[col]]",
+            "groupBy": [
+              {
+                "params": [
+                  "$__interval"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "SiteName"
+                ],
+                "type": "tag"
+              },
+              {
+                "params": [
+                  "previous"
+                ],
+                "type": "fill"
+              }
+            ],
+            "measurement": "Worker-XdDesktop",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "refId": "D",
+            "resultFormat": "time_series",
+            "select": [
               [
                 {
                   "params": [
-                    "BrokerMachineInMaintenance"
+                    "BrokerMachinesGood"
                   ],
                   "type": "field"
                 },
@@ -617,7 +665,25 @@
                 },
                 {
                   "params": [
-                    "Maint Mode"
+                    "Good Health"
+                  ],
+                  "type": "alias"
+                }
+              ],
+              [
+                {
+                  "params": [
+                    "BrokerMachinesBad"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "last"
+                },
+                {
+                  "params": [
+                    "Bad Health"
                   ],
                   "type": "alias"
                 }
@@ -2580,7 +2646,7 @@
                 "type": "fill"
               }
             ],
-            "measurement": "XdDControllers",
+            "measurement": "XdControllers",
             "orderByTime": "ASC",
             "policy": "default",
             "refId": "A",
@@ -2783,7 +2849,7 @@
     "timezone": "",
     "title": "EUCMonitoring",
     "uid": "MDZmSxHiz",
-    "version": 23
+    "version": 4
   },
   "folderID": 0,
   "inputs": [
