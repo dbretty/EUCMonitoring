@@ -18,6 +18,7 @@ function New-HtmlReport {
     David Brett             1.0             12/03/2018          Function Creation
     David Brett             1.1             29/03/2018          Updating function to cater for the new object
     Adam Yarborough         1.2             05/06/2018          Updated object definition modeling
+    David Brett             1.3             25/06/2018          Updated report generation to support new object model
 .EXAMPLE
     None Required
 #> 
@@ -79,13 +80,15 @@ function New-HtmlReport {
     "<body>" | Out-File $HTMLOutputFileFull -Append
 
     # Write Page Header
+    $Title = $ConfigObject.Global.WebData.title
+    $LogoFile = $ConfigObject.Global.WebData.logofile
     "<table border='0' width='100%'' cellspacing='0' cellpadding='0'>" | Out-File $HTMLOutputFileFull -Append
     "<tr>" | Out-File $HTMLOutputFileFull -Append
     "<td class='title-info'>" | Out-File $HTMLOutputFileFull -Append
-    "EUC Monitoring" | Out-File $HTMLOutputFileFull -Append
+    $title | Out-File $HTMLOutputFileFull -Append
     "</td>" | Out-File $HTMLOutputFileFull -Append
     "<td width='40%' align=right valign=top>" | Out-File $HTMLOutputFileFull -Append
-    "<img src='logo.png'>" | Out-File $HTMLOutputFileFull -Append
+    "<img src='$logofile'>" | Out-File $HTMLOutputFileFull -Append
     "</td>" | Out-File $HTMLOutputFileFull -Append
     "</tr>" | Out-File $HTMLOutputFileFull -Append
     "</table>" | Out-File $HTMLOutputFileFull -Append
@@ -101,8 +104,16 @@ function New-HtmlReport {
     $InfraData = ""
     $Errors = ""
 
-    # XXX CHANGEME XXX ColumnPercent needs to be dynamic for infrastructure. 
-    $ColumnPercent = 10
+    # Figure out column percentage
+    $TotalInf = 0
+    foreach ($SeriesResult in $Results) {
+        if ("Worker" -ne $seriesresult.series) {
+            $totalinf ++
+        }
+    } 
+    $totalinf--
+    $ColumnPercent = 100 / [int]$totalinf
+
     foreach ($SeriesResult in $Results) { 
         $DonutStroke = $ConfigObject.Global.WebData.InfraDonutStroke
         $Height = $ConfigObject.Global.WebData.InfraDonutSize
@@ -110,29 +121,29 @@ function New-HtmlReport {
         $Up = 0
         $Down = 0
         $Series = $SeriesResult.Series
+        if ($null -ne $series) {
+            if ( "Worker" -ne $Series ) {
+                foreach ($Result in $SeriesResult.Results) {
+                    $Up += $Result.PortsUp.Count + $Result.ServicesUp.Count + $Result.ChecksUp.Count
+                    $Down += $Result.Errors.Count 
+                    # XXX Something to populate InfraData here...
 
-        if ( "Worker" -ne $Series ) {
-
-            foreach ($Result in $SeriesResult.Results) {
-                $Up += $Result.PortsUp.Count + $Result.ServicesUp.Count + $Result.ChecksUp.Count
-                $Down += $Result.Errors.Count 
-                # XXX Something to populate InfraData here...
-
-                $Errors += "$($Result.ComputerName) - $($Result.Errors)`n"
+                    $Errors += "$($Result.ComputerName) - $($Result.Errors)`n"
+                }
+                "<td width='$ColumnPercent%' align=center valign=top>" | Out-File $HTMLOutputFileFull -Append
+                # XXX TODO XXX Needs Parameters
+                Get-DonutHTML $Height $Width $UpColor $DownColor $DonutStroke $Series $Up $Down | Out-File $HTMLOutputFileFull -Append
+                "</td>" | Out-File $HTMLOutputFileFull -Append
             }
-            "<td width='$ColumnPercent%' align=center valign=top>" | Out-File $HTMLOutputFileFull -Append
-            # XXX TODO XXX Needs Parameters
-            Get-DonutHTML $Height $Width $UpColor $DownColor $DonutStroke $Series $Up $Down | Out-File $HTMLOutputFileFull -Append
-            "</td>" | Out-File $HTMLOutputFileFull -Append
         }
     }
     # XXX TODO XXX
     # Output the infrastructure data.  This would be the checkdata values from netscalers, etc...
-    if ($null -ne $InfraData) {
-        "<td>" | Out-File $HTMLOutputFileFull -Append
-        $InfraData | Out-File $HTMLOutputFileFull -Append
-        "</td>" | Out-File $HTMLOutputFileFull -Append
-    }
+    #if ($null -ne $InfraData) {
+    #    "<td>" | Out-File $HTMLOutputFileFull -Append
+    #    $InfraData | Out-File $HTMLOutputFileFull -Append
+    #    "</td>" | Out-File $HTMLOutputFileFull -Append
+    #}
     "</tr>" | Out-File $HTMLOutputFileFull -Append
 
 
@@ -143,9 +154,19 @@ function New-HtmlReport {
     "<tr>" | Out-File $HTMLOutputFileFull -Append
 
     # XXX CHANGEME XXX ColumnPercent needs to be dynamic for workers
-    $ColumnPercent = 35
+    $TotalWorkers = 0
+    if ($true -eq $ConfigObject.Worker.Checks.XdDesktop) { $TotalWorkers++ }
+    if ($true -eq $ConfigObject.Worker.Checks.XdServer) { $TotalWorkers++ }
+
+    if (2 -eq $TotalWorkers) {
+        $ColumnPercent = 35
+    }
+    else {
+        $ColumnPercent = 50
+    }
     # Worker Donuts
     $WorkerData = ""
+
     foreach ($SeriesResult in $Results) { 
         $DonutStroke = $ConfigObject.Global.WebData.WorkerDonutStroke
         $Height = $ConfigObject.Global.WebData.WorkerDonutSize
@@ -157,39 +178,207 @@ function New-HtmlReport {
         if ( "Worker" -eq $Series ) {
 
             foreach ($Result in $SeriesResult.Results) {
-                $Up = $Result.PortsUp.Count + $Result.ServicesUp.Count + $Result.ChecksUp.Count
-                $Down = $Result.Errors.Count 
+                #$Up = $Result.PortsUp.Count + $Result.ServicesUp.Count + $Result.ChecksUp.Count
+                #$Down = $Result.Errors.Count 
+
                 # XXX Something to populate WorkerData
                 foreach ( $CheckData in $Result.ChecksData ) {
-                    $ParamString = ""
+                    #$ParamString = ""
                 
                     $CheckDataName = $CheckData.CheckName
-                    if ( $CheckDataName -notin "XdServer", "XdDesktop" ) { continue }
-                    $CheckData.Values.PSObject.Properties | ForEach-Object {
-                        if ( $ParamString -eq "" ) { $ParamString = "$($_.Name)=$($_.Value)" } 
-                        else { $ParamString += ", $($_.Name)=$($_.Value)" }
-                    }
+                    #if ( $CheckDataName -notin "XdServer", "XdDesktop" ) { continue }
+                    #$CheckData.Values.PSObject.Properties | ForEach-Object {
+                    #    if ( $ParamString -eq "" ) { $ParamString = "$($_.Name)=$($_.Value)" } 
+                    #    else { $ParamString += ", $($_.Name)=$($_.Value)" }
+                    #}
                 
-                    
+                    $Up = $CheckData.Values.BrokerMachinesRegistered
+                    $Down = $CheckData.values.BrokerMachinesUnRegistered
                     "<td width='$ColumnPercent%' align=center valign=top>" | Out-File $HTMLOutputFileFull -Append
                     # XXX Might need to move the Donut HTML part to the foreach, so that workers are separated. 
                     Get-DonutHTML $Height $Width $UpColor $DownColor $DonutStroke $CheckDataName $Up $Down -Worker | Out-File $HTMLOutputFileFull -Append
                     "</td>" | Out-File $HTMLOutputFileFull -Append
-                    if ( "" -ne $ParamString ) {
-                        "<td>" | Out-File $HTMLOutputFileFull -Append
-                        $WorkerData = "Broker $($Result.ComputerName)`: $ParamString"
-                        #             Write-Verbose $PostParams
-                        $WorkerData | Out-File $HTMLOutputFileFull -Append
-                        "</td>" | Out-File $HTMLOutputFileFull -Append
-                    }
+
                 }
-
-
-                $Errors += "$($Result.ComputerName) $($Result.Errors)"
+                #$Errors += "$($Result.ComputerName) $($Result.Errors)"
             }
 
         }
     }
+
+    #Infrastructure and Error Data
+    "<td width='$ColumnPercent%' align=left valign=top>" | Out-File $HTMLOutputFileFull -Append
+    "</br>" | Out-File $HTMLOutputFileFull -Append
+
+    # Licensing Data
+    if ($true -eq $ConfigObject.Licensing.test) { 
+        "<div class='info-title'>" | Out-File $HTMLOutputFileFull -Append
+        "Current Licensing Status" | Out-File $HTMLOutputFileFull -Append
+        "</div>" | Out-File $HTMLOutputFileFull -Append
+        foreach ($SeriesResult in $Results) { 
+            $Series = $SeriesResult.Series
+            if ( "Licensing" -eq $Series ) {
+                $ChecksDetail = $SeriesResult.Results.checksdata
+                "<div class='info-text'>" | Out-File $HTMLOutputFileFull -Append
+                foreach ($CheckDetails in $ChecksDetail) {
+                    $Available = $CheckDetails.values.TotalAvailable
+                    $Issued = $CheckDetails.values.TotalIssued
+                    $LicType = $CheckDetails.values.LicenseType
+                    "License - $LicType - $Available/$Issued<br>" | Out-File $HTMLOutputFileFull -Append
+                }
+                "</div>" | Out-File $HTMLOutputFileFull -Append
+                "<br>" | Out-File $HTMLOutputFileFull -Append
+            }
+        }
+    }
+
+    # Server Workload Data
+    if ($true -eq $ConfigObject.Worker.Checks.XdServer) { 
+        "<div class='info-title'>" | Out-File $HTMLOutputFileFull -Append
+        "Server Workload Data" | Out-File $HTMLOutputFileFull -Append
+        "</div>" | Out-File $HTMLOutputFileFull -Append
+        foreach ($SeriesResult in $Results) { 
+            $Series = $SeriesResult.Series
+            if ( "Worker" -eq $Series ) {
+                $ChecksDetail = $SeriesResult.Results.checksdata
+                foreach ($CheckDetails in $ChecksDetail) {
+                    if ("XdServer" -eq $CheckDetails.Checkname) {
+                        "<div class='info-text'>" | Out-File $HTMLOutputFileFull -Append
+                        $Up = $CheckDetails.values.ConnectedUsers
+                        $Down = $CheckDetails.values.DisconnectedUsers
+                        "Total User Base - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
+                        $Up = $CheckDetails.values.DeliveryGroupsNotInMaintenance
+                        $Down = $CheckDetails.Values.DeliveryGroupsInMaintenance
+                        "Delivery Group Maintenance Mode - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
+                        $Up = $CheckDetails.Values.BrokerMachinesOn
+                        $Down = $CheckDetails.values.BrokerMachinesOff
+                        "Broker Machine Power State - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
+                        $Up = $CheckDetails.values.BrokerMachinesRegistered
+                        $Down = $CheckDetails.values.BrokerMachinesUnRegistered
+                        "Broker Machine Registration - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
+                        $Up = $CheckDetails.values.BrokerMachinesRegistered
+                        $Down = $CheckDetails.values.BrokerMachinesInMaintenance
+                        "Broker Machine Maintenance Mode - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
+                        "</div>" | Out-File $HTMLOutputFileFull -Append
+                        "<br>" | Out-File $HTMLOutputFileFull -Append
+                    }
+                }
+            }
+        }
+    }
+   
+    # Desktop Workload Data
+    if ($true -eq $ConfigObject.Worker.Checks.XdDesktop) { 
+        "<div class='info-title'>" | Out-File $HTMLOutputFileFull -Append
+        "Desktop Workload Data" | Out-File $HTMLOutputFileFull -Append
+        "</div>" | Out-File $HTMLOutputFileFull -Append
+        foreach ($SeriesResult in $Results) { 
+            $Series = $SeriesResult.Series
+            if ( "Worker" -eq $Series ) {
+                $ChecksDetail = $SeriesResult.Results.checksdata
+                foreach ($CheckDetails in $ChecksDetail) {
+                    if ("XdDesktop" -eq $CheckDetails.Checkname) {
+                        "<div class='info-text'>" | Out-File $HTMLOutputFileFull -Append
+                        $Up = $CheckDetails.values.ConnectedUsers
+                        $Down = $CheckDetails.values.DisconnectedUsers
+                        "Total User Base - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
+                        $Up = $CheckDetails.values.DeliveryGroupsNotInMaintenance
+                        $Down = $CheckDetails.Values.DeliveryGroupsInMaintenance
+                        "Delivery Group Maintenance Mode - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
+                        $Up = $CheckDetails.Values.BrokerMachinesOn
+                        $Down = $CheckDetails.values.BrokerMachinesOff
+                        "Broker Machine Power State - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
+                        $Up = $CheckDetails.values.BrokerMachinesRegistered
+                        $Down = $CheckDetails.values.BrokerMachinesUnRegistered
+                        "Broker Machine Registration - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
+                        $Up = $CheckDetails.values.BrokerMachinesRegistered
+                        $Down = $CheckDetails.values.BrokerMachinesInMaintenance
+                        "Broker Machine Maintenance Mode - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
+                        "</div>" | Out-File $HTMLOutputFileFull -Append
+                        "<br>" | Out-File $HTMLOutputFileFull -Append
+                    }
+                }
+            }
+        }
+    }
+
+    if ($true -eq $ConfigObject.Gateway.test) {
+        # Title
+        "<div class='info-title'>" | Out-File $HTMLOutputFileFull -Append
+        "Citrix Networking" | Out-File $HTMLOutputFileFull -Append
+        "</div>" | Out-File $HTMLOutputFileFull -Append
+
+        foreach ($SeriesResult in $Results) { 
+            $Series = $SeriesResult.Series
+            if ( "Gateway" -eq $Series ) {
+                $ChecksDetail = $SeriesResult.Results.checksdata
+                foreach ($CheckDetails in $ChecksDetail) {
+                    write-host $CheckDetails.values
+                    $ICAUsers = $CheckDetails.values.ICAUsers
+                    $VPNUsers = $CheckDetails.values.VPNUsers
+                    $TotalUsers = $CheckDetails.values.TotalGatewayUsers
+                }
+            }
+        }
+        "<div class='info-text'>" | Out-File $HTMLOutputFileFull -Append
+        "ICA Users - $ICAUsers<br>"  | Out-File $HTMLOutputFileFull -Append
+        "VPN Users - $VPNUsers<br>"  | Out-File $HTMLOutputFileFull -Append
+        "Total Users - $TotalUsers<br>"  | Out-File $HTMLOutputFileFull -Append
+        "</div>" | Out-File $HTMLOutputFileFull -Append
+        "<br>" | Out-File $HTMLOutputFileFull -Append
+    }
+
+    # Output Monitoring Data - Infrastructure Errors
+    $InfraData = join-path -path $HTMLOutputLocation -ChildPath "infra-errors.txt"
+
+    if (test-path $InfraData) {
+        "<div class='error-title'>" | Out-File $HTMLOutputFileFull -Append
+        "Current Infrastructure Errors" | Out-File $HTMLOutputFileFull -Append
+        "</div>" | Out-File $HTMLOutputFileFull -Append
+        $InfraInfo = Get-Content $InfraData
+        "<div class='error-text'>" | Out-File $HTMLOutputFileFull -Append
+        foreach ($Line in $InfraInfo) {
+            "$Line<br>"  | Out-File $HTMLOutputFileFull -Append
+        }
+        "</div>" | Out-File $HTMLOutputFileFull -Append
+        Remove-Item $InfraData
+        # Insert a line break
+        "<br>" | Out-File $HTMLOutputFileFull -Append
+    }
+
+    # Output Monitoring Data - Infrastructure Errors
+    $WorkerData = join-path -path $HTMLOutputLocation -ChildPath "worker-errors.txt"
+
+    if (test-path $WorkerData) {
+        "<div class='error-title'>" | Out-File $HTMLOutputFileFull -Append
+        "Current XenDesktop Worker Errors" | Out-File $HTMLOutputFileFull -Append
+        "</div>" | Out-File $HTMLOutputFileFull -Append
+        $WorkerInfo = Get-Content $WorkerData
+        "<div class='error-text'>" | Out-File $HTMLOutputFileFull -Append
+        foreach ($Line in $WorkerInfo) {
+            "$Line<br>"  | Out-File $HTMLOutputFileFull -Append
+        }
+        "</div>" | Out-File $HTMLOutputFileFull -Append
+        Remove-Item $WorkerData
+        # Insert a line break
+        "<br>" | Out-File $HTMLOutputFileFull -Append
+    }
+
+
+
+    
+    
+    <# XXX 
+
+    # Output Monitoring Data - Server
+    if (!$null -eq $EUCMonitoring.server) {
+        # Title    
+        "<div class='info-title'>" | Out-File $HTMLOutputFileFull -Append
+        "Server Workload Data" | Out-File $HTMLOutputFileFull -Append
+        "</div>" | Out-File $HTMLOutputFileFull -Append
+
+    "</td>" | Out-File $HTMLOutputFileFull -Append
+
     "</tr>" | Out-File $HTMLOutputFileFull -Append
 
     # XXX TODO XXX
@@ -199,12 +388,12 @@ function New-HtmlReport {
         $WorkerData | Out-File $HTMLOutputFileFull -Append
         "</td>" | Out-File $HTMLOutputFileFull -Append
     } #>
-    if ($null -ne $Errors) {
-        "<td>" | Out-File $HTMLOutputFileFull -Append
-        $Errors | Out-File $HTMLOutputFileFull -Append
-        "</td>" | Out-File $HTMLOutputFileFull -Append
-    }
-    "</tr>" | Out-File $HTMLOutputFileFull -Append
+    #if ($null -ne $Errors) {
+    #    "<td>" | Out-File $HTMLOutputFileFull -Append
+    #    $Errors | Out-File $HTMLOutputFileFull -Append
+    #    "</td>" | Out-File $HTMLOutputFileFull -Append
+    #}
+    #"</tr>" | Out-File $HTMLOutputFileFull -Append
 
 
     # Work out the column width for Infrastructure
@@ -233,11 +422,11 @@ function New-HtmlReport {
     #}
     
     # Write the Infrastructure Table Footer
-    "</tr>" | Out-File $HTMLOutputFileFull -Append
-    "</table>" | Out-File $HTMLOutputFileFull -Append
+    #"</tr>" | Out-File $HTMLOutputFileFull -Append
+    #"</table>" | Out-File $HTMLOutputFileFull -Append
 
     # Insert a line break
-    "<br>" | Out-File $HTMLOutputFileFull -Append
+    #"<br>" | Out-File $HTMLOutputFileFull -Append
 
     # Start the Worker Donur Build
     #$WorkerCount = ($WorkerList | Measure-Object).Count
@@ -253,8 +442,8 @@ function New-HtmlReport {
     #}
 
     # Write Worker Table Header
-    "<table border='0' width='100%'' cellspacing='0' cellpadding='0'>" | Out-File $HTMLOutputFileFull -Append
-    "<tr>" | Out-File $HTMLOutputFileFull -Append
+    #"<table border='0' width='100%'' cellspacing='0' cellpadding='0'>" | Out-File $HTMLOutputFileFull -Append
+    #"<tr>" | Out-File $HTMLOutputFileFull -Append
   
     #  foreach ($Worker in $WorkerList) {
     #       Write-Verbose "Getting Donut Data for $Worker"
@@ -280,7 +469,7 @@ function New-HtmlReport {
     # }
 
     # Define Error Pane
-    "<td class='monitoring-info'>" | Out-File $HTMLOutputFileFull -Append
+   # "<td class='monitoring-info'>" | Out-File $HTMLOutputFileFull -Append
     
     <# XXX 
 
@@ -452,15 +641,20 @@ function New-HtmlReport {
   
     #> 
 
+      "</td>" | Out-File $HTMLOutputFileFull -Append
+
+       "</tr>" | Out-File $HTMLOutputFileFull -Append
+    "</table>" | Out-File $HTMLOutputFileFull -Append
+    "<table>" | Out-File $HTMLOutputFileFull -Append
+        "<tr>" | Out-File $HTMLOutputFileFull -Append
     "<div class='info-text'>" | Out-File $HTMLOutputFileFull -Append
     $LastRun = Get-Date
     "Last Run Date: $LastRun" | Out-File $HTMLOutputFileFull -Append
     "</div>" | Out-File $HTMLOutputFileFull -Append
 
-    "</td>" | Out-File $HTMLOutputFileFull -Append
+    "</tr>" | Out-File $HTMLOutputFileFull -Append
 
     # Write the Worker Table Footer
-    "</tr>" | Out-File $HTMLOutputFileFull -Append
     "</table>" | Out-File $HTMLOutputFileFull -Append
     
     # Write HTML Footer Information

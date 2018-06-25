@@ -55,6 +55,7 @@ function Start-EUCMonitor {
     $ServerErrorFile = join-path $OutputLocation $ConfigObject.Global.ServerErrorFile
     $DesktopErrorFile = join-path $OutputLocation $ConfigObject.Global.DesktopErrorFile
     $InfraErrorFile = join-path $OutputLocation $ConfigObject.Global.InfraErrorFile
+    $WorkerErrorFile = join-path $OutputLocation $ConfigObject.Global.WorkerErrorFile
 
     Write-Verbose "Testing Output File Location $OutputLocation"
 
@@ -78,6 +79,7 @@ function Start-EUCMonitor {
     If ((Test-Path $ServerErrorFile) -eq $true) { Remove-Item $ServerErrorFile -Force }
     If ((Test-Path $DesktopErrorFile) -eq $true) { Remove-Item $DesktopErrorFile -Force }
     If ((Test-Path $InfraErrorFile) -eq $true) { Remove-Item $InfraErrorFile -Force }
+    If ((Test-Path $WorkerErrorFile) -eq $true) { Remove-Item $WorkerErrorFile -Force }
 
     foreach ( $SeriesName in $ConfigObject.PSObject.Properties.Name ) {
 
@@ -99,7 +101,7 @@ function Start-EUCMonitor {
                     if ( $null -ne $Result.Errors ) {
                         foreach ($errorline in $result.Errors) {
                             $ErrorDetails = $errorline
-                            $ErrorMessage = "$ResultName - $ComputerName - $ErrorDetails"
+                            $ErrorMessage = "$ResultName - $ErrorDetails"
                             # Check to redirect Desktop errors to DesktopErrorFile   
                             if ( "XdServer" -eq $ResultName ) {
                                 #"$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $ServerErrorFile -Append
@@ -110,6 +112,11 @@ function Start-EUCMonitor {
                             elseif ( "XdDesktop" -eq $ResultName ) {
                                 #"$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $DesktopErrorFile -Append
                                 $ErrorMessage | Out-File $DesktopErrorFile -Append
+                            } 
+                            # And some for WorkerErrorFile
+                            elseif ( "Worker" -eq $ResultName ) {
+                                #"$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $DesktopErrorFile -Append
+                                $ErrorMessage | Out-File $WorkerErrorFile -Append
                             } 
                             # Or Just assume its the supporting infrastructure.
                             else {
