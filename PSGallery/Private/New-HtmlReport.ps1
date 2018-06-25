@@ -313,7 +313,6 @@ function New-HtmlReport {
             if ( "Gateway" -eq $Series ) {
                 $ChecksDetail = $SeriesResult.Results.checksdata
                 foreach ($CheckDetails in $ChecksDetail) {
-                    write-host $CheckDetails.values
                     $ICAUsers = $CheckDetails.values.ICAUsers
                     $VPNUsers = $CheckDetails.values.VPNUsers
                     $TotalUsers = $CheckDetails.values.TotalGatewayUsers

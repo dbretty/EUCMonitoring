@@ -97,7 +97,7 @@ function Start-EUCMonitor {
             if ( $null -ne $SeriesResult ) { 
                 $ResultName = $SeriesResult.Series
                 foreach ( $Result in $SeriesResult.Results ) {
-                    $ComputerName = $Result.ComputerName
+                    #$ComputerName = $Result.ComputerName
                     if ( $null -ne $Result.Errors ) {
                         foreach ($errorline in $result.Errors) {
                             $ErrorDetails = $errorline
