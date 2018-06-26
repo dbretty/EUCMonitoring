@@ -19,6 +19,7 @@
         Name                    Version         Date                Change Detail
         David Brett             1.0             19/03/2018          Script Creation
         Adam Yarborough         1.1             27/03/2018          Feature Request: Add Quick Config https://git.io/vxz4I
+        David Brett             1.2             26/06/2018          Cleaned up the Function and removed old code
     .PARAMETER MonitoringPath
         Folder path to download files needed for monitoring process
     .EXAMPLE
@@ -31,11 +32,6 @@
         [parameter(Mandatory = $false, ValueFromPipeline = $true)]$MonitoringPath = (get-location), #gets current directory location
         [parameter(Mandatory = $false, ValueFromPipeline = $true)][switch]$QuickConfig # Determines if they need a walkthrough. 
     )
-    
-    
-    #New-Item -Path "HKLM:\Software" -Name "EUCMonitoring" -Force
-    #New-ItemProperty -Path "HKLM:\Software\EUCMonitoring" -Name "FileLocation" -Value $MonitoringPat
-    
     
     if ( test-path $MonitoringPath ) {
         Write-Verbose "Monitoring Directory $MonitoringPath Already Present"

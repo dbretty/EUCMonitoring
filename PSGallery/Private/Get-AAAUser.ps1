@@ -31,7 +31,6 @@ function Get-AAAUser {
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$UserName,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)][System.Security.SecureString]$Password,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$UserType
-
     )
 
     Connect-NetScaler $NSIP $UserName $Password

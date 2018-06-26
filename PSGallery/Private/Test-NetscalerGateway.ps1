@@ -30,10 +30,8 @@ function Test-NetscalerGateway {
     $gwresults = @()
     # Test the NetScaler Gateway
 
-    # XXX CHANGEME XXX  - Error Checking?  
     $ICAUsers = (((Get-AAAUser $NetScalerHostingGateway $NetScalerUserName $NetScalerPassword "ica").vpnicaconnection) | Measure-Object).count
     $VPNUsers = (((Get-AAAUser $NetScalerHostingGateway $NetScalerUserName $NetScalerPassword "vpn").aaasession) | Measure-Object).count
-
 
     Write-Verbose "Current NetScaler Gateway ICA Users: $ICAUsers"
     Write-Verbose "Current NetScaler Gateway VPN Users: $VPNUsers"
@@ -41,7 +39,6 @@ function Test-NetscalerGateway {
     Write-Verbose "Current NetScaler Gateway Users: $TotalUsers"
 
     $gwresults += [PSCustomObject]@{
-        #    'NetScalerGateway' = $NetScalerHostingGateway
         'ICAUsers'          = $ICAUsers
         'VPNUsers'          = $VPNUsers
         'TotalGatewayUsers' = $TotalUsers

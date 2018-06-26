@@ -12,6 +12,7 @@ function Start-EUCMonitor {
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     Adam Yarborough         1.0             17/05/2018          Function Creation
+    David Brett             1.1             26/06/2018          Added the Worker Error File and Cleaned out the Server and Desktop Files
 .CREDITS 
     David Brett - Original creation and design, Netscaler, Controller, Director, Storefront, XenServer
     James Kindon - AD, Controller, FAS, PVS, SQL, UPS, WEM
@@ -30,9 +31,7 @@ function Start-EUCMonitor {
     [CmdletBinding(SupportsShouldProcess)]
     Param
     (
-        #    [ValidateScript( { Test-Path -Type Leaf -Include '*.json' -Path $_ } )]
         [Parameter(ValueFromPipeline)][string]$JSONFile = ("$(get-location)\euc-monitoring.json"),
-        #    [ValidateScript( { Test-Path -Type Leaf -Include '*.css' -Path $_ } )]
         [Parameter(ValueFromPipeline)][string]$CSSFile = ("$(get-location)\euc-monitoring.css"),
         [Parameter(ValueFromPipeline)][string]$LogFile = ("$(get-location)\euc-monitoring.log"),
         [Parameter(ValueFromPipeline)][switch]$OutputToVar
@@ -52,8 +51,6 @@ function Start-EUCMonitor {
     Start-Transcript $LogFile
 
     $OutputLocation = $ConfigObject.Global.OutputLocation
-    $ServerErrorFile = join-path $OutputLocation $ConfigObject.Global.ServerErrorFile
-    $DesktopErrorFile = join-path $OutputLocation $ConfigObject.Global.DesktopErrorFile
     $InfraErrorFile = join-path $OutputLocation $ConfigObject.Global.InfraErrorFile
     $WorkerErrorFile = join-path $OutputLocation $ConfigObject.Global.WorkerErrorFile
 
@@ -76,8 +73,6 @@ function Start-EUCMonitor {
     }
 
     # Remove the old error files from the system
-    If ((Test-Path $ServerErrorFile) -eq $true) { Remove-Item $ServerErrorFile -Force }
-    If ((Test-Path $DesktopErrorFile) -eq $true) { Remove-Item $DesktopErrorFile -Force }
     If ((Test-Path $InfraErrorFile) -eq $true) { Remove-Item $InfraErrorFile -Force }
     If ((Test-Path $WorkerErrorFile) -eq $true) { Remove-Item $WorkerErrorFile -Force }
 
@@ -103,21 +98,11 @@ function Start-EUCMonitor {
                             $ErrorDetails = $errorline
                             $ErrorMessage = "$ResultName - $ErrorDetails"
                             # Check to redirect Desktop errors to DesktopErrorFile   
-                            if ( "XdServer" -eq $ResultName ) {
+                            if ( "Worker" -eq $ResultName ) {
                                 #"$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $ServerErrorFile -Append
-                                $ErrorMessage | Out-File $ServerErrorFile -Append
+                                $ErrorMessage | Out-File $WorkerErrorFile -Append
 
                             }
-                            # And some for ServerErrorFile
-                            elseif ( "XdDesktop" -eq $ResultName ) {
-                                #"$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $DesktopErrorFile -Append
-                                $ErrorMessage | Out-File $DesktopErrorFile -Append
-                            } 
-                            # And some for WorkerErrorFile
-                            elseif ( "Worker" -eq $ResultName ) {
-                                #"$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $DesktopErrorFile -Append
-                                $ErrorMessage | Out-File $WorkerErrorFile -Append
-                            } 
                             # Or Just assume its the supporting infrastructure.
                             else {
                                 #"$(get-date) - $SeriesName - $($Result.ComputerName)" | Out-File $InfraErrorFile -Append
