@@ -215,7 +215,7 @@ function New-HtmlReport {
                     if ("XdServer" -eq $CheckDetails.Checkname) {
                         "<div class='info-text'>" | Out-File $HTMLOutputFileFull -Append
                         $Up = $CheckDetails.values.TotalConnectedUsers
-                        $Down = $CheckDetails.values.TotalDisconnectedUsers
+                        $Down = $CheckDetails.values.TotalUsersDisconnected
                         "Total User Base - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
                         $Up = $CheckDetails.values.DeliveryGroupsNotInMaintenance
                         $Down = $CheckDetails.Values.DeliveryGroupsInMaintenance
@@ -250,7 +250,7 @@ function New-HtmlReport {
                     if ("XdDesktop" -eq $CheckDetails.Checkname) {
                         "<div class='info-text'>" | Out-File $HTMLOutputFileFull -Append
                         $Up = $CheckDetails.values.TotalConnectedUsers
-                        $Down = $CheckDetails.values.TotalDisconnectedUsers
+                        $Down = $CheckDetails.values.TotalUsersDisconnected
                         "Total User Base - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
                         $Up = $CheckDetails.values.DeliveryGroupsNotInMaintenance
                         $Down = $CheckDetails.Values.DeliveryGroupsInMaintenance
