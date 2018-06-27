@@ -165,7 +165,6 @@ function New-HtmlReport {
 
             foreach ($Result in $SeriesResult.Results) {
                 foreach ( $CheckData in $Result.ChecksData ) {
-                    Write-Host $CheckDataName
                     $CheckDataName = $CheckData.CheckName
                     $Up = $CheckData.Values.BrokerMachineRegistered
                     $Down = $CheckData.values.BrokerMachineUnRegistered
