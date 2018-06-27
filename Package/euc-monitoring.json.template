@@ -1,15 +1,17 @@
 {
     "Global": {
-        "OutputLocation": "c:\\WebData",
+        "OutputLocation": "c:\\monitoring",
         "ServerErrorFile": "server-errors.txt",
         "DesktopErrorFile": "desktop-errors.txt",
+        "WorkerErrorFile": "worker-errors.txt",
         "InfraErrorFile": "infra-errors.txt",
-        "ConsoleResults": true,
         "ThirdParty": {
             "controlup": "no"
         },
         "WebData": {
             "enabled": true,
+            "title": "End User Computing - Dashboard",
+            "logofile": "logo.png",
             "htmldatafile": "htmldata.txt",
             "htmloutputfile": "index.html",
             "refreshduration": 0,
@@ -27,6 +29,9 @@
             "Protocol": "http",
             "Port": 8086
         },
+        "ConsoleResults": {
+            "Enabled": true
+        },
         "Alerting": {
             "Enabled": false,
             "Slack": {
@@ -37,7 +42,7 @@
         }
     },
     "AD": {
-        "test": "no",
+        "test": false,
         "Servers": [
             "dc.domain.com"
         ],
@@ -52,14 +57,17 @@
         ],
         "Checks": {
             "ValidCert": {
-                "Port": 636
+                "Ports": [
+                    636
+                ]
             }
         }
     },
     "SQL": {
-        "test": "no",
+        "test": false,
         "Servers": [
-            "sql.domain.com"
+            "sql1.domain.com",
+            "sql2.domain.com"
         ],
         "Ports": [
             1433
@@ -69,7 +77,7 @@
         ]
     },
     "AppV": {
-        "test": "no",
+        "test": false,
         "Servers": [
             "appv.domain.com"
         ],
@@ -81,29 +89,24 @@
         ]
     },
     "Worker": {
-        "test": "no",
+        "test": false,
         "XdSites": [
             {
-                "PrimaryController": "ddc1.domain.com",
-                "SecondaryController": "ddc2.domain.com"
-            },
-            {
-                "PrimaryController": "ddc3.domain.com",
-                "SecondaryController": "ddc4.domain.com"
+                "PrimaryController": "xd1.domain.com",
+                "SecondaryController": "xd2.domain.com"
             }
         ],
         "Checks": {
             "XdServer": {
-                "TestMode": "basic",
+                "testmode": "advanced",
                 "BootThreshold": 7,
                 "HighLoad": 8000
             },
             "XdDesktop": {
-                "TestMode": "basic",
-                "BootThreshold": 7,
+                "testmode": "basic",
+                "BootThreshold": 365,
                 "HighLoad": 8000
             },
-            "XdSessionInfo": true,
             "XdDeliveryGroupHealth": false,
             "XdControllerHealth": false,
             "XdCatalogHealth": false,
@@ -111,10 +114,10 @@
         }
     },
     "Xenserver": {
-        "test": "no",
+        "test": false,
         "Servers": [
-            "pool_master_ip1",
-            "pool_master_ip2"
+            "xs1.domain.com",
+            "xs2.domain.com"
         ],
         "Ports": [
             80
@@ -122,27 +125,19 @@
         "Checks": {
             "XenServer": {
                 "username": "root",
-                "password": "password"
+                "password": "ReallySecure"
             }
         }
     },
     "Storefront": {
-        "test": "no",
+        "test": false,
         "Servers": [
-            "storefront.domain.com"
+            "web1.domain.com",
+            "web2.domain.com"
         ],
         "Ports": [
             80,
             443
-        ],
-        "Services": [
-            "CitrixConfigurationReplication",
-            "CitrixCredentialWallet",
-            "CitrixDefaultDomainService",
-            "CitrixSubscriptionsStore",
-            "NetTcpPortSharing",
-            "WAS",
-            "W3SVC"
         ],
         "Checks": {
             "HTTPUrl": {
@@ -154,15 +149,16 @@
                 "Path": "/Citrix/StoreWeb"
             },
             "ValidCert": {
-                "Port": 443
+                "Port": 
+                    443
             }
         }
     },
-    "XdLicensing": {
-        "test": "no",
+    "Licensing": {
+        "test": false,
         "Servers": [
-            "license1.domain.com",
-            "license2.domain.com"
+            "lic1.domain.com",
+            "lic2.domain.com"
         ],
         "Ports": [
             7279,
@@ -181,10 +177,10 @@
         }
     },
     "Director": {
-        "test": "no",
+        "test": false,
         "Servers": [
-            "director1.domain.com",
-            "director2.domain.com"
+            "web1.domain.com",
+            "web2.domain.com"
         ],
         "Ports": [
             80,
@@ -201,11 +197,11 @@
             }
         }
     },
-    "XdControllers": {
-        "test": "no",
+    "Controllers": {
+        "test": false,
         "Servers": [
-            "controller1.domain.com",
-            "controller2.domain.com"
+            "xd1.domain.com",
+            "xd2.domain.com"
         ],
         "Ports": [
             80
@@ -228,38 +224,41 @@
         ]
     },
     "Netscaler": {
-        "test": "no",
+        "test": false,
         "Servers": [
-            "netscaler_ip1",
-            "netscaler_ip2"
+            "ns1.domain.com",
+            "ns2.domain.com"
         ],
         "Ports": [
-            443
+            443,
+            80
         ],
         "Checks": {
-            "Netscaler": {
-                "Username": "nsroot",
-                "Password": "nsroot"
+            "NetScaler": {
+                "username": "nsroot",
+                "password": "ReallySecure"
             }
         }
     },
-    "NetscalerGateway": {
-        "test": "no",
+    "Gateway": {
+        "test": false,
         "Servers": [
-            "netscaler_gateway_ip"
+            "ns3.domain.com",
+            "ns4.domain.com"
         ],
         "Ports": [
-            443
+            443,
+            80
         ],
         "Checks": {
-            "NetscalerGateway": {
-                "Username": "nsroot",
-                "Password": "nsroot"
+            "NetScalerGateway": {
+                "username": "nsroot",
+                "password": "ReallySecure"
             }
         }
     },
     "Provisioning": {
-        "test": "no",
+        "test": false,
         "Servers": [
             "pvs1.domain.com",
             "pvs2.domain.com"
@@ -270,14 +269,15 @@
         "Services": [
             "BNPXE",
             "BNTFTP",
-            "PvsApi",
             "PVSTSB",
             "soapserver",
             "StreamService"
-        ]
+        ],
+        "Checks": {
+        }
     },
     "WEM": {
-        "test": "no",
+        "test": false,
         "Servers": [
             "wembroker1.domain.com",
             "wembroker2.domain.com"
@@ -290,7 +290,7 @@
         ]
     },
     "UPS": {
-        "test": "no",
+        "test": false,
         "Servers": [
             "upsserver.domain.com"
         ],
@@ -303,7 +303,7 @@
         ]
     },
     "FAS": {
-        "test": "no",
+        "test": false,
         "Servers": [
             "fasserver1.domain.com",
             "fasserver2.domain.com"
@@ -316,7 +316,7 @@
         ]
     },
     "CC": {
-        "test": "no",
+        "test": false,
         "Servers": [
             "ccserver1.domain",
             "ccserver2.domain"
