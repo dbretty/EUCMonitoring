@@ -140,73 +140,15 @@ function Test-XdWorker {
 
         }
         else {
-            # Setup Variables to track the status of the Broker Machines
-            $BrokerGood = 0
-            $BrokerBad = 0
-
-            #Build Broker Machines that are up
-            $BMUp = $BrokerMachines | Where-Object {($_.PowerState -match "On")} 
-
-            #Loop Through Broker Machines and make sure that all the required checks pass
-            foreach ($BM in $BMUp) {
-                $Machine = $BM.HostedMachineName
-
-                # Check the server is actually up and running
-                if ((Connect-Server $Machine) -eq "Successful") {
-                    Write-Verbose "$Machine is up"
-                    # Check the Boot Status for the server
-                    $Uptime = Get-Uptime $Machine
-                    If ($Uptime -lt [int]$BootThreshold) {
-                        Write-Verbose "$Machine has been booted within the boot threashold of $BootThreshold"
-                        # Check the Windows Activation Status for the server
-                        If ((Get-ActivationStatus $Machine) -eq "Licensed") {
-                            Write-Verbose "$Machine has had Windows Activated"
-                            # Check the Load Status for the server
-                            $Load = Get-BrokerMachine -HostedMachineName $Machine -Property LoadIndex
-                            $CurrentLoad = $Load.LoadIndex
-                            If ($CurrentLoad -lt $HighLoad) {
-                                Write-Verbose "$Machine has acceptable load - $CurrentLoad"
-                                #If ($ControlUp -eq "yes") {
-                                #    $CurrentServiceStatus = Test-Service $Machine cuAgent 
-                                #    If ($CurrentServiceStatus -ne "Running") {
-                                #        $BrokerBad ++
-                                #        Write-Verbose "Control Up Agent is not running on $Machine"
-                                #        "Control Up Agent is not running on $Machine" | Out-File $ErroFileFullPath -Append
-                                #    }
-                                #    else {
-                                #        $BrokerGood ++    
-                                #        Write-Verbose "Control Up Agent is running on $Machine"                             
-                                #    }
-                                #}
-                                $BrokerGood ++
-                                #else {
-                                #    $BrokerGood ++
-                                #    Write-Verbose "Control Up Not Enabled - Skipping Check"
-                                #}
-                            }
-                            else {
-                                $BrokerBad ++
-                                Write-Verbose "$Machine has unacceptable load - $CurrentLoad"
-                                $errors += "$Machine has a high load of $CurrentLoad"
-                            }
-                        }
-                        else {
-                            $BrokerBad ++
-                            Write-Verbose "$Machine has NOT had Windows Activated"
-                            $errors += "$Machine is not activated"
-                        }
+            Write-Verbose "Advanced Worker Checks enabled - setting up runspace and checking workers"
+            $BMRegisteredList = $BrokerMachines | Where-Object {($_.RegistrationState -eq "Registered" -and $_.PowerState -match "On")}
+            $DetailErrors = Test-XdWorkerAdvanced -Machines $BMRegisteredList -BootThreshold $BootThreshold -HighLoad $HighLoad
+            foreach ($error in $DetailErrors) {
+                if ($null -ne $error.services) {
+                    if ($error.services -ne "Passed") {
+                        $errors += $error.errors
                     }
-                    else {
-                        $BrokerBad ++
-                        Write-Verbose "$Machine has NOT been booted within the boot threashold of $BootThreshold"
-                        $errors += "$Machine has not been booted in $Uptime days"
-                    }
-                }
-                else {
-                    $BrokerBad ++
-                    Write-Verbose "$Machine is down"
-                    $errors += "$Machine is down"
-                }
+                }   
             }
 
             # Add results to array

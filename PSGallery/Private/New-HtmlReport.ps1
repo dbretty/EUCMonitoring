@@ -165,9 +165,10 @@ function New-HtmlReport {
 
             foreach ($Result in $SeriesResult.Results) {
                 foreach ( $CheckData in $Result.ChecksData ) {
+                    Write-Host $CheckDataName
                     $CheckDataName = $CheckData.CheckName
-                    $Up = $CheckData.Values.BrokerMachinesRegistered
-                    $Down = $CheckData.values.BrokerMachinesUnRegistered
+                    $Up = $CheckData.Values.BrokerMachineRegistered
+                    $Down = $CheckData.values.BrokerMachineUnRegistered
                     "<td width='$ColumnPercent%' align=center valign=top>" | Out-File $HTMLOutputFileFull -Append
                     Get-DonutHTML $Height $Width $UpColor $DownColor $DonutStroke $CheckDataName $Up $Down -Worker | Out-File $HTMLOutputFileFull -Append
                     "</td>" | Out-File $HTMLOutputFileFull -Append
@@ -214,20 +215,20 @@ function New-HtmlReport {
                 foreach ($CheckDetails in $ChecksDetail) {
                     if ("XdServer" -eq $CheckDetails.Checkname) {
                         "<div class='info-text'>" | Out-File $HTMLOutputFileFull -Append
-                        $Up = $CheckDetails.values.ConnectedUsers
-                        $Down = $CheckDetails.values.DisconnectedUsers
+                        $Up = $CheckDetails.values.TotalConnectedUsers
+                        $Down = $CheckDetails.values.TotalDisconnectedUsers
                         "Total User Base - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
                         $Up = $CheckDetails.values.DeliveryGroupsNotInMaintenance
                         $Down = $CheckDetails.Values.DeliveryGroupsInMaintenance
                         "Delivery Group Maintenance Mode - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
-                        $Up = $CheckDetails.Values.BrokerMachinesOn
-                        $Down = $CheckDetails.values.BrokerMachinesOff
+                        $Up = $CheckDetails.Values.BrokerMachineOn
+                        $Down = $CheckDetails.values.BrokerMachineOff
                         "Broker Machine Power State - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
-                        $Up = $CheckDetails.values.BrokerMachinesRegistered
-                        $Down = $CheckDetails.values.BrokerMachinesUnRegistered
+                        $Up = $CheckDetails.values.BrokerMachineRegistered
+                        $Down = $CheckDetails.values.BrokerMachineUnRegistered
                         "Broker Machine Registration - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
-                        $Up = $CheckDetails.values.BrokerMachinesRegistered
-                        $Down = $CheckDetails.values.BrokerMachinesInMaintenance
+                        $Up = $CheckDetails.values.BrokerMachineRegistered
+                        $Down = $CheckDetails.values.BrokerMachineInMaintenance
                         "Broker Machine Maintenance Mode - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
                         "</div>" | Out-File $HTMLOutputFileFull -Append
                         "<br>" | Out-File $HTMLOutputFileFull -Append
@@ -249,20 +250,20 @@ function New-HtmlReport {
                 foreach ($CheckDetails in $ChecksDetail) {
                     if ("XdDesktop" -eq $CheckDetails.Checkname) {
                         "<div class='info-text'>" | Out-File $HTMLOutputFileFull -Append
-                        $Up = $CheckDetails.values.ConnectedUsers
-                        $Down = $CheckDetails.values.DisconnectedUsers
+                        $Up = $CheckDetails.values.TotalConnectedUsers
+                        $Down = $CheckDetails.values.TotalDisconnectedUsers
                         "Total User Base - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
                         $Up = $CheckDetails.values.DeliveryGroupsNotInMaintenance
                         $Down = $CheckDetails.Values.DeliveryGroupsInMaintenance
                         "Delivery Group Maintenance Mode - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
-                        $Up = $CheckDetails.Values.BrokerMachinesOn
-                        $Down = $CheckDetails.values.BrokerMachinesOff
+                        $Up = $CheckDetails.Values.BrokerMachineOn
+                        $Down = $CheckDetails.values.BrokerMachineOff
                         "Broker Machine Power State - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
-                        $Up = $CheckDetails.values.BrokerMachinesRegistered
-                        $Down = $CheckDetails.values.BrokerMachinesUnRegistered
+                        $Up = $CheckDetails.values.BrokerMachineRegistered
+                        $Down = $CheckDetails.values.BrokerMachineUnRegistered
                         "Broker Machine Registration - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
-                        $Up = $CheckDetails.values.BrokerMachinesRegistered
-                        $Down = $CheckDetails.values.BrokerMachinesInMaintenance
+                        $Up = $CheckDetails.values.BrokerMachineRegistered
+                        $Down = $CheckDetails.values.BrokerMachineInMaintenance
                         "Broker Machine Maintenance Mode - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
                         "</div>" | Out-File $HTMLOutputFileFull -Append
                         "<br>" | Out-File $HTMLOutputFileFull -Append
