@@ -52,10 +52,9 @@ function Uninstall-VisualizationSetup {
         Remove-Item Env:\Home
 
         #open FW for Grafana
-        write-host "Remove Firewall Rules for Grafana and InfluxDB"
+        Write-Output "Remove Firewall Rules for Grafana and InfluxDB"
         Remove-NetFirewallRule -DisplayName "Grafana Server"
         Remove-NetFirewallRule -DisplayName "InfluxDB Server"
-
     }
 
     end {
