@@ -13,7 +13,7 @@ function Install-VisualizationSetup {
     .OUTPUTS
         None
     .NOTES
-        Current Version:        1.0
+        Current Version:        1.1
         Creation Date:          19/03/2018
     .CHANGE CONTROL
         Name                    Version         Date                Change Detail
@@ -196,6 +196,10 @@ function Install-VisualizationSetup {
         $Catch = ""
         Write-Verbose $Catch
 
+        Write-Verbose "Downloading helper script."
+        # Download the helper script
+        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/dbretty/eucmonitoring/v2_beta/DashboardConfig/Begin-EUCMonitor.ps1" -OutFile "$MonitoringPath\Begin-EUCMonitor.ps1"
+
         Write-Output "NOTE: Grafana and Influx are now installed as services.  You might need to set their startup type to"
         Write-Output "automatic if you plan on using this long term.`n"
 
@@ -203,9 +207,11 @@ function Install-VisualizationSetup {
         Write-Output "and save as euc-monitoring.json.`n"
         #& "C:\Windows\System32\notepad.exe" $MonitoringPath\euc-monitoring.json
 
-        Write-Output "After configuring, run Start-EUCMonitoring under appropriate privs.  Each invocation will "
-        Write-Output "submit to influx as a single timestamp.  You might want to invoke it like:"
-        Write-Output "> do { Start-EUCMonitoring -params... ; start-sleep 300 } while (`$true)"
+        Write-Output "After configuring, run Begin-EUCMonitoring under appropriate privs.  Each refresh cycle"
+        Write-Output "it will upload to local influxdb as a single timestamp. You might want to invoke it like:"
+        Write-Output "> $MonitoringPath\Begin-EUCMonitoring.ps1 -MonitoringPath $MonitoringPath"
+        Write-Output " - or - "
+        Write-Output "> Set-Location $MonitoringPath; .\Begin-EUCMonitoring.ps1"
     }
 
     end {

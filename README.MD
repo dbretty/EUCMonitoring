@@ -61,18 +61,13 @@ Find-Module EUCMonitoring
         ```text
         Set-EUCMonitoring C:\Monitoring -verbose
         ```
-   * Or, for new users, or those who prefer the defaults.  This will ask you a few questions about your environment. 
+   * Or, for users that want a more interactive dashboard, you can invoke this parameter which will install InfluxDB, Grafana, and NSSM, along with some default dashboards.
         ```text
-        Set-EUCMonitoring C:\Monitoring -QuickConfig -verbose
+        Set-EUCMonitoring C:\Monitoring -InstallVisualizationSetup -verbose
         ```
-
+    * There is a corresponding ```-UninstallVisualizationSetup``` that will uninstall the Influx/Grafana/NSSM instances and remove their directories, but leave your remaining files intact. 
 5. If manually configuring, go to that directory and rename the **euc-monitoring.json.template** file to **euc-monitoring.json**
-6. Edit the json file to reflect your environment.  You can always regenerate a new json file with
-
-** This currently doesn't work **
-```text
-New-EUCMonitoringConfig C:\Monitoring 
-```
+6. Edit the json file to reflect your environment.  
 
 7. Finally run the following command pointing to the directory that holds the needed files
 
@@ -83,6 +78,11 @@ Start-EUCMonitor
 OR
 ```text
 Start-EUCMonitor -JsonFile ".\mysettings.json" -Verbose 
+```
+OR, if you did the interactive dashboard
+```text
+cd C:\Monitoring
+.\Begin-EUCMonitor.ps1
 ```
 
 8. Open up your new dashboard HTML file from the location you specified in your json for web data output

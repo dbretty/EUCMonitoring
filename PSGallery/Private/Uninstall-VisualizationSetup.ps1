@@ -60,6 +60,7 @@ function Uninstall-VisualizationSetup {
         & $nssmexe Remove "InfluxDB Server" confirm
 
         #Remove service Directories, all of them.  Scorched earth.
+        Write-Output "Removing program directories"
         Remove-Item -path $Grafana -Recurse 
         Remove-Item -path $Influx -Recurse 
         Remove-Item -path $NSSM -Recurse

@@ -44,6 +44,12 @@
         Write-Verbose "EUC Monitoring Directory Created $MonitoringPath"
     }
 
+    # Uninstall and exit. 
+    if ( $UninstallVisualizationSetup -eq $true ) {
+        Uninstall-VisualizationSetup -MonitoringPath $MonitoringPath
+        return
+    }
+
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     #Files needed to check and downloads
     $filesneeded = @("euc-monitoring.css", "euc-monitoring.json.template", "euc-monitoring-json-ref.txt")
@@ -68,7 +74,5 @@
         Install-VisualizationSetup -MonitoringPath $MonitoringPath
 
     }
-    if ( $UninstallVisualizationSetup -eq $true ) {
-        Uninstall-VisualizationSetup -MonitoringPath $MonitoringPath
-    }
+    
 }
