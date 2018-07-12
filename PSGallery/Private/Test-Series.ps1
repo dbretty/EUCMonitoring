@@ -24,6 +24,7 @@ function Test-Series {
     David Brett             1.1             16/06/2018          Updated Switch statement to splat the @params
                                                                 Added TestMode as a JSON Parameter to switch between basic and advanced tests
     Adam Yarborough         1.2             20/06/2018          Multi-result ChecksData support, cleanup
+                                                                Fixes #20
                                                                 Fixes #24
                                                                 Fixes #39
     
@@ -60,7 +61,7 @@ function Test-Series {
         }
         else {
             Write-Verbose "Error opening JSON. Please Check File and try again."
-            return 
+            return $null
         }
       
         Write-Verbose "Loading the configuration for the $Series series"
@@ -73,7 +74,7 @@ function Test-Series {
         $XdControllers = @()
         $RdsControllers = @()
 
-        # Make sure we're allowed to run this test. 
+        # Make sure we're allowed to test this series. 
         if ( $false -eq $Config.Test) { return $null }
 
         # For the Series that have no servers configured, we will populate servers 
@@ -217,7 +218,7 @@ function Test-Series {
                             # it will populate an Errors property in the returned object.
                             $Values = @()
                                 
-                            # ! Should we have a check enabled?
+                            # ! Should we have a check enabled for each check?
                             switch ($CheckName) {
                                 "XdDesktop" { 
                                     if ( $ComputerName -in $XdControllers ) {    
@@ -334,6 +335,7 @@ function Test-Series {
                                  
                                 }
                                 "HTTPSUrl" { 
+                                    # Fixes #20
                                     $Url = "https://$($ComputerName):$($CheckValue.Port)$($CheckValue.Path)"
                                     Write-Verbose "Testing URL: $Url"
                                     $Values = Test-URL -Url $Url

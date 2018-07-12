@@ -20,6 +20,8 @@ function New-HtmlReport {
     Adam Yarborough         1.2             05/06/2018          Updated object definition modeling
     David Brett             1.3             25/06/2018          Updated report generation to support new object model
     David Brett             1.4             26/06/2018          Bug Fixes and Code Cleaning
+                                                                Fixes #24
+                                                                Fixes #40
 .EXAMPLE
     None Required
 #> 
