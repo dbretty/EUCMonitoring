@@ -45,7 +45,7 @@ function Uninstall-VisualizationSetup {
         & $nssmexe Stop "InfluxDB Server"
         & $nssmexe Remove "InfluxDB Server" confirm
 
-        #Remove Directories
+        #Remove Directories, all of them.  Scorched earth.
         Remove-Item -path $MonitoringPath -Recurse
 
         #Remove Variable
