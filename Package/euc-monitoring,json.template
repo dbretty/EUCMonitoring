@@ -98,15 +98,18 @@
         ],
         "Checks": {
             "XdServer": {
+                "test": false, 
                 "testmode": "advanced",
                 "BootThreshold": 7,
                 "HighLoad": 8000
             },
             "XdDesktop": {
+                "test": false,
                 "testmode": "basic",
                 "BootThreshold": 365,
                 "HighLoad": 8000
             },
+            XdSessionInfo: false,
             "XdDeliveryGroupHealth": false,
             "XdControllerHealth": false,
             "XdCatalogHealth": false,
@@ -154,7 +157,7 @@
             }
         }
     },
-    "Licensing": {
+    "XdLicensing": {
         "test": false,
         "Servers": [
             "lic1.domain.com",
@@ -171,8 +174,11 @@
             "CitrixWebServicesforLicensing"
         ],
         "Checks": {
-            "XDLicense": {
+            "XdLicense": {
                 "LicenseType": "XDT"
+            },
+            "XdLicense": {
+                "LicenseType": "MPS"
             }
         }
     },
@@ -197,7 +203,7 @@
             }
         }
     },
-    "Controllers": {
+    "XdControllers": {
         "test": false,
         "Servers": [
             "xd1.domain.com",

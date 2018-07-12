@@ -221,7 +221,7 @@ function Test-Series {
                             # ! Should we have a check enabled for each check?
                             switch ($CheckName) {
                                 "XdDesktop" { 
-                                    if ( $ComputerName -in $XdControllers ) {    
+                                    if ( ($ComputerName -in $XdControllers) -and ($true -eq $CheckValue.test) ) {    
                                         $params = @{
                                             Broker         = $ComputerName;
                                             WorkerTestMode = $CheckValue.testmode;
@@ -233,7 +233,7 @@ function Test-Series {
                                     }
                                 }
                                 "XdServer" {
-                                    if ( $ComputerName -in $XdControllers ) { 
+                                    if ( ($ComputerName -in $XdControllers) -and ($true -eq $CheckValue.test) ) { 
                                         $params = @{
                                             Broker         = $ComputerName;
                                             WorkerTestMode = $CheckValue.testmode;
