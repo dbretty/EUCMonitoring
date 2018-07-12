@@ -42,6 +42,13 @@ function Uninstall-VisualizationSetup {
         $Influx = (get-childitem $MonitoringPath | Where-Object {$_.Name -match 'infl'}).FullName
         $NSSM = (get-childitem $MonitoringPath | Where-Object {$_.Name -match 'nssm'}).FullName
 
+        if ( ($null -eq $Grafana) -or ($null -ne $Influx ) -or ($null -ne $NSSM ) ) {
+            Write-Warning "Unable to confirm all components for uninstall in $MonitoringPath"
+            Write-Warning "Grafana: $Grafana"
+            Write-Warning "Influx: $Influx"
+            Write-Warning "NSSM: $NSSM"
+            return
+        }
         $NSSMEXE = "$nssm\win64\nssm.exe"
         #Remove Grafana Service
         Write-Output "Removing Grafana Server service"
@@ -53,8 +60,8 @@ function Uninstall-VisualizationSetup {
         & $nssmexe Remove "InfluxDB Server" confirm
 
         #Remove service Directories, all of them.  Scorched earth.
-        Remove-Item -path $Grafana -Recurse
-        Remove-Item -path $Influx -Recurse
+        Remove-Item -path $Grafana -Recurse 
+        Remove-Item -path $Influx -Recurse 
         Remove-Item -path $NSSM -Recurse
 
         #Remove Variable
