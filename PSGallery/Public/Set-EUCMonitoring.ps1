@@ -5,9 +5,14 @@
     .DESCRIPTION
         Sets up the EUC Monitoring Platform
     .PARAMETER MonitoringPath
-        Determines the
-    .PARAMETER QuickConfig
-        Interactive JSON file creation based on default values
+        Determines the location of the EUCMonitoring configuration.
+    .PARAMETER InstallVisualizationSetup
+        Downloads and installs InfluxDB, Grafana, and NSSM into the MonitoringPath locaiton.  Creates services,
+        and opens up local firewall rules. Installs default EUC dashboards. Requires internet accessibility.  
+        internet connection.  
+    .PARAMETER UninstallVisualizationSetup
+        Removes local instances of InfluxDB, Grafana and NSSM as installed in the MonitoringPath. Removes the
+        created Services, closes firewall rules. 
     .INPUTS
         None
     .OUTPUTS
