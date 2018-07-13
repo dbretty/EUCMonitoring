@@ -9,7 +9,7 @@ function Send-EUCResultToInfluxDB {
 .PARAMETER JSONFile
     The path to the JSON config file.  
 .NOTES
-    Current Version:        1.0
+    Current Version:        1.2
     Creation Date:          07/02/2018
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
@@ -37,6 +37,7 @@ function Send-EUCResultToInfluxDB {
 
         # We want all results to represent the same moment in time, even if that's not true for 
         # collation reasons. This is why this step happens at the end. 
+        # Credit to Ryan Revord for providing workable examples here.
         $timestamp = Get-InfluxTimestamp
         $InfluxURI = Get-InfluxURI $ConfigObject
          
