@@ -29,7 +29,10 @@ function Install-VisualizationSetup {
 
     [CmdletBinding()]
     param (
-        [parameter(Mandatory = $false, ValueFromPipeline = $true)]$MonitoringPath = (get-location)
+        [parameter(Mandatory = $false, ValueFromPipeline = $true)][string]$MonitoringPath = (get-location).Path,
+        [parameter(Mandatory = $false, ValueFromPipeline = $true)][string]$GrafanaVersion = "https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana-5.1.3.windows-x64.zip",
+        [parameter(Mandatory = $false, ValueFromPipeline = $true)][string]$InfluxVersion = "https://dl.influxdata.com/influxdb/releases/influxdb-1.5.3_windows_amd64.zip",
+        [parameter(Mandatory = $false, ValueFromPipeline = $true)][string]$NSSMVersion = "https://nssm.cc/release/nssm-2.24.zip"
     )
 
     begin {
@@ -37,12 +40,6 @@ function Install-VisualizationSetup {
     }
 
     process {
-        # Included Software
-        $GrafanaVersion = "https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana-5.1.3.windows-x64.zip"
-        $InfluxVersion = "https://dl.influxdata.com/influxdb/releases/influxdb-1.5.3_windows_amd64.zip"
-        $NSSMVersion = "https://nssm.cc/release/nssm-2.24.zip"
-        
-
         #Base Directory for Install
         Write-Output "Install location set to $MonitoringPath"
         # Get the dashboard config.
@@ -57,7 +54,7 @@ function Install-VisualizationSetup {
         # EUCMonitoring Specific
         $DashboardConfig = "$MonitoringPath\DashboardConfig"
         $dashDatasource = "$DashboardConfig\DataSource.json"
-        $dashboards = @("EUCMonitoring.json", 
+        $dashboards = @("EUCMonitoring.json",
             "AD-Details.json",
             "App-V-Details.json",
             "CC-Details.json",
