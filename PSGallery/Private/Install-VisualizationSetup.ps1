@@ -131,7 +131,11 @@ function Install-VisualizationSetup {
         #Install InfluxDB
         GetAndInstall "InfluxDB" $InfluxVersion $MonitoringPath
         $Influx = (get-childitem $MonitoringPath | Where-Object {$_.Name -match 'infl'}).FullName
-        $content = [System.IO.File]::ReadAllText("$Influx\influxdb.conf").Replace("/var/lib/influxdb", "/$MonitoringPath/InfluxData/var/lib/influxdb")
+        # When taking in a user supplied path, need to change, this will make sure there's a appended '/'
+        # then strip away drive letter and change backslashs to forward( '\' to '/' ), and get rid of any 
+        # double slashes.  Then we'll updated the influxdb.conf.
+        $IDataPath = "$MonitoringPath/".replace((resolve-path $MonitoringPath).Drive.Root, '').replace("\", "/").Replace("//", "/")
+        $content = [System.IO.File]::ReadAllText("$Influx\influxdb.conf").Replace("/var/lib/influxdb", "/$($IDataPath)InfluxData/var/lib/influxdb")
         [System.IO.File]::WriteAllText("$Influx\influxdb.conf", $content)
         [Environment]::SetEnvironmentVariable("Home", $Influx, "Machine")
 
