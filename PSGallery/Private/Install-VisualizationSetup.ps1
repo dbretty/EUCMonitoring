@@ -30,7 +30,7 @@ function Install-VisualizationSetup {
     [CmdletBinding()]
     param (
         [parameter(Mandatory = $false, ValueFromPipeline = $true)][string]$MonitoringPath = (get-location).Path,
-        [parameter(Mandatory = $false, ValueFromPipeline = $true)][string]$GrafanaVersion = "https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana-5.1.3.windows-x64.zip",
+        [parameter(Mandatory = $false, ValueFromPipeline = $true)][string]$GrafanaVersion = "https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana-5.2.1.windows-x64.zip",
         [parameter(Mandatory = $false, ValueFromPipeline = $true)][string]$InfluxVersion = "https://dl.influxdata.com/influxdb/releases/influxdb-1.5.3_windows_amd64.zip",
         [parameter(Mandatory = $false, ValueFromPipeline = $true)][string]$NSSMVersion = "https://nssm.cc/release/nssm-2.24.zip"
     )
@@ -141,9 +141,9 @@ function Install-VisualizationSetup {
         $NSSM = (get-childitem $MonitoringPath | Where-Object {$_.Name -match 'nssm'}).FullName
         $NSSMEXE = "$nssm\win64\nssm.exe"
         & $nssmexe Install "Grafana Server" $Grafana\bin\grafana-server.exe
-        & $nssmexe Set "Grafana Server" DisplayName "Grafana Server"
+        # & $nssmexe Set "Grafana Server" DisplayName "Grafana Server"
         & $nssmexe Install "InfluxDB Server" $Influx\influxd.exe -config influxdb.conf
-        & $nssmexe Set "InfluxDB Server" DisplayName "InfluxDB Server"
+        # & $nssmexe Set "InfluxDB Server" DisplayName "InfluxDB Server"
         Write-Output "Starting Services"
         start-service "Grafana Server"
         start-service "InfluxDB Server"
