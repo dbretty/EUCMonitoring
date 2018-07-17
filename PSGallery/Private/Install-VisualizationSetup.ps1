@@ -41,7 +41,7 @@ function Install-VisualizationSetup {
         $GrafanaVersion = "https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana-5.1.3.windows-x64.zip"
         $InfluxVersion = "https://dl.influxdata.com/influxdb/releases/influxdb-1.5.3_windows_amd64.zip"
         $NSSMVersion = "https://nssm.cc/release/nssm-2.24.zip"
-        $DownloadLocation = (Get-Item Env:Temp).value  #Use the Temp folder as Temp Download location
+        
 
         #Base Directory for Install
         Write-Output "Install location set to $MonitoringPath"
@@ -93,6 +93,7 @@ function Install-VisualizationSetup {
             Write-Verbose "EUC Monitoring Dashboard Directory Created $DashboardConfig\Dashboards"
         }
         foreach ($board in $Dashboards) {
+            Write-Verbose "Getting Dashboard: $board"
             Invoke-WebRequest -Uri "https://raw.githubusercontent.com/littletoyrobots/eucmonitoring/v2_beta/DashboardConfig/Dashboards/$board" -OutFile "$DashboardConfig\Dashboards\$board"
         }
 
@@ -103,6 +104,7 @@ function Install-VisualizationSetup {
         $Catch = New-NetFirewallRule -DisplayName "InfluxDB Server" -Direction Inbound -LocalPort 8086 -Protocol TCP -Action Allow -Description "Allow InfluxDB Server" -AsJob
 
         function GetAndInstall ( $Product, $DownloadFile, $Dest ) {
+            $DownloadLocation = (Get-Item Env:Temp).value  #Use the Temp folder as Temp Download location
             $zipFile = "$DownloadLocation\$Product.zip"
             Write-Output "Downloading $Product to $zipfile"
             if ( ($DownloadFile -match "http://") -or ($DownloadFile -match "https://") ) {
@@ -113,6 +115,7 @@ function Install-VisualizationSetup {
             }
 
             Write-Output "Installing $Product to $Dest"
+            # Expand-Archive -LiteralPath "$DownloadLocation\$Product.zip"
             $shell = New-Object -ComObject shell.application
             $zip = $shell.NameSpace($ZipFile)
             foreach ( $item in $zip.items() ) {
@@ -141,7 +144,9 @@ function Install-VisualizationSetup {
         $NSSM = (get-childitem $MonitoringPath | Where-Object {$_.Name -match 'nssm'}).FullName
         $NSSMEXE = "$nssm\win64\nssm.exe"
         & $nssmexe Install "Grafana Server" $Grafana\bin\grafana-server.exe
+        & $nssmexe Set "Grafana Server" DisplayName "Grafana Server"
         & $nssmexe Install "InfluxDB Server" $Influx\influxd.exe -config influxdb.conf
+        & $nssmexe Set "InfluxDB Server" DisplayName "InfluxDB Server"
         Write-Output "Starting Services"
         start-service "Grafana Server"
         start-service "InfluxDB Server"
