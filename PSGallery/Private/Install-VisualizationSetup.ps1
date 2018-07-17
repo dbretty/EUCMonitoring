@@ -57,7 +57,7 @@ function Install-VisualizationSetup {
         # EUCMonitoring Specific
         $DashboardConfig = "$MonitoringPath\DashboardConfig"
         $dashDatasource = "$DashboardConfig\DataSource.json"
-        $dashboards = @("EUCMonitoring.json",
+        $dashboards = @("EUCMonitoring.json", 
             "AD-Details.json",
             "App-V-Details.json",
             "CC-Details.json",
@@ -82,7 +82,7 @@ function Install-VisualizationSetup {
             New-Item $DashboardConfig -ItemType Directory
             Write-Verbose "EUC Monitoring Dashboard Directory Created $DashboardConfig"
         }
-        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/dbretty/eucmonitoring/v2_beta/DashboardConfig/$dashDataSource" -OutFile $DashboardConfig\$dashDatasource
+        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/dbretty/eucmonitoring/v2_beta/DashboardConfig/DataSource.json" -OutFile $dashDatasource
 
         #Get the current dashboards
         if ( test-path "$DashboardConfig\Dashboards" ) {
@@ -92,8 +92,9 @@ function Install-VisualizationSetup {
             New-Item "$DashboardConfig\Dashboards" -ItemType Directory
             Write-Verbose "EUC Monitoring Dashboard Directory Created $DashboardConfig\Dashboards"
         }
-        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/dbretty/eucmonitoring/v2_beta/DashboardConfig/Dashboards/$Dashboards" -OutFile "$DashboardConfig\Dashboards\$Dashboards"
-
+        foreach ($board in $Dashboards) {
+            Invoke-WebRequest -Uri "https://raw.githubusercontent.com/dbretty/eucmonitoring/v2_beta/DashboardConfig/Dashboards/$board" -OutFile "$DashboardConfig\Dashboards\$board"
+        }
 
         #open FW for Grafana
         Write-Output "Opening Firewall Rules for Grafana and InfluxDB"
