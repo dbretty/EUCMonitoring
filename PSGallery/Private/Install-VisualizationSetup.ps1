@@ -82,7 +82,7 @@ function Install-VisualizationSetup {
             New-Item $DashboardConfig -ItemType Directory
             Write-Verbose "EUC Monitoring Dashboard Directory Created $DashboardConfig"
         }
-        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/dbretty/eucmonitoring/v2_beta/DashboardConfig/DataSource.json" -OutFile $dashDatasource
+        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/littletoyrobots/eucmonitoring/v2_beta/DashboardConfig/DataSource.json" -OutFile $dashDatasource
 
         #Get the current dashboards
         if ( test-path "$DashboardConfig\Dashboards" ) {
@@ -93,7 +93,7 @@ function Install-VisualizationSetup {
             Write-Verbose "EUC Monitoring Dashboard Directory Created $DashboardConfig\Dashboards"
         }
         foreach ($board in $Dashboards) {
-            Invoke-WebRequest -Uri "https://raw.githubusercontent.com/dbretty/eucmonitoring/v2_beta/DashboardConfig/Dashboards/$board" -OutFile "$DashboardConfig\Dashboards\$board"
+            Invoke-WebRequest -Uri "https://raw.githubusercontent.com/littletoyrobots/eucmonitoring/v2_beta/DashboardConfig/Dashboards/$board" -OutFile "$DashboardConfig\Dashboards\$board"
         }
 
         #open FW for Grafana
@@ -199,7 +199,7 @@ function Install-VisualizationSetup {
 
         Write-Verbose "Downloading helper script."
         # Download the helper script
-        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/dbretty/eucmonitoring/v2_beta/DashboardConfig/Begin-EUCMonitor.ps1" -OutFile "$MonitoringPath\Begin-EUCMonitor.ps1"
+        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/littletoyrobots/eucmonitoring/v2_beta/DashboardConfig/Begin-EUCMonitor.ps1" -OutFile "$MonitoringPath\Begin-EUCMonitor.ps1"
 
         Write-Output "NOTE: Grafana and Influx are now installed as services.  You might need to set their startup type to"
         Write-Output "automatic if you plan on using this long term.`n"
