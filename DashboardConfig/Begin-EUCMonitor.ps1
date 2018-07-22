@@ -55,36 +55,35 @@ Param (
 
 Import-Module EUCMonitoring
 
-Process {
-    if (-not $JSONFile) { $JSONFile = ("$MonitoringPath\euc-monitoring.json") }
-    if (-not $CSSFile) { $CSSFile = ("$MonitoringPath\euc-monitoring.css") }
-    if (-not $LogFile) { $LogFile = ("$MonitoringPath\euc-monitoring.log") }
 
-    if ( (Test-Path $JSONFile) -eq $False ) { 
-        Write-Error "Could not find json config at $JSONFile"
-        return
-    }
-    try {
-        $ConfigObject = Get-Content -Raw -Path $JSONFile | ConvertFrom-Json -ErrorAction Stop
-    }
-    catch {
-        throw "Error reading JSON.  Please Check File and try again."
-    }
+if (-not $JSONFile) { $JSONFile = ("$MonitoringPath\euc-monitoring.json") }
+if (-not $CSSFile) { $CSSFile = ("$MonitoringPath\euc-monitoring.css") }
+if (-not $LogFile) { $LogFile = ("$MonitoringPath\euc-monitoring.log") }
 
-    # If the user didn't specify a refresh duration, grab from config file.
-    if ( -Not $Refresh ) { $Refresh = $ConfigObject.Global.Webdata.RefreshDuration }
-    # If the user hasn't specified a refresh duration in the config file, default to 5 minutes. 
-    if ( 0 -eq $Refresh) { $Refresh = 300 }
-
-    do { 
-        $Params = @{
-            JSONFile = $JSONFile
-            CSSFile  = $CSSFile
-            LogFile  = $LogFile
-        }
-        Start-EUCMonitor @Params
-        Write-Output "You can see current results at http://localhost:3000/ Login: admin/admin"
-        Write-Output "Press Ctrl-C to stop.  Sleeping for $Refresh seconds."
-        Start-Sleep $Refresh
-    } while ($true)
+if ( (Test-Path $JSONFile) -eq $False ) { 
+    Write-Error "Could not find json config at $JSONFile"
+    return
 }
+try {
+    $ConfigObject = Get-Content -Raw -Path $JSONFile | ConvertFrom-Json -ErrorAction Stop
+}
+catch {
+    throw "Error reading JSON.  Please Check File and try again."
+}
+
+# If the user didn't specify a refresh duration, grab from config file.
+if ( -Not $Refresh ) { $Refresh = $ConfigObject.Global.Webdata.RefreshDuration }
+# If the user hasn't specified a refresh duration in the config file, default to 5 minutes. 
+if ( 0 -eq $Refresh) { $Refresh = 300 }
+
+do { 
+    $Params = @{
+        JSONFile = $JSONFile
+        CSSFile  = $CSSFile
+        LogFile  = $LogFile
+    }
+    Start-EUCMonitor @Params
+    Write-Output "You can see current results at http://localhost:3000/ Login: admin/admin"
+    Write-Output "Press Ctrl-C to stop.  Sleeping for $Refresh seconds."
+    Start-Sleep $Refresh
+} while ($true)

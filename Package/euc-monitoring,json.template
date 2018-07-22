@@ -240,13 +240,13 @@
             80
         ],
         "Checks": {
-            "NetScaler": {
+            "Netscaler": {
                 "username": "nsroot",
                 "password": "ReallySecure"
             }
         }
     },
-    "Gateway": {
+    "NetscalerGateway": {
         "test": false,
         "Servers": [
             "ns3.domain.com",
@@ -257,7 +257,7 @@
             80
         ],
         "Checks": {
-            "NetScalerGateway": {
+            "NetscalerGateway": {
                 "username": "nsroot",
                 "password": "ReallySecure"
             }
