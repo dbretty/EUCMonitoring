@@ -164,8 +164,8 @@ function Test-XdWorker {
                 'BrokerMachineRegistered'        = $BMRegisteredCount
                 'BrokerMachineUnRegistered'      = $BMUnRegisteredCount
                 'BrokerMachineInMaintenance'     = $BMMaintenanceCount
-                'BrokerMachinesGood'             = $BrokerGood
-                'BrokerMachinesBad'              = $BrokerBad
+                'BrokerMachinesGood'             = $BrokerGood  # ! This is currently not defined or returned by Test-XdWorkerAdvanced
+                'BrokerMachinesBad'              = $BrokerBad # ! Same for this one. 
                 'Errors'                         = $Errors
             }
 
