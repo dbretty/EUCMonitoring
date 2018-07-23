@@ -1,17 +1,17 @@
 function Test-NetScaler {
-    <#   
-.SYNOPSIS   
+    <#
+.SYNOPSIS
     Tests Citrix NetScaler.
-.DESCRIPTION 
-    Logs into a NetScaler ADC and creates a global variable called $NSSession to be used to invoke NITRO Commands, then tests the vServer Status.          
+.DESCRIPTION
+    Logs into a NetScaler ADC and creates a global variable called $NSSession to be used to invoke NITRO Commands, then tests the vServer Status.
     Currently Testing
         NetScaler ADC Status
         vServer Health Status (UP/DOWN/DEGRADED)
-.PARAMETER NetScalers 
+.PARAMETER NetScalers
     Comma Delimited List of NetScalers
-.PARAMETER UserName 
+.PARAMETER UserName
     Username to use to check the NetScaler
-.PARAMETER Password 
+.PARAMETER Password
     Password to use to log into the NetScaler
 .NOTES
     Current Version:        1.0
@@ -26,7 +26,7 @@ function Test-NetScaler {
     David Brett             1.5             26/06/2018          Removed Old Code and Cleaned up Function
 .EXAMPLE
     None Required
-#> 
+#>
 
     [CmdletBinding()]
     Param
@@ -46,14 +46,14 @@ function Test-NetScaler {
     $nsession = Connect-NetScaler -NSIP $NetScaler -username $UserName -nspassword $SecurePassword
     if ($null -eq $nsession) {
         write-verbose "Could not log into the NetScaler"
-        return
+        return $false # This is so that Test-Series will handle appropriately.
     }
     else {
         Write-Verbose "NetScaler - $NetScaler Logged In"
     }
 
     $vServers = Get-vServer -nsip $NetScaler -nssession $nsession
-            
+
     # Loop Through vServers and check Status
     Write-Verbose "Looping through vServers to check status"
     foreach ($vServer in $vServers.lbvserver) {
@@ -74,9 +74,9 @@ function Test-NetScaler {
             'vServerName'   = $vServerName
             'vServerHealth' = [int]$vServer.vslbhealth
             'Errors'        = $Errors
-        }            
+        }
     }
-    
+
     # Disconnect from the NetScaler
     Disconnect-NetScaler -NSIP $NetScaler|Out-Null
 
