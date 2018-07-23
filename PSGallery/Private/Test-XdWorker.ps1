@@ -1,22 +1,22 @@
 function Test-XdWorker {
-    <#   
-.SYNOPSIS   
+    <#
+.SYNOPSIS
     Checks the Status of the XenDesktop Workers Passed In
-.DESCRIPTION 
+.DESCRIPTION
     Checks the Status of the XenDesktop Workers Passed In
-.PARAMETER Broker 
+.PARAMETER Broker
     XenDesktop Broker to use for the checks
-.PARAMETER WorkerTestMode 
+.PARAMETER WorkerTestMode
     Test Mode - Basic or Advanced
-.PARAMETER WorkLoads 
+.PARAMETER WorkLoads
     Workloads to check
-.PARAMETER ServerBootThreshold 
+.PARAMETER ServerBootThreshold
     Server Boot Threshold
-.PARAMETER ServerHighLoad 
+.PARAMETER ServerHighLoad
     Server High Load
-.PARAMETER DesktopBootThreshold 
+.PARAMETER DesktopBootThreshold
     Desktop Boot Threshold
-.PARAMETER DesktopHighLoad 
+.PARAMETER DesktopHighLoad
     Desktop High Load
 .NOTES
     Current Version:        1.0
@@ -26,6 +26,9 @@ function Test-XdWorker {
     David Brett             1.0             29/03/2018          Function Creation
     Adam Yarborough         1.1             07/06/2018          Update to new object model
     Adam Yarborough         1.2             20/06/2018          Updated Objects, begin/process/end
+    Adam Yarborough         1.3             23/07/2018          Change Advanced to include BrokerGood/BrokerBad
+                                                                renamed iterator to details to avoid name clash
+                                                                with system variable $error
 .EXAMPLE
     None Required
 #>
@@ -38,23 +41,23 @@ function Test-XdWorker {
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$WorkLoad,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$BootThreshold,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$HighLoad
-      
+
     )
 
-    Begin { 
+    Begin {
         $ctxsnap = Add-PSSnapin Citrix.Broker.* -ErrorAction SilentlyContinue
         $ctxsnap = Get-PSSnapin Citrix.Broker.* -ErrorAction SilentlyContinue
 
         if ($null -eq $ctxsnap) {
             Write-Error "XenDesktop Powershell Snapin Load Failed"
             Write-Error "Cannot Load XenDesktop Powershell SDK"
-            Return 
+            Return
         }
         else {
             Write-Verbose "XenDesktop Powershell SDK Snapin Loaded"
         }
     }
-    
+
     Process {
         #Create array with results
         $results = @()
@@ -141,14 +144,21 @@ function Test-XdWorker {
         }
         else {
             Write-Verbose "Advanced Worker Checks enabled - setting up runspace and checking workers"
+            $BrokerGood = 0
+            $BrokerBad = 0
             $BMRegisteredList = $BrokerMachines | Where-Object {($_.RegistrationState -eq "Registered" -and $_.PowerState -match "On")}
             $DetailErrors = Test-XdWorkerAdvanced -Machines $BMRegisteredList -BootThreshold $BootThreshold -HighLoad $HighLoad
-            foreach ($error in $DetailErrors) {
-                if ($null -ne $error.services) {
-                    if ($error.services -ne "Passed") {
-                        $errors += $error.errors
+
+            foreach ($detail in $DetailErrors) {
+                if ($null -ne $detail.services) {
+                    if ($detail.services -eq "Passed") {
+                        $BrokerGood++
                     }
-                }   
+                    else {
+                        $BrokerBad++
+                        $errors += $detail.errors
+                    }
+                }
             }
 
             # Add results to array
@@ -164,8 +174,8 @@ function Test-XdWorker {
                 'BrokerMachineRegistered'        = $BMRegisteredCount
                 'BrokerMachineUnRegistered'      = $BMUnRegisteredCount
                 'BrokerMachineInMaintenance'     = $BMMaintenanceCount
-                'BrokerMachinesGood'             = $BrokerGood  # ! This is currently not defined or returned by Test-XdWorkerAdvanced
-                'BrokerMachinesBad'              = $BrokerBad # ! Same for this one. 
+                'BrokerMachinesGood'             = $BrokerGood
+                'BrokerMachinesBad'              = $BrokerBad
                 'Errors'                         = $Errors
             }
 
