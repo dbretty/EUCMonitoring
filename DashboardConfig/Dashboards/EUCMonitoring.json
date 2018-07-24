@@ -1,17 +1,14 @@
 {
   "dashboard": {
-    "__inputs": [
-      {
-        "name": "DS_EUCMONITORING",
-        "label": "EUCMonitoring",
-        "description": "",
-        "type": "datasource",
-        "pluginId": "influxdb",
-        "pluginName": "InfluxDB"
-      }
-    ],
-    "__requires": [
-      {
+    "__inputs": [{
+      "name": "DS_EUCMONITORING",
+      "label": "EUCMonitoring",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    }],
+    "__requires": [{
         "type": "grafana",
         "id": "grafana",
         "name": "Grafana",
@@ -37,25 +34,22 @@
       }
     ],
     "annotations": {
-      "list": [
-        {
-          "builtIn": 1,
-          "datasource": "-- Grafana --",
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "name": "Annotations & Alerts",
-          "type": "dashboard"
-        }
-      ]
+      "list": [{
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }]
     },
     "editable": true,
     "gnetId": null,
     "graphTooltip": 0,
     "id": null,
     "links": [],
-    "panels": [
-      {
+    "panels": [{
         "aliasColors": {},
         "bars": false,
         "dashLength": 10,
@@ -94,11 +88,9 @@
         "spaceLength": 10,
         "stack": false,
         "steppedLine": false,
-        "targets": [
-          {
+        "targets": [{
             "alias": "[[tag_SiteName]] - [[col]]",
-            "groupBy": [
-              {
+            "groupBy": [{
                 "params": [
                   "$__interval"
                 ],
@@ -123,8 +115,7 @@
             "refId": "A",
             "resultFormat": "time_series",
             "select": [
-              [
-                {
+              [{
                   "params": [
                     "ActiveSessions"
                   ],
@@ -141,8 +132,7 @@
                   "type": "alias"
                 }
               ],
-              [
-                {
+              [{
                   "params": [
                     "IdleSessions"
                   ],
@@ -159,8 +149,7 @@
                   "type": "alias"
                 }
               ],
-              [
-                {
+              [{
                   "params": [
                     "DisconnectedSessions"
                   ],
@@ -177,8 +166,7 @@
                   "type": "alias"
                 }
               ],
-              [
-                {
+              [{
                   "params": [
                     "TotalSessions"
                   ],
@@ -200,8 +188,7 @@
           },
           {
             "alias": "[[tag_LicenseType]] License - [[col]]",
-            "groupBy": [
-              {
+            "groupBy": [{
                 "params": [
                   "$__interval"
                 ],
@@ -220,14 +207,13 @@
                 "type": "fill"
               }
             ],
-            "measurement": "XdLicensing-XDLicense",
+            "measurement": "XdLicensing-XdLicense",
             "orderByTime": "ASC",
             "policy": "default",
             "refId": "B",
             "resultFormat": "time_series",
             "select": [
-              [
-                {
+              [{
                   "params": [
                     "TotalAvailable"
                   ],
@@ -244,8 +230,7 @@
                   "type": "alias"
                 }
               ],
-              [
-                {
+              [{
                   "params": [
                     "TotalIssued"
                   ],
@@ -267,8 +252,7 @@
           },
           {
             "alias": "All Sites - Total Sessions",
-            "groupBy": [
-              {
+            "groupBy": [{
                 "params": [
                   "$__interval"
                 ],
@@ -287,8 +271,7 @@
             "refId": "C",
             "resultFormat": "time_series",
             "select": [
-              [
-                {
+              [{
                   "params": [
                     "TotalSessions"
                   ],
@@ -320,8 +303,7 @@
           "show": true,
           "values": []
         },
-        "yaxes": [
-          {
+        "yaxes": [{
             "format": "short",
             "label": null,
             "logBase": 1,
@@ -382,11 +364,9 @@
         "spaceLength": 10,
         "stack": false,
         "steppedLine": false,
-        "targets": [
-          {
+        "targets": [{
             "alias": "[[tag_SiteName]] - Server - [[col]]",
-            "groupBy": [
-              {
+            "groupBy": [{
                 "params": [
                   "$__interval"
                 ],
@@ -413,8 +393,7 @@
             "refId": "A",
             "resultFormat": "time_series",
             "select": [
-              [
-                {
+              [{
                   "params": [
                     "BrokerMachineRegistered"
                   ],
@@ -431,8 +410,7 @@
                   "type": "alias"
                 }
               ],
-              [
-                {
+              [{
                   "params": [
                     "BrokerMachineUnRegistered"
                   ],
@@ -449,8 +427,7 @@
                   "type": "alias"
                 }
               ],
-              [
-                {
+              [{
                   "params": [
                     "BrokerMachineInMaintenance"
                   ],
@@ -472,8 +449,7 @@
           },
           {
             "alias": "[[tag_SiteName]] - Desktop - [[col]]",
-            "groupBy": [
-              {
+            "groupBy": [{
                 "params": [
                   "$__interval"
                 ],
@@ -498,8 +474,7 @@
             "refId": "B",
             "resultFormat": "time_series",
             "select": [
-              [
-                {
+              [{
                   "params": [
                     "BrokerMachineRegistered"
                   ],
@@ -516,8 +491,7 @@
                   "type": "alias"
                 }
               ],
-              [
-                {
+              [{
                   "params": [
                     "BrokerMachineUnRegistered"
                   ],
@@ -534,8 +508,7 @@
                   "type": "alias"
                 }
               ],
-              [
-                {
+              [{
                   "params": [
                     "BrokerMachineInMaintenance"
                   ],
@@ -557,8 +530,7 @@
           },
           {
             "alias": "[[tag_SiteName]] - Server - [[col]]",
-            "groupBy": [
-              {
+            "groupBy": [{
                 "params": [
                   "$__interval"
                 ],
@@ -585,8 +557,7 @@
             "refId": "C",
             "resultFormat": "time_series",
             "select": [
-              [
-                {
+              [{
                   "params": [
                     "BrokerMachinesGood"
                   ],
@@ -603,8 +574,7 @@
                   "type": "alias"
                 }
               ],
-              [
-                {
+              [{
                   "params": [
                     "BrokerMachinesBad"
                   ],
@@ -626,8 +596,7 @@
           },
           {
             "alias": "[[tag_SiteName]] - Desktop - [[col]]",
-            "groupBy": [
-              {
+            "groupBy": [{
                 "params": [
                   "$__interval"
                 ],
@@ -652,8 +621,7 @@
             "refId": "D",
             "resultFormat": "time_series",
             "select": [
-              [
-                {
+              [{
                   "params": [
                     "BrokerMachinesGood"
                   ],
@@ -670,8 +638,7 @@
                   "type": "alias"
                 }
               ],
-              [
-                {
+              [{
                   "params": [
                     "BrokerMachinesBad"
                   ],
@@ -709,8 +676,7 @@
           "show": true,
           "values": []
         },
-        "yaxes": [
-          {
+        "yaxes": [{
             "format": "short",
             "label": null,
             "logBase": 1,
@@ -769,93 +735,87 @@
         "spaceLength": 10,
         "stack": false,
         "steppedLine": false,
-        "targets": [
-          {
-            "alias": "[[tag_Server]] - [[col]]",
-            "groupBy": [
-              {
+        "targets": [{
+          "alias": "[[tag_Server]] - [[col]]",
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "Server"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "NetscalerGateway-NetscalerGateway",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
                 "params": [
-                  "$__interval"
+                  "TotalGatewayUsers"
                 ],
-                "type": "time"
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
               },
               {
                 "params": [
-                  "Server"
+                  "Total"
                 ],
-                "type": "tag"
-              },
-              {
-                "params": [
-                  "previous"
-                ],
-                "type": "fill"
+                "type": "alias"
               }
             ],
-            "measurement": "NetscalerGateway-NetscalerGateway",
-            "orderByTime": "ASC",
-            "policy": "default",
-            "refId": "A",
-            "resultFormat": "time_series",
-            "select": [
-              [
-                {
-                  "params": [
-                    "TotalGatewayUsers"
-                  ],
-                  "type": "field"
-                },
-                {
-                  "params": [],
-                  "type": "last"
-                },
-                {
-                  "params": [
-                    "Total"
-                  ],
-                  "type": "alias"
-                }
-              ],
-              [
-                {
-                  "params": [
-                    "ICAUsers"
-                  ],
-                  "type": "field"
-                },
-                {
-                  "params": [],
-                  "type": "last"
-                },
-                {
-                  "params": [
-                    "ICA Users"
-                  ],
-                  "type": "alias"
-                }
-              ],
-              [
-                {
-                  "params": [
-                    "VPNUsers"
-                  ],
-                  "type": "field"
-                },
-                {
-                  "params": [],
-                  "type": "last"
-                },
-                {
-                  "params": [
-                    "VPN Users"
-                  ],
-                  "type": "alias"
-                }
-              ]
+            [{
+                "params": [
+                  "ICAUsers"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "ICA Users"
+                ],
+                "type": "alias"
+              }
             ],
-            "tags": []
-          }
-        ],
+            [{
+                "params": [
+                  "VPNUsers"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "VPN Users"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": []
+        }],
         "thresholds": [],
         "timeFrom": null,
         "timeShift": null,
@@ -873,8 +833,7 @@
           "show": true,
           "values": []
         },
-        "yaxes": [
-          {
+        "yaxes": [{
             "format": "short",
             "label": null,
             "logBase": 1,
@@ -933,51 +892,47 @@
         "spaceLength": 10,
         "stack": false,
         "steppedLine": false,
-        "targets": [
-          {
-            "alias": "[[tag_vServerName]]",
-            "groupBy": [
-              {
+        "targets": [{
+          "alias": "[[tag_vServerName]]",
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "vServerName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "Netscaler-Netscaler",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
                 "params": [
-                  "$__interval"
+                  "vServerHealth"
                 ],
-                "type": "time"
+                "type": "field"
               },
               {
-                "params": [
-                  "vServerName"
-                ],
-                "type": "tag"
-              },
-              {
-                "params": [
-                  "previous"
-                ],
-                "type": "fill"
+                "params": [],
+                "type": "mean"
               }
-            ],
-            "measurement": "Netscaler-Netscaler",
-            "orderByTime": "ASC",
-            "policy": "default",
-            "refId": "A",
-            "resultFormat": "time_series",
-            "select": [
-              [
-                {
-                  "params": [
-                    "vServerHealth"
-                  ],
-                  "type": "field"
-                },
-                {
-                  "params": [],
-                  "type": "mean"
-                }
-              ]
-            ],
-            "tags": []
-          }
-        ],
+            ]
+          ],
+          "tags": []
+        }],
         "thresholds": [],
         "timeFrom": null,
         "timeShift": null,
@@ -995,8 +950,7 @@
           "show": true,
           "values": []
         },
-        "yaxes": [
-          {
+        "yaxes": [{
             "format": "short",
             "label": null,
             "logBase": 1,
@@ -1044,17 +998,14 @@
         },
         "id": 10,
         "interval": null,
-        "links": [
-          {
-            "dashUri": "db/active-directory-details",
-            "dashboard": "Active Directory Details",
-            "title": "Active Directory Details",
-            "type": "dashboard"
-          }
-        ],
+        "links": [{
+          "dashUri": "db/active-directory-details",
+          "dashboard": "Active Directory Details",
+          "title": "Active Directory Details",
+          "type": "dashboard"
+        }],
         "mappingType": 2,
-        "mappingTypes": [
-          {
+        "mappingTypes": [{
             "name": "value to text",
             "value": 1
           },
@@ -1070,8 +1021,7 @@
         "postfixFontSize": "50%",
         "prefix": "",
         "prefixFontSize": "50%",
-        "rangeMaps": [
-          {
+        "rangeMaps": [{
             "from": "0",
             "text": "DOWN",
             "to": "0.01"
@@ -1094,56 +1044,50 @@
           "show": false
         },
         "tableColumn": "",
-        "targets": [
-          {
-            "groupBy": [
-              {
+        "targets": [{
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "AD",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
                 "params": [
-                  "$__interval"
+                  "State"
                 ],
-                "type": "time"
+                "type": "field"
               },
               {
-                "params": [
-                  "null"
-                ],
-                "type": "fill"
+                "params": [],
+                "type": "mean"
               }
-            ],
-            "measurement": "AD",
-            "orderByTime": "ASC",
-            "policy": "default",
-            "refId": "A",
-            "resultFormat": "time_series",
-            "select": [
-              [
-                {
-                  "params": [
-                    "State"
-                  ],
-                  "type": "field"
-                },
-                {
-                  "params": [],
-                  "type": "mean"
-                }
-              ]
-            ],
-            "tags": []
-          }
-        ],
+            ]
+          ],
+          "tags": []
+        }],
         "thresholds": "0.01,2",
         "title": "Active Directory",
         "transparent": true,
         "type": "singlestat",
         "valueFontSize": "50%",
-        "valueMaps": [
-          {
-            "op": "=",
-            "text": "N/A",
-            "value": "null"
-          }
-        ],
+        "valueMaps": [{
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }],
         "valueName": "current"
       },
       {
@@ -1172,17 +1116,14 @@
         },
         "id": 11,
         "interval": null,
-        "links": [
-          {
-            "dashUri": "db/app-v-details",
-            "dashboard": "APP-V Details",
-            "title": "APP-V Details",
-            "type": "dashboard"
-          }
-        ],
+        "links": [{
+          "dashUri": "db/app-v-details",
+          "dashboard": "APP-V Details",
+          "title": "APP-V Details",
+          "type": "dashboard"
+        }],
         "mappingType": 2,
-        "mappingTypes": [
-          {
+        "mappingTypes": [{
             "name": "value to text",
             "value": 1
           },
@@ -1198,8 +1139,7 @@
         "postfixFontSize": "50%",
         "prefix": "",
         "prefixFontSize": "50%",
-        "rangeMaps": [
-          {
+        "rangeMaps": [{
             "from": "0",
             "text": "DOWN",
             "to": "0.01"
@@ -1222,56 +1162,50 @@
           "show": false
         },
         "tableColumn": "",
-        "targets": [
-          {
-            "groupBy": [
-              {
+        "targets": [{
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "AppV",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
                 "params": [
-                  "$__interval"
+                  "State"
                 ],
-                "type": "time"
+                "type": "field"
               },
               {
-                "params": [
-                  "null"
-                ],
-                "type": "fill"
+                "params": [],
+                "type": "mean"
               }
-            ],
-            "measurement": "AppV",
-            "orderByTime": "ASC",
-            "policy": "default",
-            "refId": "A",
-            "resultFormat": "time_series",
-            "select": [
-              [
-                {
-                  "params": [
-                    "State"
-                  ],
-                  "type": "field"
-                },
-                {
-                  "params": [],
-                  "type": "mean"
-                }
-              ]
-            ],
-            "tags": []
-          }
-        ],
+            ]
+          ],
+          "tags": []
+        }],
         "thresholds": "0.01,2",
         "title": "App-V",
         "transparent": true,
         "type": "singlestat",
         "valueFontSize": "50%",
-        "valueMaps": [
-          {
-            "op": "=",
-            "text": "N/A",
-            "value": "null"
-          }
-        ],
+        "valueMaps": [{
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }],
         "valueName": "current"
       },
       {
@@ -1300,17 +1234,14 @@
         },
         "id": 12,
         "interval": null,
-        "links": [
-          {
-            "dashUri": "db/cloud-connector-details",
-            "dashboard": "Cloud Connector Details",
-            "title": "Cloud Connector Details",
-            "type": "dashboard"
-          }
-        ],
+        "links": [{
+          "dashUri": "db/cloud-connector-details",
+          "dashboard": "Cloud Connector Details",
+          "title": "Cloud Connector Details",
+          "type": "dashboard"
+        }],
         "mappingType": 2,
-        "mappingTypes": [
-          {
+        "mappingTypes": [{
             "name": "value to text",
             "value": 1
           },
@@ -1326,8 +1257,7 @@
         "postfixFontSize": "50%",
         "prefix": "",
         "prefixFontSize": "50%",
-        "rangeMaps": [
-          {
+        "rangeMaps": [{
             "from": "0",
             "text": "DOWN",
             "to": "0.01"
@@ -1350,56 +1280,50 @@
           "show": false
         },
         "tableColumn": "",
-        "targets": [
-          {
-            "groupBy": [
-              {
+        "targets": [{
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "CC",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
                 "params": [
-                  "$__interval"
+                  "State"
                 ],
-                "type": "time"
+                "type": "field"
               },
               {
-                "params": [
-                  "null"
-                ],
-                "type": "fill"
+                "params": [],
+                "type": "mean"
               }
-            ],
-            "measurement": "CC",
-            "orderByTime": "ASC",
-            "policy": "default",
-            "refId": "A",
-            "resultFormat": "time_series",
-            "select": [
-              [
-                {
-                  "params": [
-                    "State"
-                  ],
-                  "type": "field"
-                },
-                {
-                  "params": [],
-                  "type": "mean"
-                }
-              ]
-            ],
-            "tags": []
-          }
-        ],
+            ]
+          ],
+          "tags": []
+        }],
         "thresholds": "0.01,2",
         "title": "Cloud Connector",
         "transparent": true,
         "type": "singlestat",
         "valueFontSize": "50%",
-        "valueMaps": [
-          {
-            "op": "=",
-            "text": "N/A",
-            "value": "null"
-          }
-        ],
+        "valueMaps": [{
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }],
         "valueName": "current"
       },
       {
@@ -1428,17 +1352,14 @@
         },
         "id": 13,
         "interval": null,
-        "links": [
-          {
-            "dashUri": "db/director-details",
-            "dashboard": "Director Details",
-            "title": "Director Details",
-            "type": "dashboard"
-          }
-        ],
+        "links": [{
+          "dashUri": "db/director-details",
+          "dashboard": "Director Details",
+          "title": "Director Details",
+          "type": "dashboard"
+        }],
         "mappingType": 2,
-        "mappingTypes": [
-          {
+        "mappingTypes": [{
             "name": "value to text",
             "value": 1
           },
@@ -1454,8 +1375,7 @@
         "postfixFontSize": "50%",
         "prefix": "",
         "prefixFontSize": "50%",
-        "rangeMaps": [
-          {
+        "rangeMaps": [{
             "from": "0",
             "text": "DOWN",
             "to": "0.01"
@@ -1478,56 +1398,50 @@
           "show": false
         },
         "tableColumn": "",
-        "targets": [
-          {
-            "groupBy": [
-              {
+        "targets": [{
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "Director",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
                 "params": [
-                  "$__interval"
+                  "State"
                 ],
-                "type": "time"
+                "type": "field"
               },
               {
-                "params": [
-                  "null"
-                ],
-                "type": "fill"
+                "params": [],
+                "type": "mean"
               }
-            ],
-            "measurement": "Director",
-            "orderByTime": "ASC",
-            "policy": "default",
-            "refId": "A",
-            "resultFormat": "time_series",
-            "select": [
-              [
-                {
-                  "params": [
-                    "State"
-                  ],
-                  "type": "field"
-                },
-                {
-                  "params": [],
-                  "type": "mean"
-                }
-              ]
-            ],
-            "tags": []
-          }
-        ],
+            ]
+          ],
+          "tags": []
+        }],
         "thresholds": "0.01,2",
         "title": "Director",
         "transparent": true,
         "type": "singlestat",
         "valueFontSize": "50%",
-        "valueMaps": [
-          {
-            "op": "=",
-            "text": "N/A",
-            "value": "null"
-          }
-        ],
+        "valueMaps": [{
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }],
         "valueName": "current"
       },
       {
@@ -1556,17 +1470,14 @@
         },
         "id": 14,
         "interval": null,
-        "links": [
-          {
-            "dashUri": "db/federation-authentication-service-details",
-            "dashboard": "Federation Authentication Service Details",
-            "title": "Federation Authentication Service Details",
-            "type": "dashboard"
-          }
-        ],
+        "links": [{
+          "dashUri": "db/federation-authentication-service-details",
+          "dashboard": "Federation Authentication Service Details",
+          "title": "Federation Authentication Service Details",
+          "type": "dashboard"
+        }],
         "mappingType": 2,
-        "mappingTypes": [
-          {
+        "mappingTypes": [{
             "name": "value to text",
             "value": 1
           },
@@ -1582,8 +1493,7 @@
         "postfixFontSize": "50%",
         "prefix": "",
         "prefixFontSize": "50%",
-        "rangeMaps": [
-          {
+        "rangeMaps": [{
             "from": "0",
             "text": "DOWN",
             "to": "0.01"
@@ -1606,56 +1516,50 @@
           "show": false
         },
         "tableColumn": "",
-        "targets": [
-          {
-            "groupBy": [
-              {
+        "targets": [{
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "FAS",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
                 "params": [
-                  "$__interval"
+                  "State"
                 ],
-                "type": "time"
+                "type": "field"
               },
               {
-                "params": [
-                  "null"
-                ],
-                "type": "fill"
+                "params": [],
+                "type": "mean"
               }
-            ],
-            "measurement": "FAS",
-            "orderByTime": "ASC",
-            "policy": "default",
-            "refId": "A",
-            "resultFormat": "time_series",
-            "select": [
-              [
-                {
-                  "params": [
-                    "State"
-                  ],
-                  "type": "field"
-                },
-                {
-                  "params": [],
-                  "type": "mean"
-                }
-              ]
-            ],
-            "tags": []
-          }
-        ],
+            ]
+          ],
+          "tags": []
+        }],
         "thresholds": "0.01,2",
         "title": "FAS",
         "transparent": true,
         "type": "singlestat",
         "valueFontSize": "50%",
-        "valueMaps": [
-          {
-            "op": "=",
-            "text": "N/A",
-            "value": "null"
-          }
-        ],
+        "valueMaps": [{
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }],
         "valueName": "current"
       },
       {
@@ -1684,17 +1588,14 @@
         },
         "id": 15,
         "interval": null,
-        "links": [
-          {
-            "dashUri": "db/netscaler-details",
-            "dashboard": "Netscaler Details",
-            "title": "Netscaler Details",
-            "type": "dashboard"
-          }
-        ],
+        "links": [{
+          "dashUri": "db/netscaler-details",
+          "dashboard": "Netscaler Details",
+          "title": "Netscaler Details",
+          "type": "dashboard"
+        }],
         "mappingType": 2,
-        "mappingTypes": [
-          {
+        "mappingTypes": [{
             "name": "value to text",
             "value": 1
           },
@@ -1710,8 +1611,7 @@
         "postfixFontSize": "50%",
         "prefix": "",
         "prefixFontSize": "50%",
-        "rangeMaps": [
-          {
+        "rangeMaps": [{
             "from": "0",
             "text": "DOWN",
             "to": "0.01"
@@ -1734,56 +1634,50 @@
           "show": false
         },
         "tableColumn": "",
-        "targets": [
-          {
-            "groupBy": [
-              {
+        "targets": [{
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "Netscaler",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
                 "params": [
-                  "$__interval"
+                  "State"
                 ],
-                "type": "time"
+                "type": "field"
               },
               {
-                "params": [
-                  "null"
-                ],
-                "type": "fill"
+                "params": [],
+                "type": "mean"
               }
-            ],
-            "measurement": "Netscaler",
-            "orderByTime": "ASC",
-            "policy": "default",
-            "refId": "A",
-            "resultFormat": "time_series",
-            "select": [
-              [
-                {
-                  "params": [
-                    "State"
-                  ],
-                  "type": "field"
-                },
-                {
-                  "params": [],
-                  "type": "mean"
-                }
-              ]
-            ],
-            "tags": []
-          }
-        ],
+            ]
+          ],
+          "tags": []
+        }],
         "thresholds": "0.01,2",
         "title": "Netscaler",
         "transparent": true,
         "type": "singlestat",
         "valueFontSize": "50%",
-        "valueMaps": [
-          {
-            "op": "=",
-            "text": "N/A",
-            "value": "null"
-          }
-        ],
+        "valueMaps": [{
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }],
         "valueName": "current"
       },
       {
@@ -1812,17 +1706,14 @@
         },
         "id": 16,
         "interval": null,
-        "links": [
-          {
-            "dashUri": "db/netscaler-gateway-details",
-            "dashboard": "Netscaler Gateway Details",
-            "title": "Netscaler Gateway Details",
-            "type": "dashboard"
-          }
-        ],
+        "links": [{
+          "dashUri": "db/netscaler-gateway-details",
+          "dashboard": "Netscaler Gateway Details",
+          "title": "Netscaler Gateway Details",
+          "type": "dashboard"
+        }],
         "mappingType": 2,
-        "mappingTypes": [
-          {
+        "mappingTypes": [{
             "name": "value to text",
             "value": 1
           },
@@ -1838,8 +1729,7 @@
         "postfixFontSize": "50%",
         "prefix": "",
         "prefixFontSize": "50%",
-        "rangeMaps": [
-          {
+        "rangeMaps": [{
             "from": "0",
             "text": "DOWN",
             "to": "0.01"
@@ -1862,56 +1752,50 @@
           "show": false
         },
         "tableColumn": "",
-        "targets": [
-          {
-            "groupBy": [
-              {
+        "targets": [{
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "NetscalerGateway",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
                 "params": [
-                  "$__interval"
+                  "State"
                 ],
-                "type": "time"
+                "type": "field"
               },
               {
-                "params": [
-                  "null"
-                ],
-                "type": "fill"
+                "params": [],
+                "type": "mean"
               }
-            ],
-            "measurement": "NetscalerGateway",
-            "orderByTime": "ASC",
-            "policy": "default",
-            "refId": "A",
-            "resultFormat": "time_series",
-            "select": [
-              [
-                {
-                  "params": [
-                    "State"
-                  ],
-                  "type": "field"
-                },
-                {
-                  "params": [],
-                  "type": "mean"
-                }
-              ]
-            ],
-            "tags": []
-          }
-        ],
+            ]
+          ],
+          "tags": []
+        }],
         "thresholds": "0.01,2",
         "title": "Netscaler Gateways",
         "transparent": true,
         "type": "singlestat",
         "valueFontSize": "50%",
-        "valueMaps": [
-          {
-            "op": "=",
-            "text": "N/A",
-            "value": "null"
-          }
-        ],
+        "valueMaps": [{
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }],
         "valueName": "current"
       },
       {
@@ -1940,17 +1824,14 @@
         },
         "id": 17,
         "interval": null,
-        "links": [
-          {
-            "dashUri": "db/provisioning-details",
-            "dashboard": "Provisioning Details",
-            "title": "Provisioning Details",
-            "type": "dashboard"
-          }
-        ],
+        "links": [{
+          "dashUri": "db/provisioning-details",
+          "dashboard": "Provisioning Details",
+          "title": "Provisioning Details",
+          "type": "dashboard"
+        }],
         "mappingType": 2,
-        "mappingTypes": [
-          {
+        "mappingTypes": [{
             "name": "value to text",
             "value": 1
           },
@@ -1966,8 +1847,7 @@
         "postfixFontSize": "50%",
         "prefix": "",
         "prefixFontSize": "50%",
-        "rangeMaps": [
-          {
+        "rangeMaps": [{
             "from": "0",
             "text": "DOWN",
             "to": "0.01"
@@ -1990,56 +1870,50 @@
           "show": false
         },
         "tableColumn": "",
-        "targets": [
-          {
-            "groupBy": [
-              {
+        "targets": [{
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "Provisioning",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
                 "params": [
-                  "$__interval"
+                  "State"
                 ],
-                "type": "time"
+                "type": "field"
               },
               {
-                "params": [
-                  "null"
-                ],
-                "type": "fill"
+                "params": [],
+                "type": "mean"
               }
-            ],
-            "measurement": "Provisioning",
-            "orderByTime": "ASC",
-            "policy": "default",
-            "refId": "A",
-            "resultFormat": "time_series",
-            "select": [
-              [
-                {
-                  "params": [
-                    "State"
-                  ],
-                  "type": "field"
-                },
-                {
-                  "params": [],
-                  "type": "mean"
-                }
-              ]
-            ],
-            "tags": []
-          }
-        ],
+            ]
+          ],
+          "tags": []
+        }],
         "thresholds": "0.01,2",
         "title": "Provisioning",
         "transparent": true,
         "type": "singlestat",
         "valueFontSize": "50%",
-        "valueMaps": [
-          {
-            "op": "=",
-            "text": "N/A",
-            "value": "null"
-          }
-        ],
+        "valueMaps": [{
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }],
         "valueName": "current"
       },
       {
@@ -2068,17 +1942,14 @@
         },
         "id": 18,
         "interval": null,
-        "links": [
-          {
-            "dashUri": "db/sql-details",
-            "dashboard": "SQL Details",
-            "title": "SQL Details",
-            "type": "dashboard"
-          }
-        ],
+        "links": [{
+          "dashUri": "db/sql-details",
+          "dashboard": "SQL Details",
+          "title": "SQL Details",
+          "type": "dashboard"
+        }],
         "mappingType": 2,
-        "mappingTypes": [
-          {
+        "mappingTypes": [{
             "name": "value to text",
             "value": 1
           },
@@ -2094,8 +1965,7 @@
         "postfixFontSize": "50%",
         "prefix": "",
         "prefixFontSize": "50%",
-        "rangeMaps": [
-          {
+        "rangeMaps": [{
             "from": "0",
             "text": "DOWN",
             "to": "0.01"
@@ -2118,56 +1988,50 @@
           "show": false
         },
         "tableColumn": "",
-        "targets": [
-          {
-            "groupBy": [
-              {
+        "targets": [{
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "SQL",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
                 "params": [
-                  "$__interval"
+                  "State"
                 ],
-                "type": "time"
+                "type": "field"
               },
               {
-                "params": [
-                  "null"
-                ],
-                "type": "fill"
+                "params": [],
+                "type": "mean"
               }
-            ],
-            "measurement": "SQL",
-            "orderByTime": "ASC",
-            "policy": "default",
-            "refId": "A",
-            "resultFormat": "time_series",
-            "select": [
-              [
-                {
-                  "params": [
-                    "State"
-                  ],
-                  "type": "field"
-                },
-                {
-                  "params": [],
-                  "type": "mean"
-                }
-              ]
-            ],
-            "tags": []
-          }
-        ],
+            ]
+          ],
+          "tags": []
+        }],
         "thresholds": "0.01,2",
         "title": "SQL",
         "transparent": true,
         "type": "singlestat",
         "valueFontSize": "50%",
-        "valueMaps": [
-          {
-            "op": "=",
-            "text": "N/A",
-            "value": "null"
-          }
-        ],
+        "valueMaps": [{
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }],
         "valueName": "current"
       },
       {
@@ -2196,17 +2060,14 @@
         },
         "id": 19,
         "interval": null,
-        "links": [
-          {
-            "dashUri": "db/storefront-details",
-            "dashboard": "Storefront Details",
-            "title": "Storefront Details",
-            "type": "dashboard"
-          }
-        ],
+        "links": [{
+          "dashUri": "db/storefront-details",
+          "dashboard": "Storefront Details",
+          "title": "Storefront Details",
+          "type": "dashboard"
+        }],
         "mappingType": 2,
-        "mappingTypes": [
-          {
+        "mappingTypes": [{
             "name": "value to text",
             "value": 1
           },
@@ -2222,8 +2083,7 @@
         "postfixFontSize": "50%",
         "prefix": "",
         "prefixFontSize": "50%",
-        "rangeMaps": [
-          {
+        "rangeMaps": [{
             "from": "0",
             "text": "DOWN",
             "to": "0.01"
@@ -2246,56 +2106,50 @@
           "show": false
         },
         "tableColumn": "",
-        "targets": [
-          {
-            "groupBy": [
-              {
+        "targets": [{
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "Storefront",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
                 "params": [
-                  "$__interval"
+                  "State"
                 ],
-                "type": "time"
+                "type": "field"
               },
               {
-                "params": [
-                  "null"
-                ],
-                "type": "fill"
+                "params": [],
+                "type": "mean"
               }
-            ],
-            "measurement": "Storefront",
-            "orderByTime": "ASC",
-            "policy": "default",
-            "refId": "A",
-            "resultFormat": "time_series",
-            "select": [
-              [
-                {
-                  "params": [
-                    "State"
-                  ],
-                  "type": "field"
-                },
-                {
-                  "params": [],
-                  "type": "mean"
-                }
-              ]
-            ],
-            "tags": []
-          }
-        ],
+            ]
+          ],
+          "tags": []
+        }],
         "thresholds": "0.01,2",
         "title": "Storefront",
         "transparent": true,
         "type": "singlestat",
         "valueFontSize": "50%",
-        "valueMaps": [
-          {
-            "op": "=",
-            "text": "N/A",
-            "value": "null"
-          }
-        ],
+        "valueMaps": [{
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }],
         "valueName": "current"
       },
       {
@@ -2324,17 +2178,14 @@
         },
         "id": 20,
         "interval": null,
-        "links": [
-          {
-            "dashUri": "db/ups-details",
-            "dashboard": "UPS Details",
-            "title": "UPS Details",
-            "type": "dashboard"
-          }
-        ],
+        "links": [{
+          "dashUri": "db/ups-details",
+          "dashboard": "UPS Details",
+          "title": "UPS Details",
+          "type": "dashboard"
+        }],
         "mappingType": 2,
-        "mappingTypes": [
-          {
+        "mappingTypes": [{
             "name": "value to text",
             "value": 1
           },
@@ -2350,8 +2201,7 @@
         "postfixFontSize": "50%",
         "prefix": "",
         "prefixFontSize": "50%",
-        "rangeMaps": [
-          {
+        "rangeMaps": [{
             "from": "0",
             "text": "DOWN",
             "to": "0.01"
@@ -2374,56 +2224,50 @@
           "show": false
         },
         "tableColumn": "",
-        "targets": [
-          {
-            "groupBy": [
-              {
+        "targets": [{
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "UPS",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
                 "params": [
-                  "$__interval"
+                  "State"
                 ],
-                "type": "time"
+                "type": "field"
               },
               {
-                "params": [
-                  "null"
-                ],
-                "type": "fill"
+                "params": [],
+                "type": "mean"
               }
-            ],
-            "measurement": "UPS",
-            "orderByTime": "ASC",
-            "policy": "default",
-            "refId": "A",
-            "resultFormat": "time_series",
-            "select": [
-              [
-                {
-                  "params": [
-                    "State"
-                  ],
-                  "type": "field"
-                },
-                {
-                  "params": [],
-                  "type": "mean"
-                }
-              ]
-            ],
-            "tags": []
-          }
-        ],
+            ]
+          ],
+          "tags": []
+        }],
         "thresholds": "0.01,2",
         "title": "UPS",
         "transparent": true,
         "type": "singlestat",
         "valueFontSize": "50%",
-        "valueMaps": [
-          {
-            "op": "=",
-            "text": "N/A",
-            "value": "null"
-          }
-        ],
+        "valueMaps": [{
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }],
         "valueName": "current"
       },
       {
@@ -2452,17 +2296,14 @@
         },
         "id": 21,
         "interval": null,
-        "links": [
-          {
-            "dashUri": "db/wem-details",
-            "dashboard": "WEM Details",
-            "title": "WEM Details",
-            "type": "dashboard"
-          }
-        ],
+        "links": [{
+          "dashUri": "db/wem-details",
+          "dashboard": "WEM Details",
+          "title": "WEM Details",
+          "type": "dashboard"
+        }],
         "mappingType": 2,
-        "mappingTypes": [
-          {
+        "mappingTypes": [{
             "name": "value to text",
             "value": 1
           },
@@ -2478,8 +2319,7 @@
         "postfixFontSize": "50%",
         "prefix": "",
         "prefixFontSize": "50%",
-        "rangeMaps": [
-          {
+        "rangeMaps": [{
             "from": "0",
             "text": "DOWN",
             "to": "0.01"
@@ -2502,56 +2342,50 @@
           "show": false
         },
         "tableColumn": "",
-        "targets": [
-          {
-            "groupBy": [
-              {
+        "targets": [{
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "WEM",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
                 "params": [
-                  "$__interval"
+                  "State"
                 ],
-                "type": "time"
+                "type": "field"
               },
               {
-                "params": [
-                  "previous"
-                ],
-                "type": "fill"
+                "params": [],
+                "type": "mean"
               }
-            ],
-            "measurement": "WEM",
-            "orderByTime": "ASC",
-            "policy": "default",
-            "refId": "A",
-            "resultFormat": "time_series",
-            "select": [
-              [
-                {
-                  "params": [
-                    "State"
-                  ],
-                  "type": "field"
-                },
-                {
-                  "params": [],
-                  "type": "mean"
-                }
-              ]
-            ],
-            "tags": []
-          }
-        ],
+            ]
+          ],
+          "tags": []
+        }],
         "thresholds": "0.01,2",
         "title": "WEM",
         "transparent": true,
         "type": "singlestat",
         "valueFontSize": "50%",
-        "valueMaps": [
-          {
-            "op": "=",
-            "text": "N/A",
-            "value": "null"
-          }
-        ],
+        "valueMaps": [{
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }],
         "valueName": "current"
       },
       {
@@ -2580,17 +2414,14 @@
         },
         "id": 22,
         "interval": null,
-        "links": [
-          {
-            "dashUri": "db/xd-controller-details",
-            "dashboard": "XD Controller Details",
-            "title": "XD Controller Details",
-            "type": "dashboard"
-          }
-        ],
+        "links": [{
+          "dashUri": "db/xd-controller-details",
+          "dashboard": "XD Controller Details",
+          "title": "XD Controller Details",
+          "type": "dashboard"
+        }],
         "mappingType": 2,
-        "mappingTypes": [
-          {
+        "mappingTypes": [{
             "name": "value to text",
             "value": 1
           },
@@ -2606,8 +2437,7 @@
         "postfixFontSize": "50%",
         "prefix": "",
         "prefixFontSize": "50%",
-        "rangeMaps": [
-          {
+        "rangeMaps": [{
             "from": "0",
             "text": "DOWN",
             "to": "0.01"
@@ -2630,56 +2460,50 @@
           "show": false
         },
         "tableColumn": "",
-        "targets": [
-          {
-            "groupBy": [
-              {
+        "targets": [{
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "XdControllers",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
                 "params": [
-                  "$__interval"
+                  "State"
                 ],
-                "type": "time"
+                "type": "field"
               },
               {
-                "params": [
-                  "null"
-                ],
-                "type": "fill"
+                "params": [],
+                "type": "mean"
               }
-            ],
-            "measurement": "XdControllers",
-            "orderByTime": "ASC",
-            "policy": "default",
-            "refId": "A",
-            "resultFormat": "time_series",
-            "select": [
-              [
-                {
-                  "params": [
-                    "State"
-                  ],
-                  "type": "field"
-                },
-                {
-                  "params": [],
-                  "type": "mean"
-                }
-              ]
-            ],
-            "tags": []
-          }
-        ],
+            ]
+          ],
+          "tags": []
+        }],
         "thresholds": "0.01,2",
         "title": "XD Controllers",
         "transparent": true,
         "type": "singlestat",
         "valueFontSize": "50%",
-        "valueMaps": [
-          {
-            "op": "=",
-            "text": "N/A",
-            "value": "null"
-          }
-        ],
+        "valueMaps": [{
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }],
         "valueName": "current"
       },
       {
@@ -2708,17 +2532,14 @@
         },
         "id": 23,
         "interval": null,
-        "links": [
-          {
-            "dashUri": "db/xd-licensing-details",
-            "dashboard": "XD Licensing Details",
-            "title": "XD Licensing Details",
-            "type": "dashboard"
-          }
-        ],
+        "links": [{
+          "dashUri": "db/xd-licensing-details",
+          "dashboard": "XD Licensing Details",
+          "title": "XD Licensing Details",
+          "type": "dashboard"
+        }],
         "mappingType": 2,
-        "mappingTypes": [
-          {
+        "mappingTypes": [{
             "name": "value to text",
             "value": 1
           },
@@ -2734,8 +2555,7 @@
         "postfixFontSize": "50%",
         "prefix": "",
         "prefixFontSize": "50%",
-        "rangeMaps": [
-          {
+        "rangeMaps": [{
             "from": "0",
             "text": "DOWN",
             "to": "0.01"
@@ -2758,56 +2578,50 @@
           "show": false
         },
         "tableColumn": "",
-        "targets": [
-          {
-            "groupBy": [
-              {
+        "targets": [{
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "XdLicensing",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
                 "params": [
-                  "$__interval"
+                  "State"
                 ],
-                "type": "time"
+                "type": "field"
               },
               {
-                "params": [
-                  "null"
-                ],
-                "type": "fill"
+                "params": [],
+                "type": "mean"
               }
-            ],
-            "measurement": "XdLicensing",
-            "orderByTime": "ASC",
-            "policy": "default",
-            "refId": "A",
-            "resultFormat": "time_series",
-            "select": [
-              [
-                {
-                  "params": [
-                    "State"
-                  ],
-                  "type": "field"
-                },
-                {
-                  "params": [],
-                  "type": "mean"
-                }
-              ]
-            ],
-            "tags": []
-          }
-        ],
+            ]
+          ],
+          "tags": []
+        }],
         "thresholds": "0.01,2",
         "title": "XD Licensing",
         "transparent": true,
         "type": "singlestat",
         "valueFontSize": "50%",
-        "valueMaps": [
-          {
-            "op": "=",
-            "text": "N/A",
-            "value": "null"
-          }
-        ],
+        "valueMaps": [{
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }],
         "valueName": "current"
       }
     ],
@@ -2852,12 +2666,10 @@
     "version": 4
   },
   "folderID": 0,
-  "inputs": [
-    {
-      "name": "DS_EUCMONITORING",
-      "type": "datasource",
-      "pluginId": "influxdb",
-      "value": "EUCMonitoring"
-    }
-  ]
+  "inputs": [{
+    "name": "DS_EUCMONITORING",
+    "type": "datasource",
+    "pluginId": "influxdb",
+    "value": "EUCMonitoring"
+  }]
 }

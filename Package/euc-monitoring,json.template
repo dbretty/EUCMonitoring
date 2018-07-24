@@ -1,6 +1,6 @@
 {
     "Global": {
-        "OutputLocation": "c:\\monitoring",
+        "OutputLocation": "c:\\Monitoring",
         "ServerErrorFile": "server-errors.txt",
         "DesktopErrorFile": "desktop-errors.txt",
         "WorkerErrorFile": "worker-errors.txt",
