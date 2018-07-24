@@ -57,6 +57,7 @@
         ],
         "Checks": {
             "ValidCert": {
+                "test": false,
                 "Ports": [
                     636
                 ]
@@ -98,7 +99,7 @@
         ],
         "Checks": {
             "XdServer": {
-                "test": false, 
+                "test": false,
                 "testmode": "advanced",
                 "BootThreshold": 7,
                 "HighLoad": 8000
@@ -109,11 +110,11 @@
                 "BootThreshold": 365,
                 "HighLoad": 8000
             },
-            XdSessionInfo: false,
-            "XdDeliveryGroupHealth": false,
-            "XdControllerHealth": false,
-            "XdCatalogHealth": false,
-            "XdHypervisorHealth": false
+            "XdSessionInfo": { "test": false },
+            "XdDeliveryGroupHealth":  { "test": false },
+            "XdControllerHealth":  { "test": false },
+            "XdCatalogHealth":  { "test": false },
+            "XdHypervisorHealth":  { "test": false }
         }
     },
     "Xenserver": {
@@ -127,6 +128,7 @@
         ],
         "Checks": {
             "XenServer": {
+                "test": false,
                 "username": "root",
                 "password": "ReallySecure"
             }
@@ -144,15 +146,18 @@
         ],
         "Checks": {
             "HTTPUrl": {
+                "test": false,
                 "Port": 80,
                 "Path": "/Citrix/StoreWeb"
             },
             "HTTPSUrl": {
+                "test": false,
                 "Port": 443,
                 "Path": "/Citrix/StoreWeb"
             },
             "ValidCert": {
-                "Port": 
+                "test": false,
+                "Port":
                     443
             }
         }
@@ -175,9 +180,11 @@
         ],
         "Checks": {
             "XdLicense": {
+                "test": false,
                 "LicenseType": "XDT"
             },
             "XdLicense": {
+                "test": false,
                 "LicenseType": "MPS"
             }
         }
@@ -194,10 +201,12 @@
         ],
         "Checks": {
             "HTTPUrl": {
+                "test": false,
                 "Port": 80,
                 "Path": "/Director/LogOn.aspx?cc=true"
             },
             "HTTPSUrl": {
+                "test": false,
                 "Port": 443,
                 "Path": "/Director/LogOn.aspx?cc=true"
             }
@@ -241,6 +250,7 @@
         ],
         "Checks": {
             "Netscaler": {
+                "test": false,
                 "username": "nsroot",
                 "password": "ReallySecure"
             }
@@ -258,6 +268,7 @@
         ],
         "Checks": {
             "NetscalerGateway": {
+                "test": false,
                 "username": "nsroot",
                 "password": "ReallySecure"
             }

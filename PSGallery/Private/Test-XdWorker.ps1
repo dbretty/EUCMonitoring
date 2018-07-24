@@ -77,8 +77,8 @@ function Test-XdWorker {
         }
         else {
             $DeliveryGroups = Get-BrokerDesktopGroup -AdminAddress $Broker | Where-Object {$_.SessionSupport -eq "SingleSession"} | Select-object PublishedName, InMaintenanceMode
-            $TotalConnectedUsers = (((get-brokersession -MaxRecordCount 5000) | where-object {$_.DesktopKind -ne "Shared" -and $_.SessionState -eq "Active"}) | Measure-Object).Count
-            $TotalUsersDisconnected = (((get-brokersession -MaxRecordCount 5000) | where-object {$_.DesktopKind -ne "Shared" -and $_.SessionState -ne "Active"}) | Measure-Object).Count
+            $TotalConnectedUsers = (((get-brokersession -AdminAddress $Broker -MaxRecordCount 5000) | where-object {$_.DesktopKind -ne "Shared" -and $_.SessionState -eq "Active"}) | Measure-Object).Count
+            $TotalUsersDisconnected = (((get-brokersession -AdminAddress $Broker -MaxRecordCount 5000) | where-object {$_.DesktopKind -ne "Shared" -and $_.SessionState -ne "Active"}) | Measure-Object).Count
         }
 
         $SiteName = (Get-BrokerSite -AdminAddress $Broker).Name
@@ -95,10 +95,10 @@ function Test-XdWorker {
         # Work Out the Broker Machine Status Details
         Write-Verbose "Querying Broker Machine Details"
         if ($Workload -eq "server") {
-            $BrokerMachines = Get-BrokerMachine | Where-Object {$_.SessionSupport -eq "MultiSession"} | Select-Object HostedMachineName, DesktopKind, InMaintenanceMode, PowerState, RegistrationState, SessionSupport, WindowsConnectionSetting, ZoneName
+            $BrokerMachines = Get-BrokerMachine -AdminAddress $Broker | Where-Object {$_.SessionSupport -eq "MultiSession"} | Select-Object HostedMachineName, DesktopKind, InMaintenanceMode, PowerState, RegistrationState, SessionSupport, WindowsConnectionSetting, ZoneName
         }
         else {
-            $BrokerMachines = Get-BrokerMachine | Where-Object {$_.SessionSupport -eq "SingleSession"} | Select-Object HostedMachineName, DesktopKind, InMaintenanceMode, PowerState, RegistrationState, SessionSupport, WindowsConnectionSetting, ZoneName
+            $BrokerMachines = Get-BrokerMachine -AdminAddress $Broker | Where-Object {$_.SessionSupport -eq "SingleSession"} | Select-Object HostedMachineName, DesktopKind, InMaintenanceMode, PowerState, RegistrationState, SessionSupport, WindowsConnectionSetting, ZoneName
         }
         $BMFullCount = ($BrokerMachines | Measure-object).Count
         $BMMaintenanceCount = ($BrokerMachines | Where-Object {($_.InMaintenanceMode -match "True" -and $_.PowerState -match "On")} | Measure-Object).Count
@@ -147,7 +147,7 @@ function Test-XdWorker {
             $BrokerGood = 0
             $BrokerBad = 0
             $BMRegisteredList = $BrokerMachines | Where-Object {($_.RegistrationState -eq "Registered" -and $_.PowerState -match "On")}
-            $DetailErrors = Test-XdWorkerAdvanced -Machines $BMRegisteredList -BootThreshold $BootThreshold -HighLoad $HighLoad
+            $DetailErrors = Test-XdWorkerAdvanced -Broker $Broker -Machines $BMRegisteredList -BootThreshold $BootThreshold -HighLoad $HighLoad
 
             foreach ($detail in $DetailErrors) {
                 if ($null -ne $detail.services) {

@@ -1,14 +1,14 @@
 function Test-XdWorkerAdvanced {
-    <#   
-.SYNOPSIS   
+    <#
+.SYNOPSIS
     Checks the Status of the XenDesktop Workers Passed In On each Server or Desktop Individually
-.DESCRIPTION 
+.DESCRIPTION
     Checks the Status of the XenDesktop Workers Passed In On each Server or Desktop Individually
-.PARAMETER Machines 
+.PARAMETER Machines
     XenDesktop Machines to use for the checks
-.PARAMETER BootThreshold 
+.PARAMETER BootThreshold
     Server Boot Threshold
-.PARAMETER HighLoad 
+.PARAMETER HighLoad
     Server High Load
 .NOTES
     Current Version:        1.0
@@ -23,18 +23,19 @@ function Test-XdWorkerAdvanced {
     [CmdletBinding()]
     Param
     (
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$Broker,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$Machines,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$BootThreshold,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$HighLoad
     )
 
-    Begin { 
+    Begin {
         $pool = [RunspaceFactory]::CreateRunspacePool(1, [int]$env:NUMBER_OF_PROCESSORS + 1)
         $pool.ApartmentState = "MTA"
         $pool.Open()
         $runspaces = @()
     }
-    
+
     Process {
 
         $scriptblock = {
@@ -66,7 +67,7 @@ function Test-XdWorkerAdvanced {
 
             If ($UptimeDays -lt [int]$BootThreshold) {
                 Add-PSSnapin Citrix.Broker.* -ErrorAction SilentlyContinue
-                $Load = Get-BrokerMachine -HostedMachineName $Machine -Property LoadIndex
+                $Load = Get-BrokerMachine  -AdminAddress $Broker -HostedMachineName $Machine -Property LoadIndex
                 $CurrentLoad = $Load.LoadIndex
                 If ($CurrentLoad -lt $HighLoad) {
                     $Status = "Passed"
@@ -108,8 +109,8 @@ function Test-XdWorkerAdvanced {
             $results += $runspace.Pipe.EndInvoke($runspace.Status)
             $runspace.Pipe.Dispose()
         }
-    
-        $pool.Close() 
+
+        $pool.Close()
         $pool.Dispose()
 
         Remove-Variable runspaces -Force

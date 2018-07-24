@@ -8,11 +8,11 @@
         Determines the location of the EUCMonitoring configuration.
     .PARAMETER InstallVisualizationSetup
         Downloads and installs InfluxDB, Grafana, and NSSM into the MonitoringPath locaiton.  Creates services,
-        and opens up local firewall rules. Installs default EUC dashboards. Requires internet accessibility.  
-        internet connection.  
+        and opens up local firewall rules. Installs default EUC dashboards. Requires internet accessibility.
+        internet connection.
     .PARAMETER UninstallVisualizationSetup
         Removes local instances of InfluxDB, Grafana and NSSM as installed in the MonitoringPath. Removes the
-        created Services, closes firewall rules. 
+        created Services, closes firewall rules.
     .INPUTS
         None
     .OUTPUTS
@@ -49,7 +49,7 @@
         Write-Verbose "EUC Monitoring Directory Created $MonitoringPath"
     }
 
-    # Uninstall and exit. 
+    # Uninstall and exit.
     if ( $UninstallVisualizationSetup -eq $true ) {
         Uninstall-VisualizationSetup -MonitoringPath $MonitoringPath
         return
@@ -66,7 +66,7 @@
         }
         else {
             Write-Verbose "Pulling $needed"
-            Invoke-WebRequest -Uri "https://raw.githubusercontent.com/dbretty/eucmonitoring/master/Package/$needed" -OutFile "$MonitoringPath\$needed"
+            Invoke-WebRequest -Uri "https://raw.githubusercontent.com/littletoyrobots/eucmonitoring/v2_beta/Package/$needed" -OutFile "$MonitoringPath\$needed"
         }
     }
 
@@ -79,5 +79,5 @@
         Install-VisualizationSetup -MonitoringPath $MonitoringPath
 
     }
-    
+
 }
