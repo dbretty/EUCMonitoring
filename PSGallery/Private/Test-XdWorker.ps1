@@ -130,11 +130,11 @@ function Test-XdWorker {
                 'DisconnectedUsers'              = $TotalUsersDisconnected
                 'DeliveryGroupsNotInMaintenance' = $DGNonMaintenanceCount
                 'DeliveryGroupsInMaintenance'    = $DGMaintenanceCount
-                'BrokerMachinesOn'               = $BMOnCount
-                'BrokerMachinesOff'              = $BMOffCount
-                'BrokerMachinesRegistered'       = $BMRegisteredCount
-                'BrokerMachinesUnRegistered'     = $BMUnRegisteredCount
-                'BrokerMachinesInMaintenance'    = $BMMaintenanceCount
+                'BrokerMachineOn'                = $BMOnCount
+                'BrokerMachineOff'               = $BMOffCount
+                'BrokerMachineRegistered'        = $BMRegisteredCount
+                'BrokerMachineUnRegistered'      = $BMUnRegisteredCount
+                'BrokerMachineInMaintenance'     = $BMMaintenanceCount
                 'Errors'                         = $Errors
             }
 

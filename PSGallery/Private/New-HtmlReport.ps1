@@ -168,8 +168,8 @@ function New-HtmlReport {
             foreach ($Result in $SeriesResult.Results) {
                 foreach ( $CheckData in $Result.ChecksData ) {
                     $CheckDataName = $CheckData.CheckName
-                    $Up = $CheckData.Values.BrokerMachinesRegistered
-                    $Down = $CheckData.values.BrokerMachinesUnRegistered
+                    $Up = $CheckData.Values.BrokerMachineRegistered
+                    $Down = $CheckData.Values.BrokerMachineUnRegistered
                     "<td width='$ColumnPercent%' align=center valign=top>" | Out-File $HTMLOutputFileFull -Append
                     Get-DonutHTML $Height $Width $UpColor $DownColor $DonutStroke $CheckDataName $Up $Down -Worker | Out-File $HTMLOutputFileFull -Append
                     "</td>" | Out-File $HTMLOutputFileFull -Append
