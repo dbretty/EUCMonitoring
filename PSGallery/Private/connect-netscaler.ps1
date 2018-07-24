@@ -27,6 +27,7 @@ function Connect-NetScaler {
         [parameter(Mandatory = $false, ValueFromPipeline = $true)]$UserName,
         [parameter(Mandatory = $false, ValueFromPipeline = $true)][System.Security.SecureString]$NSPassword
     )
+    [Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls"
 
     # Strip the Secure Password back to a basic text password
     $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($NSPassword)

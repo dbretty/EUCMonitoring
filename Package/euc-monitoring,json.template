@@ -1,6 +1,6 @@
 {
     "Global": {
-        "OutputLocation": "c:\\monitoring",
+        "OutputLocation": "c:\\Monitoring",
         "ServerErrorFile": "server-errors.txt",
         "DesktopErrorFile": "desktop-errors.txt",
         "WorkerErrorFile": "worker-errors.txt",
@@ -57,6 +57,7 @@
         ],
         "Checks": {
             "ValidCert": {
+                "test": false,
                 "Ports": [
                     636
                 ]
@@ -98,19 +99,22 @@
         ],
         "Checks": {
             "XdServer": {
+                "test": false,
                 "testmode": "advanced",
                 "BootThreshold": 7,
                 "HighLoad": 8000
             },
             "XdDesktop": {
+                "test": false,
                 "testmode": "basic",
                 "BootThreshold": 365,
                 "HighLoad": 8000
             },
-            "XdDeliveryGroupHealth": false,
-            "XdControllerHealth": false,
-            "XdCatalogHealth": false,
-            "XdHypervisorHealth": false
+            "XdSessionInfo": { "test": false },
+            "XdDeliveryGroupHealth":  { "test": false },
+            "XdControllerHealth":  { "test": false },
+            "XdCatalogHealth":  { "test": false },
+            "XdHypervisorHealth":  { "test": false }
         }
     },
     "Xenserver": {
@@ -124,6 +128,7 @@
         ],
         "Checks": {
             "XenServer": {
+                "test": false,
                 "username": "root",
                 "password": "ReallySecure"
             }
@@ -141,20 +146,23 @@
         ],
         "Checks": {
             "HTTPUrl": {
+                "test": false,
                 "Port": 80,
                 "Path": "/Citrix/StoreWeb"
             },
             "HTTPSUrl": {
+                "test": false,
                 "Port": 443,
                 "Path": "/Citrix/StoreWeb"
             },
             "ValidCert": {
-                "Port": 
+                "test": false,
+                "Port":
                     443
             }
         }
     },
-    "Licensing": {
+    "XdLicensing": {
         "test": false,
         "Servers": [
             "lic1.domain.com",
@@ -171,8 +179,13 @@
             "CitrixWebServicesforLicensing"
         ],
         "Checks": {
-            "XDLicense": {
+            "XdLicense": {
+                "test": false,
                 "LicenseType": "XDT"
+            },
+            "XdLicense": {
+                "test": false,
+                "LicenseType": "MPS"
             }
         }
     },
@@ -188,16 +201,18 @@
         ],
         "Checks": {
             "HTTPUrl": {
+                "test": false,
                 "Port": 80,
                 "Path": "/Director/LogOn.aspx?cc=true"
             },
             "HTTPSUrl": {
+                "test": false,
                 "Port": 443,
                 "Path": "/Director/LogOn.aspx?cc=true"
             }
         }
     },
-    "Controllers": {
+    "XdControllers": {
         "test": false,
         "Servers": [
             "xd1.domain.com",
@@ -234,13 +249,14 @@
             80
         ],
         "Checks": {
-            "NetScaler": {
+            "Netscaler": {
+                "test": false,
                 "username": "nsroot",
                 "password": "ReallySecure"
             }
         }
     },
-    "Gateway": {
+    "NetscalerGateway": {
         "test": false,
         "Servers": [
             "ns3.domain.com",
@@ -251,7 +267,8 @@
             80
         ],
         "Checks": {
-            "NetScalerGateway": {
+            "NetscalerGateway": {
+                "test": false,
                 "username": "nsroot",
                 "password": "ReallySecure"
             }

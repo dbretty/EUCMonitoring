@@ -7,7 +7,7 @@ function Start-EUCMonitor {
 .PARAMETER JSONFile
     The path to the JSON config file.  
 .NOTES
-    Current Version:        1.0
+    Current Version:        1.1
     Creation Date:          07/02/2018
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
@@ -48,7 +48,7 @@ function Start-EUCMonitor {
         throw "Error reading JSON.  Please Check File and try again."
     }
 
-    Start-Transcript $LogFile
+    Start-Transcript $LogFile -Append
 
     $OutputLocation = $ConfigObject.Global.OutputLocation
     $InfraErrorFile = join-path $OutputLocation $ConfigObject.Global.InfraErrorFile

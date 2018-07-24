@@ -25,6 +25,8 @@ function Test-URL {
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$Url
     )
 
+    [Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls"
+    
     Write-Verbose "Connecting to URL: $URL"
 
     $HTTP_Status = 400

@@ -1,137 +1,349 @@
 {
     "Global": {
-        "xdbrokerprimary": "broker.domain.com", - Primary XenDesktop Broker for Site
-        "xdbrokerfailover": "broker1.domain.com", - Failover XenDesktop Broker for Site
-        "workloads": "server,desktop", - Workloads you want to monitor
-        "controlup": "yes" - Check for Control Up Agent
+        "OutputLocation": "c:\\monitoring", - Output Directory
+        "ServerErrorFile": "server-errors.txt", - Server Error Files(deprecated?)
+        "DesktopErrorFile": "desktop-errors.txt", - Desktop Error Files(deprecated?)
+        "WorkerErrorFile": "worker-errors.txt", - Worker Error Files
+        "InfraErrorFile": "infra-errors.txt", - Infrastructure Error File
+        "ThirdParty": {
+            "controlup": "no" - Check for Control Up Agent
+        },
+        "WebData": {
+            "enabled": true, - Do you want to create an html report?
+            "title": "End User Computing - Dashboard",
+            "logofile": "logo.png", - Specify Logo file for html report
+            "htmldatafile": "htmldata.txt", - Can leave as default
+            "htmloutputfile": "index.html", - HTML Output File. can leave as default
+            "refreshduration": 0, - HTML Automatic page refresh, in seconds. 0 for no refresh
+            "UpColour": "rgba(221, 70, 70, 0.9)", - Color for Up Servers
+            "DownColour": "rgba(67, 137, 203, 0.95)", - Color for Down Servers. 
+            "WorkerDonutStroke": 5, - Width for the Worker Donut Ring
+            "workerdonutsize": 500, - Size for the Worker Dounut 
+            "InfraDonutStroke": 4, - Width for the Infrastructure Donut Ring
+            "Infradonutsize": 160 - Size for the Infrastructure Donut
+        },
+        "Influx": {
+            "Enabled": false, - Change this if you chose InstallVisualizationSetup
+            "InfluxDB": "EUCMonitoring", - Can leave as default
+            "InfluxServer": "localhost", - Specify Influx Server, can leave as default
+            "Protocol": "http", - Specify protocol, can leave as default
+            "Port": 8086 - Specify port, can leave as default
+        },
+        "ConsoleResults": {
+            "Enabled": true - Do you want do see basic results in the terminal?
+        },
+        "Alerting": {
+            "Enabled": false, - Integration with messaging platforms. 
+            "Slack": {
+                "Enabled": false,
+                "Channel": "some-channel",
+                "URI": "https://hooks.slack.com/services/<ID HERE>"
+            }
+        }
     },
-    "WebData": {
-        "outputlocation": "c:\\monitoring", - Output Directory
-        "htmldatafile": "htmldata.txt", - HTML Data File - Can Leave as Default
-        "htmloutputfile": "index.html", - HTML Output File - Can Leave as Default
-        "refreshduration": 300, - HTML Automatic page refresh in seconds, 0 for disabled
-        "servererrorfile": "server-errors.txt", - Server Error File - Can Leave as Default
-        "desktoperrorfile": "desktop-errors.txt", - Desktop Error File - Can Leave as Default
-        "UpColour": "rgba(221, 70, 70, 0.9)", - Color for "UP" Servers on the output graph
-        "DownColour": "rgba(67, 137, 203, 0.95)", - Color for "Down" Servers on the output graph
-        "WorkerDonutStroke": 5, - Width for the Worker Donut Ring
-        "workerdonutsize": 500, - Size for the Worker Donut
-        "InfraDonutStroke": 4, - Width for the Infrastructure Donut Ring
-        "Infradonutsize": 160, - Size for the Infrastructure Donut
-        "infraerrorfile": "infra-errors.txt" - Infrastructure Error File - Can Leave as Default
+    "AD": {
+        "test": false, - Do you want to test basic Active Directory? 
+        "Servers": [
+            "dc.domain.com" - List of domain controllers. 
+        ],
+        "Ports": [
+            389, - Basic Authentication
+            636 - Encrypted Authentication
+        ],
+        "Services": [
+            "Netlogon",
+            "ADWS",
+            "NTDS"
+        ],
+        "Checks": {
+            "ValidCert": {
+                "Ports": [
+                    636 - Check to see if the certificate presented at this port is valid. 
+                ]
+            }
+        }
     },
-    "server": {
-        "bootthreshold": "7", - Number of Days before Server Reboot Error Threshold Hit
-        "donutfile": "donut.txt", - Output Donut File - Can Leave as Default
-        "highload": 8000 - Max Server Load before Error
+    "SQL": {
+        "test": false, - Do you want to test MSSQL Services?
+        "Servers": [
+            "sql1.domain.com", - SQL Servers. 
+            "sql2.domain.com"
+        ],
+        "Ports": [
+            1433 - Ports that you want to verify are open.  
+        ],
+        "Services": [
+            "MSSQLServer" - MSSQL Services you want to check
+        ]
     },
-    "desktop": {
-        "bootthreshold": "31", - Number of Days before Desktop Reboot Error Threshold Hit
-        "donutfile": "donut.txt", - Output Donut File - Can Leave as Default
-        "highload": 8000 - Max Desktop Load before Error
+    "AppV": {
+        "test": false, - Do you want to test App-V Services?
+        "Servers": [
+            "appv.domain.com" - App-V Servers
+        ],
+        "Ports": [
+            8080
+        ],
+        "Services": [
+            "W3SVC"
+        ]
     },
-    "xenserver": {
-        "test": "yes", - yes/no - Test XenServer
-        "poolmasters": "1.1.1.1,2.2.2.2", - Comma Delimited List of Pool Masters
-        "poolmasterport": "80", - Port to communicate with Pool Master
-        "username": "root", - Username for Pool Master
-        "password": "password" - Password for Pool Master
+    "Worker": {
+        "test": false, - Do you want to test your worker environments
+        "XdSites": [ - You can specify multiple XenDesktop sites here. 
+            {
+                "PrimaryController": "xd1.domain.com", - Primary XenDesktop broker for Site
+                "SecondaryController": "xd2.domain.com" - Secondary XenDesktop broker for Site. 
+            }
+        ],
+        "Checks": {
+            "XdServer": { - Check XenDesktop Server Workloads
+                "test": false,
+                "testmode": "advanced",
+                "BootThreshold": 7,
+                "HighLoad": 8000
+            },
+            "XdDesktop": { - Check XenDesktop Desktop Workloads.
+                "test": false,
+                "testmode": "basic",
+                "BootThreshold": 365,
+                "HighLoad": 8000
+            },
+            "XdSessionInfo": false, - Return Session statistics.
+            "XdDeliveryGroupHealth": false, - Return EnvCheck XdDeliveryGroup
+            "XdControllerHealth": false, - Return EnvCheck Sontroller
+            "XdCatalogHealth": false, - Return EnvCheck Catalog
+            "XdHypervisorHealth": false - Return EnvCheck Hypervisor
+        }
     },
-    "storefront": {
-        "test": "yes", - yes/no - Test StoreFront
-        "storefrontservers": "web1.domain.com,web2.domain.com", - Comma Delimited List of StoreFront Servers
-        "storefrontport": "80", - Port to use for communication
-        "storefrontpath": "/citrix/storeweb", - Path to Receiver for Web Site - must start with /
-        "protocol": "http" - Protocol to use
+    "Xenserver": {
+        "test": false, - Do you want to test XenServer?
+        "Servers": [
+            "xs1.domain.com", - Pool Masters
+            "xs2.domain.com"
+        ],
+        "Ports": [
+            80 - Port to communicate with Pool Masters.
+        ],
+        "Checks": {
+            "XenServer": {
+                "username": "root", - Username for Pool Masters
+                "password": "ReallySecure" - Password for Pool Masters
+            }
+        }
     },
-    "licensing": {
-        "test": "yes", - yes/no - Test Licensing
-        "licenseservers": "lic1.domain.com,lic2.domain.com", - Comma Delimited List of License Servers
-        "vendordaemonport": "7279", - Default Port
-        "licenseport": "27000", - Default Port
-        "webadminport": "8082", - Default Port
-        "simplelicenseserviceport": "8283" - Default Port
+    "Storefront": { - Test Storefront
+        "test": false,
+        "Servers": [
+            "web1.domain.com", - Storefront Servers
+            "web2.domain.com"
+        ],
+        "Ports": [
+            80, - HTTP  Ports to use for communication
+            443 - HTTPS
+        ],
+        "Checks": {
+            "HTTPUrl": { - Validate HTTP URL is present 
+                "Port": 80,
+                "Path": "/Citrix/StoreWeb" - Url Path. Must start with slash.
+            },
+            "HTTPSUrl": { - Validate HTTPS URL is present
+                "Port": 443,
+                "Path": "/Citrix/StoreWeb" - Url Path. Must start with slash.
+            },
+            "ValidCert": { - Validate Certificate on port.
+                "Port": 
+                    443
+            }
+        }
     },
-    "director": {
-        "test": "yes", - yes/no - Test Director
-        "directorervers": "dir1.domain.com,dir2.domain.com", - Comma Delimited List of Director Servers
-        "directorport": "80", - Port to use
-        "directorpath": "/Director/LogOn.aspx?cc=true", - Full Path to Director Login Page - must start with /
-        "protocol": "http" - Protocol to use
+    "XdLicensing": {
+        "test": false, - Test Citrix Licensing
+        "Servers": [
+            "lic1.domain.com", - License Servers
+            "lic2.domain.com"
+        ],
+        "Ports": [
+            7279,
+            27000,
+            8082,
+            8083
+        ],
+        "Services": [
+            "Citrix Licensing",
+            "CitrixWebServicesforLicensing"
+        ],
+        "Checks": {
+            "XdLicense": { - Test XenDesktop License
+                "LicenseType": "XDT"
+            },
+            "XdLicense": { - Test XenApp Licenses (legacy)
+                "LicenseType": "MPS"
+            }
+        }
     },
-    "controllers": {
-        "test": "yes", - yes/no - Test Controllers
-        "controllerservers": "xd1.domain.com,xd2.domain.com", - Comma Delimited List of Controller Servers
-        "controllerport": "80", - Port to use
-        "controllerservices": "CitrixADIdentityService,CitrixAnalytics,CitrixAppLibrary" - Comma Delimited List of Service Names to ensure Controller is up and running properly
+    "Director": {
+        "test": false, - Test Citrix Director
+        "Servers": [
+            "web1.domain.com", - Director servers
+            "web2.domain.com"
+        ],
+        "Ports": [
+            80,
+            443
+        ],
+        "Checks": {
+            "HTTPUrl": {
+                "Port": 80,
+                "Path": "/Director/LogOn.aspx?cc=true"
+            },
+            "HTTPSUrl": {
+                "Port": 443,
+                "Path": "/Director/LogOn.aspx?cc=true"
+            }
+        }
     },
-    "netscalers": {
-        "test": "yes",  - yes/no - Test NetScalers
-        "netscalers": "3.3.3.3,4.4.4.4", - Comma Delimited list of NetScaler IP's or Subnet IP's for your NetScalers
-        "netscalerusername": "nsroot", - NetScaler Username
-        "netscalerpassword": "nsroot" - NetScaler Password
+    "XdControllers": {
+        "test": false, - Test XenDesktop Controllers
+        "Servers": [
+            "xd1.domain.com", - list of XenDesktop controllers
+            "xd2.domain.com"
+        ],
+        "Ports": [
+            80
+        ],
+        "Services": [
+            "CitrixBrokerService",
+            "CitrixHighAvailabilityService",
+            "CitrixConfigSyncService",
+            "CitrixConfigurationService",
+            "CitrixConfigurationLogging",
+            "CitrixDelegatedAdmin",
+            "CitrixADIdentityService",
+            "CitrixMachineCreationService",
+            "CitrixHostService",
+            "CitrixEnvTest",
+            "CitrixMonitor",
+            "CitrixAnalytics",
+            "CitrixAppLibrary",
+            "CitrixOrchestration"
+        ]
     },
-    "ProvisioningServers": {
-        "test": "yes", - yes/no - Test Provisioning Servers
-        "ProvisioningServerFarm": "FarmName", - Provisioning Server Farm Name 
-        "ProvisioningServerSite": "SiteName", - Provisioning Server Site Name
-        "ProvisioningServers": "pvs1.domain.com", - Comma Delimited List of Provisioning Servers
-        "ProvisioningServerPort": "54321", - Provisioning Server Default Server Port 
-        "ProvisioningServerServices": "BNPXE,BNTFTP,PvsApi,PVSTSB,soapserver,StreamService" - List of Services to test. See bottom of file Service reference list
+    "Netscaler": {
+        "test": false, - Test Netscaler
+        "Servers": [
+            "ns1.domain.com", - Netscaler IPs or Subnet IPs to test. 
+            "ns2.domain.com"
+        ],
+        "Ports": [
+            443,
+            80
+        ],
+        "Checks": {
+            "NetScaler": {
+                "username": "nsroot",
+                "password": "ReallySecure"
+            }
+        }
+    },
+    "NetscalerGateway": {
+        "test": false, - Test Netscaler Gateway
+        "Servers": [
+            "ns3.domain.com", - Netscaler Gateway IPs.  
+            "ns4.domain.com"
+        ],
+        "Ports": [
+            443,
+            80
+        ],
+        "Checks": {
+            "NetScalerGateway": {
+                "username": "nsroot",
+                "password": "ReallySecure"
+            }
+        }
+    },
+    "Provisioning": {
+        "test": false, - Test Provisioning Servers
+        "Servers": [
+            "pvs1.domain.com", - Provisioning Servers
+            "pvs2.domain.com"
+        ],
+        "Ports": [
+            54321
+        ],
+        "Services": [
+            "BNPXE",
+            "BNTFTP",
+            "PVSTSB",
+            "soapserver",
+            "StreamService"
+        ],
+        "Checks": {
+        }
+    },
+    "WEM": {
+        "test": false, - Test Citrix Workspace Environment Management (WEM)
+        "Servers": [
+            "wembroker1.domain.com",
+            "wembroker2.domain.com"
+        ],
+        "Ports": [
+            8286
+        ],
+        "Services": [
+            "Norskale Infrastructure Service"
+        ]
+    },
+    "UPS": {
+        "test": false, - Test Universal Print Servers
+        "Servers": [
+            "upsserver.domain.com"
+        ],
+        "Ports": [
+            7229
+        ],
+        "Services": [
+            "UpSvc",
+            "CitrixXTEServer"
+        ]
+    },
+    "FAS": {
+        "test": false, - Test Citrix FAS Servers
+        "Servers": [
+            "fasserver1.domain.com",
+            "fasserver2.domain.com"
+        ],
+        "Ports": [
+            135
+        ],
+        "Services": [
+            "CitrixFederatedAuthenticationService"
+        ]
     },
     "CC": {
-        "test": "yes", - yes/no - Test Cloud Connector
-        "CCServers": "ccserver1.domain,ccserver2.domain", - Comma Delimited List of Cloud Connector Servers
-        "CCPort": "80", - Port to use
-        "CCServices": "CitrixWorkspaceCloudADProvider,..." - Comma delimited list of services to test.  
-    },
-    "EnvChecks": {
-        "test": "yes", - yes/no - Environment Checks, will not run if preferred Broker is Cloud Controller
-        "ddccheck": "yes", - yes/no - Delivery Controller Environment checks
-        "deliverygroupcheck": "yes" - yes/no - Delivery Group Environment Checks
-        "catalogcheck": "yes"- yes/no - Catalog Environment checks
-        "hypervisorcheck": "yes" - yes/no - Hypervisor Environment checks
+        "test": false, - Test Cloud Connector
+        "Servers": [
+            "ccserver1.domain",
+            "ccserver2.domain"
+        ],
+        "Ports": [
+            80
+        ],
+        "Services": [
+            "CitrixWorkspaceCloudADProvider",
+            "CitrixWorkspaceCloudAgentDiscovery",
+            "CitrixWorkspaceCloudAgentLogger",
+            "CitrixWorkspaceCloudAgentSystem",
+            "CitrixWorkspaceCloudAgentWatchDog",
+            "CitrixWorkspaceCloudCredentialProvider",
+            "CitrixWorkspaceCloudWebRelayProvider",
+            "CitrixConfigSyncService",
+            "CitrixHighAvailabilityService",
+            "Citrix NetScaler Cloud Gateway",
+            "XaXdCloudProxy",
+            "RemoteHCLServer",
+            "SessionManagerProxy"
+        ]
     }
 }
-
-Service reference List
-Provisioning Server:
-BNBOOTP = Citrix PVS BOOTP Service
-BNPXE = Citrix PVS PXE Service
-BNTFTP = Citrix PVS TFTP Service
-PvsApi = Citrix PVS API Service
-PVSTSB = Citrix PVS Two-Stage Boot Service
-soapserver = Citrix PVS Soap Server
-StreamService = Citrix PVS Stream Service
-
-Controllers/Storefront/Licencing:
-Citrix Licensing  = Citrix Licensing
-Citrix Peer Resolution Service = Citrix Peer Resolution Service
-Citrix_GTLicensingProv = Citrix Licensing WMI
-CitrixADIdentityService = Citrix AD Identity Service
-CitrixAnalytics = Citrix Analytics
-CitrixAppLibrary = Cirix App Library
-CitrixBrokerService = Citrix Broker Service
-CitrixConfigSyncService = Citrix Config Synchronizer Service
-CitrixConfigurationLogging = Citrix Configuration Logging Service
-CitrixConfigurationReplication = Citrix Configuration Replication
-CitrixConfigurationService = Citrix Configuration Service
-CitrixConnector = Citrix Smart Tools Agent Service
-CitrixCredentialWallet = Citrix Credential Wallet
-CitrixDefaultDomainService = Citrix Default Domain Services
-CitrixDelegatedAdmin = Citrix Delegated Administration Service
-CitrixEnvTest = Citrix Environment Test Service
-CitrixHighAvailabilityService = Citrix High Availability Service
-CitrixHostService = Citrix Host Service
-CitrixMachineCreationService = Citrix Machine Creation Service
-CitrixMonitor = Citrix Monitor Service
-CitrixOrchestration = Citrix Orchestration Service
-CitrixPrivilegedService = Citrix Storefront Privileged Administration Service
-CitrixServiceMonitor = Citrix Service Monitor
-CitrixStorefront = Citrix Storefront Service
-CitrixSubscriptionsStore = Citrix Subscriptions Store
-CitrixTelemetryService = Citrix Telemetry Service
-CitrixTrust = Citrix Trust Service
-CitrixWebServicesforLicensing = Citrix Web Services for Licensing
-CtxLSPortSvc = Citrix Licensing Support Service
-XaXdCloudProxy = Citrix Remote Broker Provider
