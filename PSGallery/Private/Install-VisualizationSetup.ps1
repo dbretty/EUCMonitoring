@@ -183,7 +183,7 @@ function Install-VisualizationSetup {
         $Catch = Invoke-WebRequest -Uri $datasourceURI -Method Post -infile $infile -Headers $headers -ContentType "application/json"
 
         Write-Output "Setting up Grafana Dashboards"
-        Write-Output "Using $DashboardConfig\Dashboards" -ForegroundColor Magenta
+        Write-Output "Using $DashboardConfig\Dashboards"
         $dashs = get-childitem "$DashboardConfig\Dashboards"
         $dashboardURI = "http://localhost:3000/api/dashboards/import"
         foreach ( $dashboard in $dashs ) {
