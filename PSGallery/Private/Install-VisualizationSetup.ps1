@@ -36,11 +36,10 @@ function Install-VisualizationSetup {
     )
 
     begin {
-        [Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls"
         If (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
             Throw "You must be administrator in order to execute this script"
         }
-
+        [Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls"
     }
 
     process {
