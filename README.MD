@@ -61,7 +61,7 @@ Find-Module EUCMonitoring
         ```text
         Set-EUCMonitoring C:\Monitoring -verbose
         ```
-   * Or, for users that want a more interactive dashboard, you can invoke this parameter which will install InfluxDB, Grafana, and NSSM, along with some default dashboards.
+   * Or, for users that want a more interactive dashboard, you can invoke this parameter which will install InfluxDB, Grafana, and NSSM, along with some default dashboards. (This will need to be run as Administrator)
         ```text
         Set-EUCMonitoring C:\Monitoring -InstallVisualizationSetup -verbose
         ```
