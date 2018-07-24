@@ -29,6 +29,7 @@ function Test-ValidCert {
         [parameter(Mandatory = $true, ValueFromPipeline = $true)][int]$Port
     )
 
+    [Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls"
     Write-Verbose "Testing Valid Cert on $Target Port: $Port"
 
     $TCPClient = New-Object -TypeName System.Net.Sockets.TCPClient

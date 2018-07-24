@@ -36,6 +36,10 @@ function Install-VisualizationSetup {
     )
 
     begin {
+        [Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls"
+        If (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+            Throw "You must be administrator in order to execute this script"
+        }
 
     }
 
@@ -79,7 +83,7 @@ function Install-VisualizationSetup {
             New-Item $DashboardConfig -ItemType Directory
             Write-Verbose "EUC Monitoring Dashboard Directory Created $DashboardConfig"
         }
-        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/littletoyrobots/eucmonitoring/v2_beta/DashboardConfig/DataSource.json" -OutFile $dashDatasource
+        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/dbretty/EUCMonitoring/v2_beta/DashboardConfig/DataSource.json" -OutFile $dashDatasource
 
         #Get the current dashboards
         if ( test-path "$DashboardConfig\Dashboards" ) {
@@ -91,7 +95,7 @@ function Install-VisualizationSetup {
         }
         foreach ($board in $Dashboards) {
             Write-Verbose "Getting Dashboard: $board"
-            Invoke-WebRequest -Uri "https://raw.githubusercontent.com/littletoyrobots/eucmonitoring/v2_beta/DashboardConfig/Dashboards/$board" -OutFile "$DashboardConfig\Dashboards\$board"
+            Invoke-WebRequest -Uri "https://raw.githubusercontent.com/dbretty/EUCMonitoring/v2_beta/DashboardConfig/Dashboards/$board" -OutFile "$DashboardConfig\Dashboards\$board"
         }
 
         #open FW for Grafana
@@ -205,7 +209,7 @@ function Install-VisualizationSetup {
 
         Write-Verbose "Downloading helper script."
         # Download the helper script
-        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/littletoyrobots/eucmonitoring/v2_beta/DashboardConfig/Begin-EUCMonitor.ps1" -OutFile "$MonitoringPath\Begin-EUCMonitor.ps1"
+        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/dbretty/EUCMonitoring/v2_beta/DashboardConfig/Begin-EUCMonitor.ps1" -OutFile "$MonitoringPath\Begin-EUCMonitor.ps1"
 
         Write-Output "NOTE: Grafana and Influx are now installed as services.  You might need to set their startup type to"
         Write-Output "automatic if you plan on using this long term.`n"
@@ -216,9 +220,9 @@ function Install-VisualizationSetup {
 
         Write-Output "After configuring, run Begin-EUCMonitoring under appropriate privs.  Each refresh cycle"
         Write-Output "it will upload to local influxdb as a single timestamp. You might want to invoke it like:"
-        Write-Output "> $MonitoringPath\Begin-EUCMonitoring.ps1 -MonitoringPath $MonitoringPath"
+        Write-Output "> $MonitoringPath\Begin-EUCMonitor.ps1 -MonitoringPath $MonitoringPath"
         Write-Output " - or - "
-        Write-Output "> Set-Location $MonitoringPath; .\Begin-EUCMonitoring.ps1"
+        Write-Output "> Set-Location $MonitoringPath; .\Begin-EUCMonitor.ps1"
     }
 
     end {
