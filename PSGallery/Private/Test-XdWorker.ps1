@@ -147,7 +147,11 @@ function Test-XdWorker {
             $BrokerGood = 0
             $BrokerBad = 0
             $BMRegisteredList = $BrokerMachines | Where-Object {($_.RegistrationState -eq "Registered" -and $_.PowerState -match "On")}
-            $DetailErrors = Test-XdWorkerAdvanced -Broker $Broker -Machines $BMRegisteredList -BootThreshold $BootThreshold -HighLoad $HighLoad
+            # If theree are no registered machines, this will avoid an error. 
+            $DetailErrors = @()
+            if ($null -ne $BMRegisteredList) {
+                $DetailErrors = Test-XdWorkerAdvanced -Broker $Broker -Machines $BMRegisteredList -BootThreshold $BootThreshold -HighLoad $HighLoad
+            }    
 
             foreach ($detail in $DetailErrors) {
                 if ($null -ne $detail.services) {
