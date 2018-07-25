@@ -28,7 +28,7 @@ function Uninstall-VisualizationSetup {
         None Required
 
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact='High')]
     param (
         [parameter(Mandatory = $false, ValueFromPipeline = $true)]$MonitoringPath = (get-location)
     )
@@ -41,95 +41,99 @@ function Uninstall-VisualizationSetup {
 
     process {
 
-        #Removing Services
-        $Grafana = (get-childitem $MonitoringPath | Where-Object {$_.Name -match 'graf'}).FullName
-        $Influx = (get-childitem $MonitoringPath | Where-Object {$_.Name -match 'infl'}).FullName
-        $NSSM = (get-childitem $MonitoringPath | Where-Object {$_.Name -match 'nssm'}).FullName
-
-        <#if ( ($null -eq $Grafana) -or ($null -ne $Influx ) -or ($null -ne $NSSM ) ) {
-            Write-Warning "Unable to confirm all components for uninstall in $MonitoringPath"
-            Write-Warning "Grafana: $Grafana"
-            Write-Warning "Influx: $Influx"
-            Write-Warning "NSSM: $NSSM"
-            return
-        }
-        #>
-        
-        $NSSMEXE = "$nssm\win64\nssm.exe"
-        if (test-path $NSSMEXE)
+        if ($PSCmdlet.ShouldProcess("Remove Visualization Services"))
         {
-            #Remove Grafana Service
-            Write-Output "Removing Grafana Server service"
-            try {
-                & $nssmexe Stop "Grafana Server"}
-            catch{
-                Write-Warning $($_.Exception.Message)
-            }
+                #Removing Services
+                $Grafana = (get-childitem $MonitoringPath | Where-Object {$_.Name -match 'graf'}).FullName
+                $Influx = (get-childitem $MonitoringPath | Where-Object {$_.Name -match 'infl'}).FullName
+                $NSSM = (get-childitem $MonitoringPath | Where-Object {$_.Name -match 'nssm'}).FullName
 
-            try {
-                & $nssmexe Remove "Grafana Server" confirm
+            $NSSMEXE = "$nssm\win64\nssm.exe"
+            if (test-path $NSSMEXE)
+            {
+                #Remove Grafana Service
+                Write-Output "Removing Grafana Server service"
+                try {
+                    & $nssmexe Stop "Grafana Server"}
+                catch{
+                    Write-Warning $($_.Exception.Message)
+                }
+
+                try {
+                    & $nssmexe Remove "Grafana Server" confirm
+                }
+                catch{
+                    Write-Warning $($_.Exception.Message)
+                }
+
+                #Remove Influx Service
+                Write-Output "Removing InfluxDB Server service"
+                try {
+                    & $nssmexe Stop "InfluxDB Server"
+                }
+                catch{
+                    Write-Warning $($_.Exception.Message)
+                }
+                
+                try {
+                    & $nssmexe Remove "InfluxDB Server" confirm
+                }
+                catch{
+                    Write-Warning $($_.Exception.Message)
+                }
+            }
+            else {
+                Write-Warning "NSSM.EXE NOT FOUND. Skipping services."
+            }
+        }
+        
+        if ($PSCmdlet.ShouldProcess("Remove program directories"))
+        {
+            #Remove service Directories, all of them.  Scorched earth.
+            Write-Output "Removing program directories"
+            if(-not ([string]::IsNullOrWhiteSpace($Grafana)))
+            {
+                Remove-Item -path $Grafana -Recurse
+            }
+            if(-not ([string]::IsNullOrWhiteSpace($Influx)))
+            {
+                Remove-Item -path $Influx -Recurse
+            }
+            if(-not ([string]::IsNullOrWhiteSpace($NSSM)))
+            {
+                Remove-Item -path $NSSM -Recurse
+            }
+        }
+
+        #Remove Variable
+        if ($PSCmdlet.ShouldProcess("Remove HOME Environment Variable"))
+        {
+            Write-Output "Removing HOME Environment Variable"
+            try{
+                Remove-Item Env:\Home -ErrorAction stop
             }
             catch{
-                Write-Warning $($_.Exception.Message)
+                write-warning "Issues removing Influx DB environment variable Home.  Probably already deleted."
             }
+        }
 
-            #Remove Influx Service
-            Write-Output "Removing InfluxDB Server service"
+        #open FW for Grafana
+        if ($PSCmdlet.ShouldProcess("Remove firewall rules"))
+        {
+            Write-Output "Removing Firewall Rules for Grafana and InfluxDB"
             try {
-                & $nssmexe Stop "InfluxDB Server"
+                Remove-NetFirewallRule -DisplayName "Grafana Server" -ErrorAction stop
             }
             catch{
                 Write-Warning $($_.Exception.Message)
             }
             
             try {
-                & $nssmexe Remove "InfluxDB Server" confirm
+                Remove-NetFirewallRule -DisplayName "InfluxDB Server" -ErrorAction stop
             }
-            catch{
-                Write-Warning $($_.Exception.Message)
-            }
-        }
-        else {
-            Write-Warning "NSSM.EXE NOT FOUND. Skipping services."
-        }
-
-        #Remove service Directories, all of them.  Scorched earth.
-        Write-Output "Removing program directories"
-        if(-not ([string]::IsNullOrWhiteSpace($Grafana)))
-        {
-            Remove-Item -path $Grafana -Recurse
-        }
-        if(-not ([string]::IsNullOrWhiteSpace($Influx)))
-        {
-            Remove-Item -path $Influx -Recurse
-        }
-        if(-not ([string]::IsNullOrWhiteSpace($NSSM)))
-        {
-            Remove-Item -path $NSSM -Recurse
-        }
-
-        #Remove Variable
-        try{
-            Remove-Item Env:\Home -ErrorAction stop
-        }
-        catch{
-            write-warning "Issues removing Influx DB environment variable Home.  Probably already deleted."
-        }
-
-        #open FW for Grafana
-        Write-Output "Remove Firewall Rules for Grafana and InfluxDB"
-        try {
-            Remove-NetFirewallRule -DisplayName "Grafana Server" -ErrorAction stop
-        }
-        catch{
+            catch {
             Write-Warning $($_.Exception.Message)
-        }
-        
-        try {
-            Remove-NetFirewallRule -DisplayName "InfluxDB Server" -ErrorAction stop
-        }
-        catch {
-          Write-Warning $($_.Exception.Message)
+            }
         }
     }
 
