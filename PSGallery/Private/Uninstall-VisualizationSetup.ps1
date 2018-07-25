@@ -21,13 +21,14 @@ function Uninstall-VisualizationSetup {
         Adam Yarborough         1.1             11/07/2018          Integration of Hal's work and updating.
         Adam Yarborough         1.2             12/07/2018          Remove only Grafana, Influx, and NSSM 
                                                                     items from $MonitoringPath
+        Ryan Butler             1.3             24/07/2018          Error and item checking
     .PARAMETER MonitoringPath
         Folder path to download files needed for monitoring process
     .EXAMPLE
         None Required
 
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact='High')]
     param (
         [parameter(Mandatory = $false, ValueFromPipeline = $true)]$MonitoringPath = (get-location)
     )
@@ -40,42 +41,100 @@ function Uninstall-VisualizationSetup {
 
     process {
 
-        #Removing Services
-        $Grafana = (get-childitem $MonitoringPath | Where-Object {$_.Name -match 'graf'}).FullName
-        $Influx = (get-childitem $MonitoringPath | Where-Object {$_.Name -match 'infl'}).FullName
-        $NSSM = (get-childitem $MonitoringPath | Where-Object {$_.Name -match 'nssm'}).FullName
+        if ($PSCmdlet.ShouldProcess("Remove Visualization Services"))
+        {
+                #Removing Services
+                $Grafana = (get-childitem $MonitoringPath | Where-Object {$_.Name -match 'graf'}).FullName
+                $Influx = (get-childitem $MonitoringPath | Where-Object {$_.Name -match 'infl'}).FullName
+                $NSSM = (get-childitem $MonitoringPath | Where-Object {$_.Name -match 'nssm'}).FullName
 
-        <#if ( ($null -eq $Grafana) -or ($null -ne $Influx ) -or ($null -ne $NSSM ) ) {
-            Write-Warning "Unable to confirm all components for uninstall in $MonitoringPath"
-            Write-Warning "Grafana: $Grafana"
-            Write-Warning "Influx: $Influx"
-            Write-Warning "NSSM: $NSSM"
-            return
+            $NSSMEXE = "$nssm\win64\nssm.exe"
+            if (test-path $NSSMEXE)
+            {
+                #Remove Grafana Service
+                Write-Output "Removing Grafana Server service"
+                try {
+                    & $nssmexe Stop "Grafana Server"}
+                catch{
+                    Write-Warning $($_.Exception.Message)
+                }
+
+                try {
+                    & $nssmexe Remove "Grafana Server" confirm
+                }
+                catch{
+                    Write-Warning $($_.Exception.Message)
+                }
+
+                #Remove Influx Service
+                Write-Output "Removing InfluxDB Server service"
+                try {
+                    & $nssmexe Stop "InfluxDB Server"
+                }
+                catch{
+                    Write-Warning $($_.Exception.Message)
+                }
+                
+                try {
+                    & $nssmexe Remove "InfluxDB Server" confirm
+                }
+                catch{
+                    Write-Warning $($_.Exception.Message)
+                }
+            }
+            else {
+                Write-Warning "NSSM.EXE NOT FOUND. Skipping services."
+            }
         }
-        #>
-        $NSSMEXE = "$nssm\win64\nssm.exe"
-        #Remove Grafana Service
-        Write-Output "Removing Grafana Server service"
-        & $nssmexe Stop "Grafana Server"
-        & $nssmexe Remove "Grafana Server" confirm
-        #Remove Influx Service
-        Write-Output "Removing InfluxDB Server service"
-        & $nssmexe Stop "InfluxDB Server"
-        & $nssmexe Remove "InfluxDB Server" confirm
-
-        #Remove service Directories, all of them.  Scorched earth.
-        Write-Output "Removing program directories"
-        Remove-Item -path $Grafana -Recurse 
-        Remove-Item -path $Influx -Recurse 
-        Remove-Item -path $NSSM -Recurse
+        
+        if ($PSCmdlet.ShouldProcess("Remove program directories"))
+        {
+            #Remove service Directories, all of them.  Scorched earth.
+            Write-Output "Removing program directories"
+            if(-not ([string]::IsNullOrWhiteSpace($Grafana)))
+            {
+                Remove-Item -path $Grafana -Recurse
+            }
+            if(-not ([string]::IsNullOrWhiteSpace($Influx)))
+            {
+                Remove-Item -path $Influx -Recurse
+            }
+            if(-not ([string]::IsNullOrWhiteSpace($NSSM)))
+            {
+                Remove-Item -path $NSSM -Recurse
+            }
+        }
 
         #Remove Variable
-        Remove-Item Env:\Home
+        if ($PSCmdlet.ShouldProcess("Remove HOME Environment Variable"))
+        {
+            Write-Output "Removing HOME Environment Variable"
+            try{
+                Remove-Item Env:\Home -ErrorAction stop
+            }
+            catch{
+                write-warning "Issues removing Influx DB environment variable Home.  Probably already deleted."
+            }
+        }
 
         #open FW for Grafana
-        Write-Output "Remove Firewall Rules for Grafana and InfluxDB"
-        Remove-NetFirewallRule -DisplayName "Grafana Server"
-        Remove-NetFirewallRule -DisplayName "InfluxDB Server"
+        if ($PSCmdlet.ShouldProcess("Remove firewall rules"))
+        {
+            Write-Output "Removing Firewall Rules for Grafana and InfluxDB"
+            try {
+                Remove-NetFirewallRule -DisplayName "Grafana Server" -ErrorAction stop
+            }
+            catch{
+                Write-Warning $($_.Exception.Message)
+            }
+            
+            try {
+                Remove-NetFirewallRule -DisplayName "InfluxDB Server" -ErrorAction stop
+            }
+            catch {
+            Write-Warning $($_.Exception.Message)
+            }
+        }
     }
 
     end {

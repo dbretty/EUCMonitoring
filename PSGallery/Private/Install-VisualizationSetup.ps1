@@ -36,11 +36,10 @@ function Install-VisualizationSetup {
     )
 
     begin {
-        [Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls"
         If (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
             Throw "You must be administrator in order to execute this script"
         }
-
+        [Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls"
     }
 
     process {
@@ -183,7 +182,7 @@ function Install-VisualizationSetup {
         $Catch = Invoke-WebRequest -Uri $datasourceURI -Method Post -infile $infile -Headers $headers -ContentType "application/json"
 
         Write-Output "Setting up Grafana Dashboards"
-        Write-Output "Using $DashboardConfig\Dashboards" -ForegroundColor Magenta
+        Write-Output "Using $DashboardConfig\Dashboards"
         $dashs = get-childitem "$DashboardConfig\Dashboards"
         $dashboardURI = "http://localhost:3000/api/dashboards/import"
         foreach ( $dashboard in $dashs ) {
