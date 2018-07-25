@@ -48,6 +48,7 @@ function Start-EUCMonitor {
         throw "Error reading JSON.  Please Check File and try again."
     }
 
+    $Global:ProgressPreference = 'SilentlyContinue'
     Start-Transcript $LogFile -Append
 
     $OutputLocation = $ConfigObject.Global.OutputLocation
