@@ -419,11 +419,17 @@ function Test-Series {
             else {
                 Write-Verbose "$ComputerName is down."
                 $State = "DOWN"
-                $PortsDown += $Config.Ports
-                $ServicesDown += $Config.Services
+                if ($null -ne $Config.Ports) {
+                    $PortsDown += $Config.Ports
+                }
+                if ($null -ne $Config.Services) {
+                    $ServicesDown += $Config.Services
+                }
 
                 foreach ($Check in $Config.Checks) {
-                    $ChecksDown += $Check.PSObject.Properties.Name
+                    if ($null -ne $Check.PSObject.Properties.Name) {
+                        $ChecksDown += $Check.PSObject.Properties.Name
+                    }    
                 }
                 $Errors += "$ComputerName is down."
             }

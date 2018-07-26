@@ -44,12 +44,13 @@ function Test-NetScaler {
 
     # If NetScaler up log Log in and grab vServer Status
     $nsession = Connect-NetScaler -NSIP $NetScaler -username $UserName -nspassword $SecurePassword
+    
     if ($null -eq $nsession) {
         write-verbose "Could not log into the NetScaler"
         return $false # This is so that Test-Series will handle appropriately.
     }
     else {
-        Write-Verbose "NetScaler - $NetScaler Logged In"
+        Write-Verbose "NetScaler - $NetScaler Logged In: NSession is $nsession"
     }
 
     $vServers = Get-vServer -nsip $NetScaler -nssession $nsession
@@ -78,7 +79,7 @@ function Test-NetScaler {
     }
 
     # Disconnect from the NetScaler
-    Disconnect-NetScaler -NSIP $NetScaler|Out-Null
+    Disconnect-NetScaler -NSIP $NetScaler -nssession $nsession
 
     #Returns test results
     return $Results

@@ -18,6 +18,7 @@ function Connect-NetScaler {
         David Brett - 15/03/2017 - Initial Script Creation
         Ryan Butler - 27/03/2017 - Change to nssession scope 
         David Brett - 14/06/2018 - Edited the Function to remove positional parameters and cleaned up old code
+        Adam Yarborough - 26/07/2018 - Edited to 
 #> 
 
     [CmdletBinding()]
@@ -46,10 +47,16 @@ function Connect-NetScaler {
 
     # Connect to NetScaler
     Write-Verbose "Connecting to NetScaler using NITRO"
-    Invoke-RestMethod -uri "$NSIP/nitro/v1/config/login" -body $PayLoad -SessionVariable saveSession -Headers @{"Content-Type" = "application/vnd.com.citrix.netscaler.login+json"} -Method POST
+    try {
+        Invoke-RestMethod -uri "$NSIP/nitro/v1/config/login" -body $PayLoad -SessionVariable saveSession -Headers @{"Content-Type" = "application/vnd.com.citrix.netscaler.login+json"} -Method POST -ErrorAction Stop
+    } 
+    catch {
+        Write-Warning "Unable to connect to Netscaler $NSIP"
+        return $null
+    }
 
     # Build Script NetScaler Session Variable
-    $Script:nsSession = New-Object -TypeName PSObject
+    $nsSession = New-Object -TypeName PSObject
     $nsSession | Add-Member -NotePropertyName Endpoint -NotePropertyValue $NSIP -TypeName String
     $nsSession | Add-Member -NotePropertyName WebSession -NotePropertyValue $saveSession -TypeName Microsoft.PowerShell.Commands.WebRequestSession
 
