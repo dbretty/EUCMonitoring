@@ -33,25 +33,33 @@ function Get-AAAUser {
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$UserType
     )
 
-    Connect-NetScaler $NSIP $UserName $Password
+    $nsession = Connect-NetScaler $NSIP $UserName $Password
 
-    if ($UserType -eq "ica") {
-        $Url = "$NSIP/nitro/v1/config/vpnicaconnection"
+    if($nsession -eq $false)
+    {
+        Write-Warning "Unable to connect to netscaler.  Check config"
     }
     else {
-        $Url = "$NSIP/nitro/v1/config/aaasession"
+        if ($UserType -eq "ica") {
+            $Url = "$NSIP/nitro/v1/config/vpnicaconnection"
+        }
+        else {
+            $Url = "$NSIP/nitro/v1/config/aaasession"
+        }
+    
+        $Method = "GET"
+        $ContentType = "application/json"
+        $UserSessions = Invoke-RestMethod -uri $Url -WebSession $nsSession.WebSession -ContentType $ContentType -Method $Method
+        
+        Disconnect-NetScaler -NSIP $NetScaler -nssession $nsession
+    
+        if ($null -eq $UserSessions) {
+            write-verbose "Could not pull back user sessions from the NetScaler - returning -1"
+            $UserSessions = "-1" 
+        }
+        
+        return $UserSessions
     }
 
-    $Method = "GET"
-    $ContentType = "application/json"
-    $UserSessions = Invoke-RestMethod -uri $Url -WebSession $nsSession.WebSession -ContentType $ContentType -Method $Method
     
-    Disconnect-NetScaler $NSIP
-
-    if ($null -eq $UserSessions) {
-        write-verbose "Could not pull back user sessions from the NetScaler - returning -1"
-        $UserSessions = "-1" 
-    }
-    
-    return $UserSessions
 }
