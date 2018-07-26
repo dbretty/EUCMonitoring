@@ -26,7 +26,7 @@ function Disconnect-NetScaler {
     Test-IP $NSIP
 
     # Check to see if a valid NSSession is active. If not then quit the function
-    if ($NSSession -eq $null) {
+    if ($null -eq $NSSession) {
         Write-Verbose "No valid NetScaler session found, quitting"
         break
     }
