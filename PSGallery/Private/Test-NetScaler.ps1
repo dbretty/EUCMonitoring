@@ -45,41 +45,41 @@ function Test-NetScaler {
     # If NetScaler up log Log in and grab vServer Status
     $nsession = Connect-NetScaler -NSIP $NetScaler -username $UserName -nspassword $SecurePassword
     
-    if ($null -eq $nsession) {
-        write-verbose "Could not log into the NetScaler"
+    if ($nsession -eq $false) {
+        write-warning "Could not log into the NetScaler"
         return $false # This is so that Test-Series will handle appropriately.
     }
-    else {
+    else 
+    {
         Write-Verbose "NetScaler - $NetScaler Logged In: NSession is $nsession"
-    }
+        $vServers = Get-vServer -nsip $NetScaler -nssession $nsession
 
-    $vServers = Get-vServer -nsip $NetScaler -nssession $nsession
-
-    # Loop Through vServers and check Status
-    Write-Verbose "Looping through vServers to check status"
-    foreach ($vServer in $vServers.lbvserver) {
-        $Errors = @()
-        $vServerName = $vServer.name
-        if ($vServer.State -eq "UP") {
-            Write-Verbose "$vServerName is up"
-            if ($vserver.vslbhealth -ne 100) {
-                Write-Verbose "$vServerName is Degraded"
-                $Errors += "$vServerName is Degraded"
+        # Loop Through vServers and check Status
+        Write-Verbose "Looping through vServers to check status"
+        foreach ($vServer in $vServers.lbvserver) {
+            $Errors = @()
+            $vServerName = $vServer.name
+            if ($vServer.State -eq "UP") {
+                Write-Verbose "$vServerName is up"
+                if ($vserver.vslbhealth -ne 100) {
+                    Write-Verbose "$vServerName is Degraded"
+                    $Errors += "$vServerName is Degraded"
+                }
+            }
+            else {
+                Write-Verbose "$vServerName is Down"
+                $Errors += "$vServerName is Down"
+            }
+            $Results += [PSCustomObject]@{
+                'vServerName'   = $vServerName
+                'vServerHealth' = [int]$vServer.vslbhealth
+                'Errors'        = $Errors
             }
         }
-        else {
-            Write-Verbose "$vServerName is Down"
-            $Errors += "$vServerName is Down"
-        }
-        $Results += [PSCustomObject]@{
-            'vServerName'   = $vServerName
-            'vServerHealth' = [int]$vServer.vslbhealth
-            'Errors'        = $Errors
-        }
-    }
 
-    # Disconnect from the NetScaler
-    Disconnect-NetScaler -NSIP $NetScaler -nssession $nsession
+        # Disconnect from the NetScaler
+        Disconnect-NetScaler -NSIP $NetScaler -nssession $nsession
+    }
 
     #Returns test results
     return $Results

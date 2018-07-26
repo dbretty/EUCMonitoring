@@ -52,7 +52,7 @@ function Connect-NetScaler {
     } 
     catch {
         Write-Warning "Unable to connect to Netscaler $NSIP"
-        return $null
+        return $false
     }
 
     # Build Script NetScaler Session Variable
