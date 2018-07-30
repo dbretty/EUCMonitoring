@@ -1,6 +1,3 @@
-# Helper file to take Grafana dashboard export and prepare it for scripted import. 
-# 
-# Don't forget to update Install-VisualizationSetup 
 <#
 .SYNOPSIS
 A small helper script to take Grafana dashboard export and prepare it for scripted import. 
