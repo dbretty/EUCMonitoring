@@ -28,6 +28,7 @@ function Test-NetscalerGateway {
         [parameter(Mandatory = $true, ValueFromPipeline = $true)][System.Security.SecureString]$NetscalerPassword
 
     )
+    
     #Create array with results
     $gwresults = @()
     $errors = @()
