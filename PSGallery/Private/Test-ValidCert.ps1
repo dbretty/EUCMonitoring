@@ -15,6 +15,8 @@ function Test-ValidCert {
     Name                    Version         Date                Change Detail
     Adam Yarborough         1.0             22/02/2018          Function Creation
     David Brett             1.1             16/06/2018          Updated Function Parameters
+    Ryan Butler             1.2             09/08/2018          Validate on date vs Chain to avoid 
+                                                                odd PS conditions. 
 .CREDIT
     Original code by Rob VandenBrink, https://bit.ly/2IDf5Gd
 .OUTPUT
@@ -32,8 +34,6 @@ function Test-ValidCert {
     [Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls"
     Write-Verbose "Testing Valid Cert on $Target Port: $Port"
 
-    $TCPClient = New-Object -TypeName System.Net.Sockets.TCPClient
-
     try {
         $TcpSocket = New-Object Net.Sockets.TcpClient($Target, $Port)
         $tcpstream = $TcpSocket.GetStream()
@@ -50,10 +50,17 @@ function Test-ValidCert {
         }
     }
     catch { Write-Verbose "Could not connect to $Target on $Port to test Cert" }
-    finally {
-        $TCPClient.Dispose()
-    }
 
     if ($null -eq $Certificate) { return $false }
-    return $Certificate.Verify()
+    else {
+        $daysleft = $Certificate.NotAfter - (get-date)
+        if ($daysleft.Days -le 5) {
+            Write-Verbose "Cert about to expire"
+            return $false
+        }
+        else {
+            return $true
+        }
+
+    }
 }
