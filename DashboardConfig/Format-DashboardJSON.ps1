@@ -52,7 +52,7 @@ if ("" -eq $inFile) {
     $textBox.Multiline = $true
     $textBox.ScrollBars = 'Both'
     $textBox.MaxLength = 999999
-    $textBox.Text = "In Grafana.`nGo to Share -> Export -> View JSON -> Copy to Clipboard`nPaste the contents here."
+    $textBox.Text = "In Grafana:  Go to Share -> Export -> View JSON -> Copy to Clipboard.  Paste the contents here."
 
     # Create the OK button.
     $okButton = New-Object System.Windows.Forms.Button
