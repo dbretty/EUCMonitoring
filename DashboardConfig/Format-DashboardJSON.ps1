@@ -51,6 +51,7 @@ if ("" -eq $inFile) {
     $textBox.AcceptsTab = $false
     $textBox.Multiline = $true
     $textBox.ScrollBars = 'Both'
+    $textBox.MaxLength = 999999
     $textBox.Text = "In Grafana.`nGo to Share -> Export -> View JSON -> Copy to Clipboard`nPaste the contents here."
 
     # Create the OK button.
