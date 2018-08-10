@@ -56,6 +56,18 @@ function Test-XdWorker {
         else {
             Write-Verbose "XenDesktop Powershell SDK Snapin Loaded"
         }
+
+        $ctxsnap = Add-PSSnapin Citrix.Configuration.Admin.* -ErrorAction SilentlyContinue
+        $ctxsnap = Get-PSSnapin Citrix.Configuration.Admin.* -ErrorAction SilentlyContinue
+
+        if ($null -eq $ctxsnap) {
+            Write-Error "XenDesktop Powershell Snapin Load Failed"
+            Write-Error "Cannot Load XenDesktop Powershell SDK"
+            Return 
+        }
+        else {
+            Write-Verbose "XenDesktop Powershell SDK Snapin Loaded"
+        }
     }
 
     Process {
@@ -82,6 +94,7 @@ function Test-XdWorker {
         }
 
         $SiteName = (Get-BrokerSite -AdminAddress $Broker).Name
+        $ZoneName = (Get-ConfigZone -AdminAddress $Broker).Name
 
         # Work out the number of Delivery Groups in Maintenance Mode and write them back to the HTML Data File
         $DGFullCount = ($DeliveryGroups | Measure-Object).Count
@@ -125,6 +138,7 @@ function Test-XdWorker {
             # Add results to array
             $results += [PSCustomObject]@{
                 'SiteName'                       = $SiteName
+                'ZoneName'                       = $ZoneName
                 'WorkLoad'                       = $WorkLoad
                 'ConnectedUsers'                 = $TotalConnectedUsers
                 'DisconnectedUsers'              = $TotalUsersDisconnected
@@ -168,6 +182,7 @@ function Test-XdWorker {
             # Add results to array
             $results += [PSCustomObject]@{
                 'SiteName'                       = $SiteName
+                'ZoneName'                       = $ZoneName
                 'WorkLoad'                       = $WorkLoad
                 'TotalConnectedUsers'            = $TotalConnectedUsers
                 'TotalUsersDisconnected'         = $TotalUsersDisconnected

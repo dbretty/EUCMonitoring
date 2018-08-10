@@ -34,6 +34,18 @@ Function Test-XdSessionInfo {
         else {
             Write-Verbose "XenDesktop Powershell SDK Snapin Loaded"
         }
+
+        $ctxsnap = Add-PSSnapin Citrix.Configuration.Admin.* -ErrorAction SilentlyContinue
+        $ctxsnap = Get-PSSnapin Citrix.Configuration.Admin.* -ErrorAction SilentlyContinue
+
+        if ($null -eq $ctxsnap) {
+            Write-Error "XenDesktop Powershell Snapin Load Failed"
+            Write-Error "Cannot Load XenDesktop Powershell SDK"
+            Return 
+        }
+        else {
+            Write-Verbose "XenDesktop Powershell SDK Snapin Loaded"
+        }
     }
 
     Process { 
@@ -41,6 +53,7 @@ Function Test-XdSessionInfo {
         $Errors = @()
         
         $SiteName = (Get-BrokerSite -AdminAddress $Broker).Name
+        $ZoneName = (Get-ConfigZone -AdminAddress $Broker).Name
 
         Get-BrokerDesktopGroup -AdminAddress $Broker | ForEach-Object {
             Write-Verbose "Getting session details "
@@ -75,6 +88,7 @@ Function Test-XdSessionInfo {
 
             $Results += [PSCustomObject]@{
                 'SiteName'             = $SiteName   
+                'ZoneName'             = $ZoneName
                 'DeliveryGroupName'    = $DeliveryGroupName
                 'TotalSessions'        = $TotalSessions
                 'ActiveSessions'       = $ActiveSessions
