@@ -184,8 +184,8 @@ function Test-XdWorker {
                 'SiteName'                       = $SiteName
                 'ZoneName'                       = $ZoneName
                 'WorkLoad'                       = $WorkLoad
-                'TotalConnectedUsers'            = $TotalConnectedUsers
-                'TotalUsersDisconnected'         = $TotalUsersDisconnected
+                'ConnectedUsers'                 = $TotalConnectedUsers    # Changed to match Basic
+                'DisconnectedUsers'              = $TotalUsersDisconnected
                 'DeliveryGroupsNotInMaintenance' = $DGNonMaintenanceCount
                 'DeliveryGroupsInMaintenance'    = $DGMaintenanceCount
                 'BrokerMachineOn'                = $BMOnCount
