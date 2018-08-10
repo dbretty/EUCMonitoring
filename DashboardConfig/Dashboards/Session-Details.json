@@ -106,7 +106,7 @@
                         },
                         {
                             "params": [
-                                "linear"
+                                "previous"
                             ],
                             "type": "fill"
                         }
@@ -251,7 +251,7 @@
                             },
                             {
                                 "params": [
-                                    "linear"
+                                    "previous"
                                 ],
                                 "type": "fill"
                             }
@@ -308,7 +308,7 @@
                             },
                             {
                                 "params": [
-                                    "linear"
+                                    "previous"
                                 ],
                                 "type": "fill"
                             }
@@ -384,7 +384,7 @@
                             },
                             {
                                 "params": [
-                                    "linear"
+                                    "previous"
                                 ],
                                 "type": "fill"
                             }
@@ -547,7 +547,7 @@
                         },
                         {
                             "params": [
-                                "linear"
+                                "previous"
                             ],
                             "type": "fill"
                         }
@@ -710,7 +710,7 @@
                             },
                             {
                                 "params": [
-                                    "linear"
+                                    "previous"
                                 ],
                                 "type": "fill"
                             }
@@ -780,7 +780,7 @@
                             },
                             {
                                 "params": [
-                                    "linear"
+                                    "previous"
                                 ],
                                 "type": "fill"
                             }
