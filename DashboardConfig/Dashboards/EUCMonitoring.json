@@ -77,6 +77,8 @@
           "min": false,
           "rightSide": true,
           "show": true,
+          "sideWidth": null,
+          "sort": "current",
           "sortDesc": true,
           "total": false,
           "values": true
@@ -102,7 +104,7 @@
         "stack": false,
         "steppedLine": false,
         "targets": [{
-            "alias": "[[tag_SiteName]] - [[tag_ZoneName]] - [[col]]",
+            "alias": "[[tag_SiteName]] - [[col]]",
             "groupBy": [{
                 "params": [
                   "$__interval"
@@ -112,12 +114,6 @@
               {
                 "params": [
                   "SiteName"
-                ],
-                "type": "tag"
-              },
-              {
-                "params": [
-                  "ZoneName"
                 ],
                 "type": "tag"
               },
@@ -394,6 +390,9 @@
           "min": false,
           "rightSide": true,
           "show": true,
+          "sideWidth": null,
+          "sort": "current",
+          "sortDesc": true,
           "total": false,
           "values": true
         },
@@ -424,7 +423,7 @@
         "stack": false,
         "steppedLine": false,
         "targets": [{
-            "alias": "[[tag_SiteName]] - [[tag_ZoneName]] - Server - [[col]]",
+            "alias": "[[tag_SiteName]] - Server - [[col]]",
             "groupBy": [{
                 "params": [
                   "$__interval"
@@ -434,12 +433,6 @@
               {
                 "params": [
                   "SiteName"
-                ],
-                "type": "tag"
-              },
-              {
-                "params": [
-                  "ZoneName"
                 ],
                 "type": "tag"
               },
@@ -521,7 +514,7 @@
             ]
           },
           {
-            "alias": "[[tag_SiteName]] - [[tag_ZoneName]] - Desktop - [[col]]",
+            "alias": "[[tag_SiteName]] - Desktop - [[col]]",
             "groupBy": [{
                 "params": [
                   "$__interval"
@@ -531,12 +524,6 @@
               {
                 "params": [
                   "SiteName"
-                ],
-                "type": "tag"
-              },
-              {
-                "params": [
-                  "ZoneName"
                 ],
                 "type": "tag"
               },
@@ -616,7 +603,7 @@
             ]
           },
           {
-            "alias": "[[tag_SiteName]] - [[tag_ZoneName]] - Server - [[col]]",
+            "alias": "[[tag_SiteName]] - Server - [[col]]",
             "groupBy": [{
                 "params": [
                   "$__interval"
@@ -626,12 +613,6 @@
               {
                 "params": [
                   "SiteName"
-                ],
-                "type": "tag"
-              },
-              {
-                "params": [
-                  "ZoneName"
                 ],
                 "type": "tag"
               },
@@ -694,7 +675,7 @@
             ]
           },
           {
-            "alias": "[[tag_SiteName]] - [[tag_ZoneName]] - Desktop - [[col]]",
+            "alias": "[[tag_SiteName]] - Desktop - [[col]]",
             "groupBy": [{
                 "params": [
                   "$__interval"
@@ -704,12 +685,6 @@
               {
                 "params": [
                   "SiteName"
-                ],
-                "type": "tag"
-              },
-              {
-                "params": [
-                  "ZoneName"
                 ],
                 "type": "tag"
               },
@@ -823,7 +798,7 @@
         "datasource": "${DS_EUCMONITORING}",
         "fill": 1,
         "gridPos": {
-          "h": 4,
+          "h": 5,
           "w": 12,
           "x": 0,
           "y": 9
@@ -837,6 +812,9 @@
           "min": false,
           "rightSide": true,
           "show": true,
+          "sideWidth": null,
+          "sort": "current",
+          "sortDesc": true,
           "total": false,
           "values": true
         },
@@ -998,7 +976,7 @@
         "datasource": "${DS_EUCMONITORING}",
         "fill": 0,
         "gridPos": {
-          "h": 4,
+          "h": 5,
           "w": 12,
           "x": 12,
           "y": 9
@@ -1012,6 +990,7 @@
           "min": false,
           "rightSide": true,
           "show": true,
+          "sideWidth": null,
           "total": false,
           "values": true
         },
@@ -1141,7 +1120,7 @@
           "h": 2,
           "w": 3,
           "x": 0,
-          "y": 13
+          "y": 14
         },
         "id": 10,
         "interval": null,
@@ -1263,7 +1242,7 @@
           "h": 2,
           "w": 3,
           "x": 3,
-          "y": 13
+          "y": 14
         },
         "id": 18,
         "interval": null,
@@ -1385,7 +1364,7 @@
           "h": 2,
           "w": 3,
           "x": 6,
-          "y": 13
+          "y": 14
         },
         "id": 12,
         "interval": null,
@@ -1507,7 +1486,7 @@
           "h": 2,
           "w": 3,
           "x": 9,
-          "y": 13
+          "y": 14
         },
         "id": 13,
         "interval": null,
@@ -1629,7 +1608,7 @@
           "h": 2,
           "w": 3,
           "x": 12,
-          "y": 13
+          "y": 14
         },
         "id": 14,
         "interval": null,
@@ -1751,7 +1730,7 @@
           "h": 2,
           "w": 3,
           "x": 15,
-          "y": 13
+          "y": 14
         },
         "id": 15,
         "interval": null,
@@ -1873,7 +1852,7 @@
           "h": 2,
           "w": 3,
           "x": 18,
-          "y": 13
+          "y": 14
         },
         "id": 16,
         "interval": null,
@@ -1995,7 +1974,7 @@
           "h": 2,
           "w": 3,
           "x": 21,
-          "y": 13
+          "y": 14
         },
         "id": 17,
         "interval": null,
@@ -2117,7 +2096,7 @@
           "h": 2,
           "w": 3,
           "x": 3,
-          "y": 15
+          "y": 16
         },
         "id": 11,
         "interval": null,
@@ -2239,7 +2218,7 @@
           "h": 2,
           "w": 3,
           "x": 6,
-          "y": 15
+          "y": 16
         },
         "id": 19,
         "interval": null,
@@ -2361,7 +2340,7 @@
           "h": 2,
           "w": 3,
           "x": 9,
-          "y": 15
+          "y": 16
         },
         "id": 20,
         "interval": null,
@@ -2483,7 +2462,7 @@
           "h": 2,
           "w": 3,
           "x": 12,
-          "y": 15
+          "y": 16
         },
         "id": 21,
         "interval": null,
@@ -2605,7 +2584,7 @@
           "h": 2,
           "w": 3,
           "x": 15,
-          "y": 15
+          "y": 16
         },
         "id": 22,
         "interval": null,
@@ -2727,7 +2706,7 @@
           "h": 2,
           "w": 3,
           "x": 18,
-          "y": 15
+          "y": 16
         },
         "id": 23,
         "interval": null,
@@ -2826,9 +2805,131 @@
           "value": "null"
         }],
         "valueName": "current"
+      },
+      {
+        "cacheTimeout": null,
+        "colorBackground": false,
+        "colorValue": true,
+        "colors": [
+          "#d44a3a",
+          "rgba(237, 129, 40, 0.89)",
+          "#299c46"
+        ],
+        "datasource": "${DS_EUCMONITORING}",
+        "format": "none",
+        "gauge": {
+          "maxValue": 2,
+          "minValue": 0,
+          "show": false,
+          "thresholdLabels": false,
+          "thresholdMarkers": false
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 3,
+          "x": 21,
+          "y": 16
+        },
+        "id": 24,
+        "interval": null,
+        "links": [{
+          "dashUri": "db/xenserver-details",
+          "dashboard": "XenServer Details",
+          "title": "XenServer Details",
+          "type": "dashboard"
+        }],
+        "mappingType": 2,
+        "mappingTypes": [{
+            "name": "value to text",
+            "value": 1
+          },
+          {
+            "name": "range to text",
+            "value": 2
+          }
+        ],
+        "maxDataPoints": 100,
+        "nullPointMode": "connected",
+        "nullText": null,
+        "postfix": "",
+        "postfixFontSize": "50%",
+        "prefix": "",
+        "prefixFontSize": "50%",
+        "rangeMaps": [{
+            "from": "0",
+            "text": "DOWN",
+            "to": "0.01"
+          },
+          {
+            "from": "0.02",
+            "text": "DEGRADED",
+            "to": "1.99"
+          },
+          {
+            "from": "2",
+            "text": "UP",
+            "to": "2"
+          }
+        ],
+        "sparkline": {
+          "fillColor": "rgba(31, 118, 189, 0.18)",
+          "full": false,
+          "lineColor": "rgb(31, 120, 193)",
+          "show": false
+        },
+        "tableColumn": "",
+        "targets": [{
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "Xenserver",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
+                "params": [
+                  "State"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+
+                ],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+
+          ]
+        }],
+        "thresholds": "0.01,2",
+        "title": "XenServer",
+        "transparent": true,
+        "type": "singlestat",
+        "valueFontSize": "50%",
+        "valueMaps": [{
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }],
+        "valueName": "current"
       }
     ],
-    "refresh": "5m",
+    "refresh": "15m",
     "schemaVersion": 16,
     "style": "dark",
     "tags": [
@@ -2871,7 +2972,7 @@
     "timezone": "",
     "title": "EUCMonitoring",
     "uid": "MDZmSxHiz",
-    "version": 26
+    "version": 11
   },
   "folderID": 0,
   "inputs": [{
