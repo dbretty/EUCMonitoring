@@ -19,7 +19,7 @@ function Test-XdWorker {
 .PARAMETER DesktopHighLoad
     Desktop High Load
 .NOTES
-    Current Version:        1.0
+    Current Version:        1.4
     Creation Date:          29/03/2018
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
@@ -29,6 +29,8 @@ function Test-XdWorker {
     Adam Yarborough         1.3             23/07/2018          Change Advanced to include BrokerGood/BrokerBad
                                                                 renamed iterator to details to avoid name clash
                                                                 with system variable $error
+    Adam Yarborough         1.4              13/08/2018         Added MaxRecordCount due to bug Vadim Gonzalez 
+                                                                found. 
 .EXAMPLE
     None Required
 #>
@@ -94,7 +96,6 @@ function Test-XdWorker {
         }
 
         $SiteName = (Get-BrokerSite -AdminAddress $Broker).Name
-        $ZoneName = (Get-ConfigZone -AdminAddress $Broker).Name
 
         # Work out the number of Delivery Groups in Maintenance Mode and write them back to the HTML Data File
         $DGFullCount = ($DeliveryGroups | Measure-Object).Count
@@ -108,11 +109,12 @@ function Test-XdWorker {
         # Work Out the Broker Machine Status Details
         Write-Verbose "Querying Broker Machine Details"
         if ($Workload -eq "server") {
-            $BrokerMachines = Get-BrokerMachine -AdminAddress $Broker | Where-Object {$_.SessionSupport -eq "MultiSession"} | Select-Object HostedMachineName, DesktopKind, InMaintenanceMode, PowerState, RegistrationState, SessionSupport, WindowsConnectionSetting, ZoneName
+            $BrokerMachines = Get-BrokerMachine -AdminAddress $Broker -MaxRecordCount 5000 | Where-Object {$_.SessionSupport -eq "MultiSession"} | Select-Object HostedMachineName, DesktopKind, InMaintenanceMode, PowerState, RegistrationState, SessionSupport, WindowsConnectionSetting, ZoneName
         }
         else {
-            $BrokerMachines = Get-BrokerMachine -AdminAddress $Broker | Where-Object {$_.SessionSupport -eq "SingleSession"} | Select-Object HostedMachineName, DesktopKind, InMaintenanceMode, PowerState, RegistrationState, SessionSupport, WindowsConnectionSetting, ZoneName
+            $BrokerMachines = Get-BrokerMachine -AdminAddress $Broker -MaxRecordCount 5000 | Where-Object {$_.SessionSupport -eq "SingleSession"} | Select-Object HostedMachineName, DesktopKind, InMaintenanceMode, PowerState, RegistrationState, SessionSupport, WindowsConnectionSetting, ZoneName
         }
+    
         $BMFullCount = ($BrokerMachines | Measure-object).Count
         $BMMaintenanceCount = ($BrokerMachines | Where-Object {($_.InMaintenanceMode -match "True" -and $_.PowerState -match "On")} | Measure-Object).Count
         $BMOffCount = ($BrokerMachines | Where-Object {($_.PowerState -match "Off")} | Measure-Object).Count
@@ -138,7 +140,6 @@ function Test-XdWorker {
             # Add results to array
             $results += [PSCustomObject]@{
                 'SiteName'                       = $SiteName
-                'ZoneName'                       = $ZoneName
                 'WorkLoad'                       = $WorkLoad
                 'ConnectedUsers'                 = $TotalConnectedUsers
                 'DisconnectedUsers'              = $TotalUsersDisconnected
@@ -182,7 +183,6 @@ function Test-XdWorker {
             # Add results to array
             $results += [PSCustomObject]@{
                 'SiteName'                       = $SiteName
-                'ZoneName'                       = $ZoneName
                 'WorkLoad'                       = $WorkLoad
                 'ConnectedUsers'                 = $TotalConnectedUsers    # Changed to match Basic
                 'DisconnectedUsers'              = $TotalUsersDisconnected

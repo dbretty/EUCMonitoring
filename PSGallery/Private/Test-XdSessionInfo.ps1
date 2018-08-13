@@ -53,51 +53,90 @@ Function Test-XdSessionInfo {
         $Errors = @()
         
         $SiteName = (Get-BrokerSite -AdminAddress $Broker).Name
-        $ZoneName = (Get-ConfigZone -AdminAddress $Broker).Name
+        $ZoneNames = (Get-ConfigZone -AdminAddress $Broker).Name
+        
+        Foreach ($ZoneName in $ZoneNames) {
 
-        Get-BrokerDesktopGroup -AdminAddress $Broker | ForEach-Object {
-            Write-Verbose "Getting session details "
-            $DeliveryGroupName = $_.Name
-            $TotalSessions = $_.Sessions
-            Write-Verbose "Getting session details for Delivery Group: $DeliveryGroupName"
+            Get-BrokerDesktopGroup -AdminAddress $Broker | ForEach-Object {
+                Write-Verbose "Getting session details "
+                $DeliveryGroupName = $_.Name
+                $TotalSessions = $_.Sessions
+                Write-Verbose "Getting session details for Delivery Group: $DeliveryGroupName"
 
-            $params = @{
-                AdminAddress     = $Broker;
-                DesktopGroupName = $DeliveryGroupName;
-                SessionState     = "Active";
-                Maxrecordcount   = 99999
-            }
-            $Sessions = Get-BrokerSession @params
-            $ActiveSessions = ($Sessions | Where-Object IdleDuration -lt 00:00:01).Count
-            $IdleSessions = ($Sessions | Where-Object IdleDuration -gt 00:00:00).Count
+                $params = @{
+                    AdminAddress     = $Broker;
+                    DesktopGroupName = $DeliveryGroupName;
+                    SessionState     = "Active";
+                    Maxrecordcount   = 99999
+                }
+                $Sessions = Get-BrokerSession @params
+                $ActiveSessions = ($Sessions | Where-Object IdleDuration -lt 00:00:01).Count
+                $IdleSessions = ($Sessions | Where-Object IdleDuration -gt 00:00:00).Count
+                
+                
+                $BrokerDurationMin = ($Sessions.BrokeringDuration | Measure-Object -Minimum).Minimum
+                $BrokerDurationAvg = ($Sessions.BrokeringDuration | Measure-Object -Average).Average
+                $BrokerDurationMax = ($Sessions.BrokeringDuration | Measure-Object -Maximum).Maximum
+                # In case of no Broker info returned
+                if ($null -eq $BrokerDurationMin) {
+                    $BrokerDurationMin = 0
+                    $BrokerDurationAvg = 0 
+                    $BrokerDurationMax = 0 
+                }
+                
+                # If one is null, all are null. 
+            
+                $params = @{
+                    AdminAddress     = $Broker;
+                    DesktopGroupName = $DeliveryGroupName;
+                    ZoneName         = $ZoneName;
+                    Maxrecordcount   = 99999
+                }
+                $Machines = Get-BrokerMachine @params
+            
+                $LoadIndexMin = ($Machines.LoadIndex | Measure-Object -Minimum).Minimum
+                $LoadIndexAvg = ($Machines.LoadIndex | Measure-Object -Average).Average
+                $LoadIndexMax = ($Machines.LoadIndex | Measure-Object -Maximum).Maximum
+                # In case load index not returned. 
+                if ($null -eq $LoadIndexMin) {
+                    $LoadIndexMin = 0
+                    $LoadIndexAvg = 0
+                    $LoadIndexMax = 0
+                }
+                $params = @{
+                    AdminAddress     = $Broker;
+                    DesktopGroupName = $DeliveryGroupName;
+                    SessionState     = "Disconnected";
+                    Maxrecordcount   = 99999
+                }
+                $DisconnectedSessions = (Get-BrokerSession @params).Count
 
-            $params = @{
-                AdminAddress     = $Broker;
-                DesktopGroupName = $DeliveryGroupName;
-                SessionState     = "Disconnected";
-                Maxrecordcount   = 99999
-            }
-            $DisconnectedSessions = (Get-BrokerSession @params).Count
+                Write-Verbose "SiteName             = $SiteName"
+                Write-Verbose "DeliveryGroupName    = $DeliveryGroupName"
+                Write-Verbose "TotalSessions        = $TotalSessions"
+                Write-Verbose "ActiveSessions       = $ActiveSessions"
+                Write-Verbose "IdleSessions         = $IdleSessions"
 
-            Write-Verbose "SiteName             = $SiteName"
-            Write-Verbose "DeliveryGroupName    = $DeliveryGroupName"
-            Write-Verbose "TotalSessions        = $TotalSessions"
-            Write-Verbose "ActiveSessions       = $ActiveSessions"
-            Write-Verbose "IdleSessions         = $IdleSessions"
-            Write-Verbose "DisconnectedSessions = $DisconnectedSessions"
+                Write-Verbose "DisconnectedSessions = $DisconnectedSessions"
 
-            $Results += [PSCustomObject]@{
-                'SiteName'             = $SiteName   
-                'ZoneName'             = $ZoneName
-                'DeliveryGroupName'    = $DeliveryGroupName
-                'TotalSessions'        = $TotalSessions
-                'ActiveSessions'       = $ActiveSessions
-                'IdleSessions'         = $IdleSessions
-                'DisconnectedSessions' = $DisconnectedSessions
-                'Errors'               = $Errors
+                $Results += [PSCustomObject]@{
+                    'SiteName'             = $SiteName   
+                    'ZoneName'             = $ZoneName
+                    'DeliveryGroupName'    = $DeliveryGroupName
+                    'TotalSessions'        = $TotalSessions
+                    'ActiveSessions'       = $ActiveSessions
+                    'IdleSessions'         = $IdleSessions
+                    'DisconnectedSessions' = $DisconnectedSessions
+                    'BrokerDurationMin'    = $BrokerDurationMin
+                    'BrokerDurationAvg'    = $BrokerDurationAvg
+                    'BrokerDurationMax'    = $BrokerDurationMax
+                    'LoadIndexMin'         = $LoadIndexMin
+                    'LoadIndexAvg'         = $LoadIndexAvg
+                    'LoadIndexMax'         = $LoadIndexMax
+                    'Errors'               = $Errors
+                }
             }
         }
-
         return $Results
     }
 
