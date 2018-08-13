@@ -30,7 +30,9 @@ function Test-XdWorker {
                                                                 renamed iterator to details to avoid name clash
                                                                 with system variable $error
     Adam Yarborough         1.4              13/08/2018         Added MaxRecordCount due to bug Vadim Gonzalez 
-                                                                found. 
+                                                                found. Changed powerstate to notmatch Off so that
+                                                                Unknown or Unmanaged powerstates would be included
+
 .EXAMPLE
     None Required
 #>
@@ -116,11 +118,11 @@ function Test-XdWorker {
         }
     
         $BMFullCount = ($BrokerMachines | Measure-object).Count
-        $BMMaintenanceCount = ($BrokerMachines | Where-Object {($_.InMaintenanceMode -match "True" -and $_.PowerState -match "On")} | Measure-Object).Count
+        $BMMaintenanceCount = ($BrokerMachines | Where-Object {($_.InMaintenanceMode -match "True" -and $_.PowerState -notmatch "Off")} | Measure-Object).Count
         $BMOffCount = ($BrokerMachines | Where-Object {($_.PowerState -match "Off")} | Measure-Object).Count
         $BMOnCount = ($BrokerMachines | Where-Object {($_.PowerState -match "On")} | Measure-Object).Count
-        $BMRegisteredCount = ($BrokerMachines | Where-Object {($_.RegistrationState -eq "Registered" -and $_.PowerState -match "On")} | Measure-Object).Count
-        $BMUnRegisteredCount = ($BrokerMachines | Where-Object {($_.RegistrationState -eq "Unregistered" -and $_.PowerState -match "On")} | Measure-Object).Count
+        $BMRegisteredCount = ($BrokerMachines | Where-Object {($_.RegistrationState -eq "Registered" -and $_.PowerState -notmatch "Off")} | Measure-Object).Count
+        $BMUnRegisteredCount = ($BrokerMachines | Where-Object {($_.RegistrationState -eq "Unregistered" -and $_.PowerState -notmatch "Off")} | Measure-Object).Count
 
         Write-Verbose "Total Number of Broker Machines: $BMFullCount"
         Write-Verbose "Total Number of Broker Machines in Maintenance Mode: $BMMaintenanceCount"
