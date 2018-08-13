@@ -74,11 +74,13 @@ Function Test-XdSessionInfo {
                 $IdleSessions = ($Sessions | Where-Object IdleDuration -gt 00:00:00).Count
                 
                 # Limit durations to 1 hour, so you get rolling average. 
-                $BrokerDurationAvg = ($Sessions.BrokeringDuration | where BrokeringTime -gt ((get-date) + (New-TimeSpan -Hours -1)) | Measure-Object -Average).Average
+                $BrokeringDurationAvg = ($Sessions | `
+                        Where-Object BrokeringTime -gt ((get-date) + (New-TimeSpan -Hours -1)) | `
+                        Select-Object -ExpandProperty BrokeringDuration | Measure-Object -Average).Average
 
                 # In case of no Broker info returned
-                if ($null -eq $BrokerDurationMin) {
-                    $BrokerDurationAvg = 0 
+                if ($null -eq $BrokeringDurationAvg) {
+                    $BrokeringDurationAvg = 0 
                 }
                 
                 # If one is null, all are null. 
@@ -109,8 +111,9 @@ Function Test-XdSessionInfo {
                 Write-Verbose "TotalSessions        = $TotalSessions"
                 Write-Verbose "ActiveSessions       = $ActiveSessions"
                 Write-Verbose "IdleSessions         = $IdleSessions"
-
                 Write-Verbose "DisconnectedSessions = $DisconnectedSessions"
+                Write-Verbose "BrokeringDurationAvg = $BrokeringDurationAvg"
+                Write-Verbose "LoadIndexAvg         = $LoadIndexAvg"
 
                 $Results += [PSCustomObject]@{
                     'SiteName'             = $SiteName   

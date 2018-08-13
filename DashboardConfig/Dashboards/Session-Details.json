@@ -844,7 +844,7 @@
                 ],
                 "spaceLength": 10,
                 "stack": false,
-                "steppedLine": false,
+                "steppedLine": true,
                 "targets": [{
                     "alias": "[[tag_SiteName]] - [[tag_ZoneName]] - [[tag_DeliveryGroupName]]",
                     "groupBy": [{
@@ -886,7 +886,7 @@
                     "select": [
                         [{
                                 "params": [
-                                    "BrokerDurationAvg"
+                                    "BrokeringDurationAvg"
                                 ],
                                 "type": "field"
                             },
@@ -1149,7 +1149,7 @@
         "timezone": "",
         "title": "Session Details",
         "uid": "s451Xfcik",
-        "version": 15
+        "version": 16
     },
     "folderID": 0,
     "inputs": [{
