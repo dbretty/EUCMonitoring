@@ -73,15 +73,12 @@ Function Test-XdSessionInfo {
                 $ActiveSessions = ($Sessions | Where-Object IdleDuration -lt 00:00:01).Count
                 $IdleSessions = ($Sessions | Where-Object IdleDuration -gt 00:00:00).Count
                 
-                
-                $BrokerDurationMin = ($Sessions.BrokeringDuration | Measure-Object -Minimum).Minimum
-                $BrokerDurationAvg = ($Sessions.BrokeringDuration | Measure-Object -Average).Average
-                $BrokerDurationMax = ($Sessions.BrokeringDuration | Measure-Object -Maximum).Maximum
+                # Limit durations to 1 hour, so you get rolling average. 
+                $BrokerDurationAvg = ($Sessions.BrokeringDuration | where BrokeringTime -gt ((get-date) + (New-TimeSpan -Hours -1)) | Measure-Object -Average).Average
+
                 # In case of no Broker info returned
                 if ($null -eq $BrokerDurationMin) {
-                    $BrokerDurationMin = 0
                     $BrokerDurationAvg = 0 
-                    $BrokerDurationMax = 0 
                 }
                 
                 # If one is null, all are null. 
@@ -93,15 +90,11 @@ Function Test-XdSessionInfo {
                     Maxrecordcount   = 99999
                 }
                 $Machines = Get-BrokerMachine @params
-            
-                $LoadIndexMin = ($Machines.LoadIndex | Measure-Object -Minimum).Minimum
                 $LoadIndexAvg = ($Machines.LoadIndex | Measure-Object -Average).Average
-                $LoadIndexMax = ($Machines.LoadIndex | Measure-Object -Maximum).Maximum
+
                 # In case load index not returned. 
-                if ($null -eq $LoadIndexMin) {
-                    $LoadIndexMin = 0
+                if ($null -eq $LoadIndexAvg) {
                     $LoadIndexAvg = 0
-                    $LoadIndexMax = 0
                 }
                 $params = @{
                     AdminAddress     = $Broker;
@@ -127,12 +120,8 @@ Function Test-XdSessionInfo {
                     'ActiveSessions'       = $ActiveSessions
                     'IdleSessions'         = $IdleSessions
                     'DisconnectedSessions' = $DisconnectedSessions
-                    'BrokerDurationMin'    = $BrokerDurationMin
-                    'BrokerDurationAvg'    = $BrokerDurationAvg
-                    'BrokerDurationMax'    = $BrokerDurationMax
-                    'LoadIndexMin'         = $LoadIndexMin
+                    'BrokeringDurationAvg' = $BrokeringDurationAvg
                     'LoadIndexAvg'         = $LoadIndexAvg
-                    'LoadIndexMax'         = $LoadIndexMax
                     'Errors'               = $Errors
                 }
             }

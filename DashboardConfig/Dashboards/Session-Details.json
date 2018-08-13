@@ -63,7 +63,7 @@
                 "id": 6,
                 "legend": {
                     "alignAsTable": true,
-                    "avg": true,
+                    "avg": false,
                     "current": true,
                     "hideEmpty": false,
                     "hideZero": true,
@@ -204,7 +204,7 @@
                 "id": 8,
                 "legend": {
                     "alignAsTable": true,
-                    "avg": true,
+                    "avg": false,
                     "current": true,
                     "hideEmpty": false,
                     "hideZero": true,
@@ -441,7 +441,7 @@
                 "id": 4,
                 "legend": {
                     "alignAsTable": true,
-                    "avg": true,
+                    "avg": false,
                     "current": true,
                     "max": true,
                     "min": false,
@@ -605,7 +605,7 @@
                 "id": 2,
                 "legend": {
                     "alignAsTable": true,
-                    "avg": true,
+                    "avg": false,
                     "current": true,
                     "max": true,
                     "min": false,
@@ -816,7 +816,7 @@
                 "id": 10,
                 "legend": {
                     "alignAsTable": true,
-                    "avg": true,
+                    "avg": false,
                     "current": true,
                     "hideEmpty": true,
                     "hideZero": true,
@@ -969,7 +969,7 @@
                 "id": 12,
                 "legend": {
                     "alignAsTable": true,
-                    "avg": true,
+                    "avg": false,
                     "current": true,
                     "hideEmpty": true,
                     "hideZero": true,
@@ -1149,7 +1149,7 @@
         "timezone": "",
         "title": "Session Details",
         "uid": "s451Xfcik",
-        "version": 13
+        "version": 15
     },
     "folderID": 0,
     "inputs": [{
