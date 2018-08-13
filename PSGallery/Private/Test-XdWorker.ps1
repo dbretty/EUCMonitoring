@@ -60,18 +60,6 @@ function Test-XdWorker {
         else {
             Write-Verbose "XenDesktop Powershell SDK Snapin Loaded"
         }
-
-        $ctxsnap = Add-PSSnapin Citrix.Configuration.Admin.* -ErrorAction SilentlyContinue
-        $ctxsnap = Get-PSSnapin Citrix.Configuration.Admin.* -ErrorAction SilentlyContinue
-
-        if ($null -eq $ctxsnap) {
-            Write-Error "XenDesktop Powershell Snapin Load Failed"
-            Write-Error "Cannot Load XenDesktop Powershell SDK"
-            Return 
-        }
-        else {
-            Write-Verbose "XenDesktop Powershell SDK Snapin Loaded"
-        }
     }
 
     Process {
