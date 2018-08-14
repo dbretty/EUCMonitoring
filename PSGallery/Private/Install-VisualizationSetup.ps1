@@ -72,7 +72,8 @@ function Install-VisualizationSetup {
             "UPS-Details.json",
             "WEM-Details.json",
             "XDController-Details.json",
-            "XDLicensing-Details.json"
+            "XDLicensing-Details.json",
+            "XenServer-Details.json"
         )
 
         # Get the dashboard config.
