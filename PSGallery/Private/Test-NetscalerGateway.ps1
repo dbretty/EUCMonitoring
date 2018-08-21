@@ -1,25 +1,8 @@
-function Test-NetscalerGateway {
+function Test-NetScalerGateway {
     <#
-.SYNOPSIS
-    Tests Netscaler Gateway
-.DESCRIPTION
-    Tests Netscaler Gateway
-        Grabs AAA users
-.PARAMETER NetScalerHostingGateway
-    Netscaler hosting gateway
-.PARAMETER NetScalerUserName
-    Netscaler Username
-.PARAMETER NetscalerPassword
-    Netscaler Password
-.NOTES
-    Name                    Version         Date                Change Detail
-    Ryan Butler             1.1             29/03/2018          Converted to function
-    Adam Yarborough         1.2             05/06/2018          Converted to object
-    Adam Yarborough         1.3             23/07/2018          Added connection successful test based on
-                                                                returned values of Get-AAAUser.
-.EXAMPLE
-    None Required
-#>
+    
+    #>
+
     [CmdletBinding()]
     Param
     (
@@ -28,11 +11,10 @@ function Test-NetscalerGateway {
         [parameter(Mandatory = $true, ValueFromPipeline = $true)][System.Security.SecureString]$NetscalerPassword
 
     )
-    
+
     #Create array with results
     $gwresults = @()
     $errors = @()
-
 
     # Test the NetScaler Gateway
     $ICAUsers = (((Get-AAAUser $NetScalerHostingGateway $NetScalerUserName $NetScalerPassword "ica").vpnicaconnection) | Measure-Object).count

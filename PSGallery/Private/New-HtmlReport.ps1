@@ -22,6 +22,7 @@ function New-HtmlReport {
     David Brett             1.4             26/06/2018          Bug Fixes and Code Cleaning
                                                                 Fixes #24
                                                                 Fixes #40
+    David Brett             1.5             21/08/2018          Bug fixes and naming clean up
 .EXAMPLE
     None Required
 #> 
@@ -133,12 +134,23 @@ function New-HtmlReport {
                     $Errors += "$($Result.ComputerName) - $($Result.Errors)`n"
                 }
                 "<td width='$ColumnPercent%' align=center valign=top>" | Out-File $HTMLOutputFileFull -Append
-                Get-DonutHTML $Height $Width $UpColor $DownColor $DonutStroke $Series $Up $Down | Out-File $HTMLOutputFileFull -Append
+                switch ($Series) {
+                    "Xenserver" {$NewSeries = "Citrix HV"; break}
+                    "Storefront" {$NewSeries = "StoreFront"; break}
+                    "XdLicensing" {$NewSeries = "Licensing"; break}
+                    "XdControllers" {$NewSeries = "Controllers"; break}
+                    "NetScalerGateway" {$NewSeries = "Citrix Gtwy"; break}
+                    "Provisioning" {$NewSeries = "PVS"; break}
+                    "NetScaler" {$NewSeries = "Citrix ADC"; break}
+                    default {$NewSeries = $Series; break}
+                }
+                Get-DonutHTML $Height $Width $UpColor $DownColor $DonutStroke $NewSeries $Up $Down | Out-File $HTMLOutputFileFull -Append
                 "</td>" | Out-File $HTMLOutputFileFull -Append
             }
         }
     }
     "</tr>" | Out-File $HTMLOutputFileFull -Append
+    "</table>" | Out-File $HTMLOutputFileFull -Append
 
     # Worker Object Heights, this is for reference. 
     "<table border='0' width='100%'' cellspacing='0' cellpadding='0'>" | Out-File $HTMLOutputFileFull -Append
@@ -170,9 +182,16 @@ function New-HtmlReport {
                     $CheckDataName = $CheckData.CheckName
                     $Up = $CheckData.Values.BrokerMachineRegistered
                     $Down = $CheckData.Values.BrokerMachineUnRegistered
-                    "<td width='$ColumnPercent%' align=center valign=top>" | Out-File $HTMLOutputFileFull -Append
-                    Get-DonutHTML $Height $Width $UpColor $DownColor $DonutStroke $CheckDataName $Up $Down -Worker | Out-File $HTMLOutputFileFull -Append
-                    "</td>" | Out-File $HTMLOutputFileFull -Append
+                    if ($CheckDataName -ne "XdSessionInfo") {
+                        switch ($CheckDataName) {
+                            "XdServer" {$NewName = "Server Workloads"; break}
+                            "XdDesktop" {$NewName = "Desktop Workloads"; break}
+                            default {$NewName = $Series; break}
+                        }
+                        "<td width='$ColumnPercent%' align=center valign=top>" | Out-File $HTMLOutputFileFull -Append
+                        Get-DonutHTML $Height $Width $UpColor $DownColor $DonutStroke $NewName $Up $Down -Worker | Out-File $HTMLOutputFileFull -Append
+                        "</td>" | Out-File $HTMLOutputFileFull -Append
+                    }
                 }
             }
         }
@@ -183,13 +202,13 @@ function New-HtmlReport {
     "</br>" | Out-File $HTMLOutputFileFull -Append
 
     # Licensing Data
-    if ($true -eq $ConfigObject.Licensing.test) { 
+    if ($true -eq $ConfigObject.XdLicensing.test) { 
         "<div class='info-title'>" | Out-File $HTMLOutputFileFull -Append
         "Current Licensing Status" | Out-File $HTMLOutputFileFull -Append
         "</div>" | Out-File $HTMLOutputFileFull -Append
         foreach ($SeriesResult in $Results) { 
             $Series = $SeriesResult.Series
-            if ( "Licensing" -eq $Series ) {
+            if ( "XdLicensing" -eq $Series ) {
                 $ChecksDetail = $SeriesResult.Results.checksdata
                 "<div class='info-text'>" | Out-File $HTMLOutputFileFull -Append
                 foreach ($CheckDetails in $ChecksDetail) {
@@ -216,8 +235,8 @@ function New-HtmlReport {
                 foreach ($CheckDetails in $ChecksDetail) {
                     if ("XdServer" -eq $CheckDetails.Checkname) {
                         "<div class='info-text'>" | Out-File $HTMLOutputFileFull -Append
-                        $Up = $CheckDetails.values.TotalConnectedUsers
-                        $Down = $CheckDetails.values.TotalUsersDisconnected
+                        $Up = $CheckDetails.values.ConnectedUsers
+                        $Down = $CheckDetails.values.DisconnectedUsers
                         "Total User Base - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
                         $Up = $CheckDetails.values.DeliveryGroupsNotInMaintenance
                         $Down = $CheckDetails.Values.DeliveryGroupsInMaintenance
@@ -251,8 +270,8 @@ function New-HtmlReport {
                 foreach ($CheckDetails in $ChecksDetail) {
                     if ("XdDesktop" -eq $CheckDetails.Checkname) {
                         "<div class='info-text'>" | Out-File $HTMLOutputFileFull -Append
-                        $Up = $CheckDetails.values.TotalConnectedUsers
-                        $Down = $CheckDetails.values.TotalUsersDisconnected
+                        $Up = $CheckDetails.values.ConnectedUsers
+                        $Down = $CheckDetails.values.DisconnectedUsers
                         "Total User Base - $Up/$Down<br>" | Out-File $HTMLOutputFileFull -Append
                         $Up = $CheckDetails.values.DeliveryGroupsNotInMaintenance
                         $Down = $CheckDetails.Values.DeliveryGroupsInMaintenance
@@ -275,20 +294,24 @@ function New-HtmlReport {
     }
 
     # Gateway Details
-    if ($true -eq $ConfigObject.Gateway.test) {
+    if ($true -eq $ConfigObject.NetScalerGateway.test) {
         # Title
         "<div class='info-title'>" | Out-File $HTMLOutputFileFull -Append
         "Citrix Networking" | Out-File $HTMLOutputFileFull -Append
         "</div>" | Out-File $HTMLOutputFileFull -Append
 
+        $ICAUsers = 0
+        $VPNUsers = 0
+        $TotalUsers = 0
+
         foreach ($SeriesResult in $Results) { 
             $Series = $SeriesResult.Series
-            if ( "Gateway" -eq $Series ) {
+            if ( "NetScalerGateway" -eq $Series ) {
                 $ChecksDetail = $SeriesResult.Results.checksdata
                 foreach ($CheckDetails in $ChecksDetail) {
-                    $ICAUsers = $CheckDetails.values.ICAUsers
-                    $VPNUsers = $CheckDetails.values.VPNUsers
-                    $TotalUsers = $CheckDetails.values.TotalGatewayUsers
+                    $ICAUsers = $ICAUsers + $CheckDetails.values.ICAUsers
+                    $VPNUsers = $VPNUsers + $CheckDetails.values.VPNUsers
+                    $TotalUsers = $TotalUsers + $CheckDetails.values.TotalGatewayUsers
                 }
             }
         }

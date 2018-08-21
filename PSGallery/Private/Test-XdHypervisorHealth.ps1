@@ -43,7 +43,7 @@ function Test-XdHypervisorHealth {
         $Errors = @()
 
         Write-Verbose "XdHypervisor Check started"
-        $HypervisorConnections = Get-HypScopedObject -AdminAddress $AdminAddress
+        $HypervisorConnections = Get-HypScopedObject -AdminAddress $AdminAddress -ErrorAction SilentlyContinue
         Write-Verbose "Initialize Test Variables"
 
         $Health = $true

@@ -47,6 +47,7 @@ Citrix License Type, commonly XDT / MPS
         $TotalIssued = 0
 
         $LicResults = Get-LicInventory -AdminAddress $LicenseServer -CertHash $cert.CertHash
+        
         foreach ($License in $LicResults) {
             if ($License.LicenseProductName -eq $LicenseType) {
                 $TotalIssued += $License.LicensesInUse
