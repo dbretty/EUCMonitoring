@@ -32,11 +32,10 @@ function Get-AAAUser {
         [parameter(Mandatory = $true, ValueFromPipeline = $true)][System.Security.SecureString]$Password,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$UserType
     )
-
+    
     $nsSession = Connect-NetScaler $NSIP $UserName $Password
 
-    if($nsSession -eq $false)
-    {
+    if ($nsSession -eq $false) {
         Write-Warning "Unable to connect to netscaler.  Check config"
     }
     else {
@@ -51,15 +50,15 @@ function Get-AAAUser {
         $ContentType = "application/json"
         $UserSessions = Invoke-RestMethod -uri $Url -WebSession $nsSession.WebSession -ContentType $ContentType -Method $Method
         
-        Disconnect-NetScaler -NSIP $NetScaler -nssession $nsSession
+        Disconnect-NetScaler -NSIP $NSIP -nssession $nsSession
     
         if ($null -eq $UserSessions) {
             write-verbose "Could not pull back user sessions from the NetScaler - returning -1"
-            $UserSessions = "-1" 
+            $UserSessions = -1
         }
         
         return $UserSessions
     }
 
-    
+
 }

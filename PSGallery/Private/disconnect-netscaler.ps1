@@ -21,11 +21,15 @@ function Disconnect-NetScaler {
         [parameter(Mandatory = $false, ValueFromPipeline = $true)]$NSIP,
         [parameter(Mandatory = $false, ValueFromPipeline = $true)]$NSSession
     )
-
+    
     # Validate That the IP Address is valid
-    Test-IP $NSIP
+    # Test-IP $NSIP
 
     # Check to see if a valid NSSession is active. If not then quit the function
+    if ($null -eq $NSIP) {
+        Write-Verbose "Not a valid netscaler address"
+        break
+    }
     if ($null -eq $NSSession) {
         Write-Verbose "No valid NetScaler session found, quitting"
         break

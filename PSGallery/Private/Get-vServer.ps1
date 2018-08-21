@@ -26,7 +26,12 @@ function Get-vServer {
 
     # Build Global Variables with all Load Balance vServers on NetScaler
     Write-Verbose "Return all Virtual Servers on $NSIP"
-    $vServers = Invoke-RestMethod -uri "$NSIP/nitro/v1/stat/lbvserver" -WebSession $NSSession.WebSession -Method GET
-
+    try {
+        $vServers = Invoke-RestMethod -uri "$NSIP/nitro/v1/stat/lbvserver" -WebSession $NSSession.WebSession -Method GET -ErrorAction Stop
+    }
+    catch {
+        Write-Verbose "Unabled to get vServers"
+        $vServers = $false
+    }
     Return $vServers
 }

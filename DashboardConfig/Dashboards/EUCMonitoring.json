@@ -12,7 +12,7 @@
         "type": "grafana",
         "id": "grafana",
         "name": "Grafana",
-        "version": "5.1.3"
+        "version": "5.2.1"
       },
       {
         "type": "panel",
@@ -40,7 +40,7 @@
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
-        "name": "Annotations & Alerts",
+        "name": "Annotations \u0026 Alerts",
         "type": "dashboard"
       }]
     },
@@ -48,14 +48,18 @@
     "gnetId": null,
     "graphTooltip": 0,
     "id": null,
-    "links": [],
+    "links": [
+
+    ],
     "panels": [{
-        "aliasColors": {},
+        "aliasColors": {
+
+        },
         "bars": false,
         "dashLength": 10,
         "dashes": false,
         "datasource": "${DS_EUCMONITORING}",
-        "fill": 1,
+        "fill": 0,
         "gridPos": {
           "h": 9,
           "w": 12,
@@ -73,18 +77,29 @@
           "min": false,
           "rightSide": true,
           "show": true,
+          "sideWidth": null,
+          "sort": "current",
+          "sortDesc": true,
           "total": false,
           "values": true
         },
         "lines": true,
         "linewidth": 1,
-        "links": [],
+        "links": [{
+          "dashUri": "db/session-details",
+          "dashboard": "Session Details",
+          "title": "Session Details",
+          "type": "dashboard"
+        }],
         "nullPointMode": "null",
         "percentage": false,
         "pointradius": 5,
         "points": false,
         "renderer": "flot",
-        "seriesOverrides": [],
+        "seriesOverrides": [{
+          "alias": "All Sites - Total Sessions",
+          "fill": 1
+        }],
         "spaceLength": 10,
         "stack": false,
         "steppedLine": false,
@@ -117,12 +132,33 @@
             "select": [
               [{
                   "params": [
+                    "TotalSessions"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [
+
+                  ],
+                  "type": "sum"
+                },
+                {
+                  "params": [
+                    "Total"
+                  ],
+                  "type": "alias"
+                }
+              ],
+              [{
+                  "params": [
                     "ActiveSessions"
                   ],
                   "type": "field"
                 },
                 {
-                  "params": [],
+                  "params": [
+
+                  ],
                   "type": "sum"
                 },
                 {
@@ -134,29 +170,14 @@
               ],
               [{
                   "params": [
-                    "IdleSessions"
-                  ],
-                  "type": "field"
-                },
-                {
-                  "params": [],
-                  "type": "sum"
-                },
-                {
-                  "params": [
-                    "Idle"
-                  ],
-                  "type": "alias"
-                }
-              ],
-              [{
-                  "params": [
                     "DisconnectedSessions"
                   ],
                   "type": "field"
                 },
                 {
-                  "params": [],
+                  "params": [
+
+                  ],
                   "type": "sum"
                 },
                 {
@@ -168,23 +189,27 @@
               ],
               [{
                   "params": [
-                    "TotalSessions"
+                    "IdleSessions"
                   ],
                   "type": "field"
                 },
                 {
-                  "params": [],
+                  "params": [
+
+                  ],
                   "type": "sum"
                 },
                 {
                   "params": [
-                    "Total"
+                    "Idle"
                   ],
                   "type": "alias"
                 }
               ]
             ],
-            "tags": []
+            "tags": [
+
+            ]
           },
           {
             "alias": "[[tag_LicenseType]] License - [[col]]",
@@ -220,7 +245,9 @@
                   "type": "field"
                 },
                 {
-                  "params": [],
+                  "params": [
+
+                  ],
                   "type": "sum"
                 },
                 {
@@ -237,7 +264,9 @@
                   "type": "field"
                 },
                 {
-                  "params": [],
+                  "params": [
+
+                  ],
                   "type": "sum"
                 },
                 {
@@ -248,7 +277,9 @@
                 }
               ]
             ],
-            "tags": []
+            "tags": [
+
+            ]
           },
           {
             "alias": "All Sites - Total Sessions",
@@ -278,15 +309,21 @@
                   "type": "field"
                 },
                 {
-                  "params": [],
+                  "params": [
+
+                  ],
                   "type": "sum"
                 }
               ]
             ],
-            "tags": []
+            "tags": [
+
+            ]
           }
         ],
-        "thresholds": [],
+        "thresholds": [
+
+        ],
         "timeFrom": null,
         "timeShift": null,
         "title": "Sessions",
@@ -301,7 +338,9 @@
           "mode": "time",
           "name": null,
           "show": true,
-          "values": []
+          "values": [
+
+          ]
         },
         "yaxes": [{
             "format": "short",
@@ -326,12 +365,14 @@
         }
       },
       {
-        "aliasColors": {},
+        "aliasColors": {
+
+        },
         "bars": false,
         "dashLength": 10,
         "dashes": false,
         "datasource": "${DS_EUCMONITORING}",
-        "fill": 1,
+        "fill": 0,
         "gridPos": {
           "h": 9,
           "w": 12,
@@ -349,18 +390,35 @@
           "min": false,
           "rightSide": true,
           "show": true,
+          "sideWidth": null,
+          "sort": "current",
+          "sortDesc": true,
           "total": false,
           "values": true
         },
         "lines": true,
         "linewidth": 1,
-        "links": [],
+        "links": [
+
+        ],
         "nullPointMode": "null",
         "percentage": false,
         "pointradius": 5,
         "points": false,
         "renderer": "flot",
-        "seriesOverrides": [],
+        "seriesOverrides": [{
+            "alias": "/Bad Health/i",
+            "fill": 1
+          },
+          {
+            "alias": "/Unregistered/i",
+            "fill": 2
+          },
+          {
+            "alias": "/Maint/i",
+            "fill": 1
+          }
+        ],
         "spaceLength": 10,
         "stack": false,
         "steppedLine": false,
@@ -400,7 +458,9 @@
                   "type": "field"
                 },
                 {
-                  "params": [],
+                  "params": [
+
+                  ],
                   "type": "last"
                 },
                 {
@@ -417,7 +477,9 @@
                   "type": "field"
                 },
                 {
-                  "params": [],
+                  "params": [
+
+                  ],
                   "type": "last"
                 },
                 {
@@ -434,7 +496,9 @@
                   "type": "field"
                 },
                 {
-                  "params": [],
+                  "params": [
+
+                  ],
                   "type": "last"
                 },
                 {
@@ -445,7 +509,9 @@
                 }
               ]
             ],
-            "tags": []
+            "tags": [
+
+            ]
           },
           {
             "alias": "[[tag_SiteName]] - Desktop - [[col]]",
@@ -481,7 +547,9 @@
                   "type": "field"
                 },
                 {
-                  "params": [],
+                  "params": [
+
+                  ],
                   "type": "last"
                 },
                 {
@@ -498,7 +566,9 @@
                   "type": "field"
                 },
                 {
-                  "params": [],
+                  "params": [
+
+                  ],
                   "type": "last"
                 },
                 {
@@ -515,7 +585,9 @@
                   "type": "field"
                 },
                 {
-                  "params": [],
+                  "params": [
+
+                  ],
                   "type": "last"
                 },
                 {
@@ -526,7 +598,9 @@
                 }
               ]
             ],
-            "tags": []
+            "tags": [
+
+            ]
           },
           {
             "alias": "[[tag_SiteName]] - Server - [[col]]",
@@ -564,7 +638,9 @@
                   "type": "field"
                 },
                 {
-                  "params": [],
+                  "params": [
+
+                  ],
                   "type": "last"
                 },
                 {
@@ -581,7 +657,9 @@
                   "type": "field"
                 },
                 {
-                  "params": [],
+                  "params": [
+
+                  ],
                   "type": "last"
                 },
                 {
@@ -592,7 +670,9 @@
                 }
               ]
             ],
-            "tags": []
+            "tags": [
+
+            ]
           },
           {
             "alias": "[[tag_SiteName]] - Desktop - [[col]]",
@@ -628,7 +708,9 @@
                   "type": "field"
                 },
                 {
-                  "params": [],
+                  "params": [
+
+                  ],
                   "type": "last"
                 },
                 {
@@ -645,7 +727,9 @@
                   "type": "field"
                 },
                 {
-                  "params": [],
+                  "params": [
+
+                  ],
                   "type": "last"
                 },
                 {
@@ -656,10 +740,14 @@
                 }
               ]
             ],
-            "tags": []
+            "tags": [
+
+            ]
           }
         ],
-        "thresholds": [],
+        "thresholds": [
+
+        ],
         "timeFrom": null,
         "timeShift": null,
         "title": "Machines",
@@ -674,7 +762,9 @@
           "mode": "time",
           "name": null,
           "show": true,
-          "values": []
+          "values": [
+
+          ]
         },
         "yaxes": [{
             "format": "short",
@@ -699,14 +789,16 @@
         }
       },
       {
-        "aliasColors": {},
+        "aliasColors": {
+
+        },
         "bars": false,
         "dashLength": 10,
         "dashes": false,
         "datasource": "${DS_EUCMONITORING}",
         "fill": 1,
         "gridPos": {
-          "h": 4,
+          "h": 5,
           "w": 12,
           "x": 0,
           "y": 9
@@ -720,18 +812,25 @@
           "min": false,
           "rightSide": true,
           "show": true,
+          "sideWidth": null,
+          "sort": "current",
+          "sortDesc": true,
           "total": false,
           "values": true
         },
         "lines": true,
         "linewidth": 1,
-        "links": [],
+        "links": [
+
+        ],
         "nullPointMode": "null",
         "percentage": false,
         "pointradius": 5,
         "points": false,
         "renderer": "flot",
-        "seriesOverrides": [],
+        "seriesOverrides": [
+
+        ],
         "spaceLength": 10,
         "stack": false,
         "steppedLine": false,
@@ -769,7 +868,9 @@
                 "type": "field"
               },
               {
-                "params": [],
+                "params": [
+
+                ],
                 "type": "last"
               },
               {
@@ -786,7 +887,9 @@
                 "type": "field"
               },
               {
-                "params": [],
+                "params": [
+
+                ],
                 "type": "last"
               },
               {
@@ -803,7 +906,9 @@
                 "type": "field"
               },
               {
-                "params": [],
+                "params": [
+
+                ],
                 "type": "last"
               },
               {
@@ -814,9 +919,13 @@
               }
             ]
           ],
-          "tags": []
+          "tags": [
+
+          ]
         }],
-        "thresholds": [],
+        "thresholds": [
+
+        ],
         "timeFrom": null,
         "timeShift": null,
         "title": "Gateway Connections",
@@ -831,7 +940,9 @@
           "mode": "time",
           "name": null,
           "show": true,
-          "values": []
+          "values": [
+
+          ]
         },
         "yaxes": [{
             "format": "short",
@@ -856,14 +967,16 @@
         }
       },
       {
-        "aliasColors": {},
+        "aliasColors": {
+
+        },
         "bars": false,
         "dashLength": 10,
         "dashes": false,
         "datasource": "${DS_EUCMONITORING}",
         "fill": 0,
         "gridPos": {
-          "h": 4,
+          "h": 5,
           "w": 12,
           "x": 12,
           "y": 9
@@ -877,18 +990,23 @@
           "min": false,
           "rightSide": true,
           "show": true,
+          "sideWidth": null,
           "total": false,
           "values": true
         },
         "lines": true,
         "linewidth": 1,
-        "links": [],
+        "links": [
+
+        ],
         "nullPointMode": "null",
         "percentage": false,
         "pointradius": 5,
         "points": false,
         "renderer": "flot",
-        "seriesOverrides": [],
+        "seriesOverrides": [
+
+        ],
         "spaceLength": 10,
         "stack": false,
         "steppedLine": false,
@@ -926,14 +1044,20 @@
                 "type": "field"
               },
               {
-                "params": [],
+                "params": [
+
+                ],
                 "type": "mean"
               }
             ]
           ],
-          "tags": []
+          "tags": [
+
+          ]
         }],
-        "thresholds": [],
+        "thresholds": [
+
+        ],
         "timeFrom": null,
         "timeShift": null,
         "title": "vServer Health",
@@ -948,7 +1072,9 @@
           "mode": "time",
           "name": null,
           "show": true,
-          "values": []
+          "values": [
+
+          ]
         },
         "yaxes": [{
             "format": "short",
@@ -994,7 +1120,7 @@
           "h": 2,
           "w": 3,
           "x": 0,
-          "y": 13
+          "y": 14
         },
         "id": 10,
         "interval": null,
@@ -1071,12 +1197,16 @@
                 "type": "field"
               },
               {
-                "params": [],
+                "params": [
+
+                ],
                 "type": "mean"
               }
             ]
           ],
-          "tags": []
+          "tags": [
+
+          ]
         }],
         "thresholds": "0.01,2",
         "title": "Active Directory",
@@ -1112,833 +1242,7 @@
           "h": 2,
           "w": 3,
           "x": 3,
-          "y": 13
-        },
-        "id": 11,
-        "interval": null,
-        "links": [{
-          "dashUri": "db/app-v-details",
-          "dashboard": "APP-V Details",
-          "title": "APP-V Details",
-          "type": "dashboard"
-        }],
-        "mappingType": 2,
-        "mappingTypes": [{
-            "name": "value to text",
-            "value": 1
-          },
-          {
-            "name": "range to text",
-            "value": 2
-          }
-        ],
-        "maxDataPoints": 100,
-        "nullPointMode": "connected",
-        "nullText": null,
-        "postfix": "",
-        "postfixFontSize": "50%",
-        "prefix": "",
-        "prefixFontSize": "50%",
-        "rangeMaps": [{
-            "from": "0",
-            "text": "DOWN",
-            "to": "0.01"
-          },
-          {
-            "from": "0.02",
-            "text": "DEGRADED",
-            "to": "1.99"
-          },
-          {
-            "from": "2",
-            "text": "UP",
-            "to": "2"
-          }
-        ],
-        "sparkline": {
-          "fillColor": "rgba(31, 118, 189, 0.18)",
-          "full": false,
-          "lineColor": "rgb(31, 120, 193)",
-          "show": false
-        },
-        "tableColumn": "",
-        "targets": [{
-          "groupBy": [{
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "AppV",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [{
-                "params": [
-                  "State"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": []
-        }],
-        "thresholds": "0.01,2",
-        "title": "App-V",
-        "transparent": true,
-        "type": "singlestat",
-        "valueFontSize": "50%",
-        "valueMaps": [{
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }],
-        "valueName": "current"
-      },
-      {
-        "cacheTimeout": null,
-        "colorBackground": false,
-        "colorValue": true,
-        "colors": [
-          "#d44a3a",
-          "rgba(237, 129, 40, 0.89)",
-          "#299c46"
-        ],
-        "datasource": "${DS_EUCMONITORING}",
-        "format": "none",
-        "gauge": {
-          "maxValue": 2,
-          "minValue": 0,
-          "show": false,
-          "thresholdLabels": false,
-          "thresholdMarkers": false
-        },
-        "gridPos": {
-          "h": 2,
-          "w": 3,
-          "x": 6,
-          "y": 13
-        },
-        "id": 12,
-        "interval": null,
-        "links": [{
-          "dashUri": "db/cloud-connector-details",
-          "dashboard": "Cloud Connector Details",
-          "title": "Cloud Connector Details",
-          "type": "dashboard"
-        }],
-        "mappingType": 2,
-        "mappingTypes": [{
-            "name": "value to text",
-            "value": 1
-          },
-          {
-            "name": "range to text",
-            "value": 2
-          }
-        ],
-        "maxDataPoints": 100,
-        "nullPointMode": "connected",
-        "nullText": null,
-        "postfix": "",
-        "postfixFontSize": "50%",
-        "prefix": "",
-        "prefixFontSize": "50%",
-        "rangeMaps": [{
-            "from": "0",
-            "text": "DOWN",
-            "to": "0.01"
-          },
-          {
-            "from": "0.02",
-            "text": "DEGRADED",
-            "to": "1.99"
-          },
-          {
-            "from": "2",
-            "text": "UP",
-            "to": "2"
-          }
-        ],
-        "sparkline": {
-          "fillColor": "rgba(31, 118, 189, 0.18)",
-          "full": true,
-          "lineColor": "rgb(31, 120, 193)",
-          "show": false
-        },
-        "tableColumn": "",
-        "targets": [{
-          "groupBy": [{
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "CC",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [{
-                "params": [
-                  "State"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": []
-        }],
-        "thresholds": "0.01,2",
-        "title": "Cloud Connector",
-        "transparent": true,
-        "type": "singlestat",
-        "valueFontSize": "50%",
-        "valueMaps": [{
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }],
-        "valueName": "current"
-      },
-      {
-        "cacheTimeout": null,
-        "colorBackground": false,
-        "colorValue": true,
-        "colors": [
-          "#d44a3a",
-          "rgba(237, 129, 40, 0.89)",
-          "#299c46"
-        ],
-        "datasource": "${DS_EUCMONITORING}",
-        "format": "none",
-        "gauge": {
-          "maxValue": 2,
-          "minValue": 0,
-          "show": false,
-          "thresholdLabels": false,
-          "thresholdMarkers": false
-        },
-        "gridPos": {
-          "h": 2,
-          "w": 3,
-          "x": 9,
-          "y": 13
-        },
-        "id": 13,
-        "interval": null,
-        "links": [{
-          "dashUri": "db/director-details",
-          "dashboard": "Director Details",
-          "title": "Director Details",
-          "type": "dashboard"
-        }],
-        "mappingType": 2,
-        "mappingTypes": [{
-            "name": "value to text",
-            "value": 1
-          },
-          {
-            "name": "range to text",
-            "value": 2
-          }
-        ],
-        "maxDataPoints": 100,
-        "nullPointMode": "connected",
-        "nullText": null,
-        "postfix": "",
-        "postfixFontSize": "50%",
-        "prefix": "",
-        "prefixFontSize": "50%",
-        "rangeMaps": [{
-            "from": "0",
-            "text": "DOWN",
-            "to": "0.01"
-          },
-          {
-            "from": "0.02",
-            "text": "DEGRADED",
-            "to": "1.99"
-          },
-          {
-            "from": "2",
-            "text": "UP",
-            "to": "2"
-          }
-        ],
-        "sparkline": {
-          "fillColor": "rgba(31, 118, 189, 0.18)",
-          "full": false,
-          "lineColor": "rgb(31, 120, 193)",
-          "show": false
-        },
-        "tableColumn": "",
-        "targets": [{
-          "groupBy": [{
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "Director",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [{
-                "params": [
-                  "State"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": []
-        }],
-        "thresholds": "0.01,2",
-        "title": "Director",
-        "transparent": true,
-        "type": "singlestat",
-        "valueFontSize": "50%",
-        "valueMaps": [{
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }],
-        "valueName": "current"
-      },
-      {
-        "cacheTimeout": null,
-        "colorBackground": false,
-        "colorValue": true,
-        "colors": [
-          "#d44a3a",
-          "rgba(237, 129, 40, 0.89)",
-          "#299c46"
-        ],
-        "datasource": "${DS_EUCMONITORING}",
-        "format": "none",
-        "gauge": {
-          "maxValue": 2,
-          "minValue": 0,
-          "show": false,
-          "thresholdLabels": false,
-          "thresholdMarkers": false
-        },
-        "gridPos": {
-          "h": 2,
-          "w": 3,
-          "x": 12,
-          "y": 13
-        },
-        "id": 14,
-        "interval": null,
-        "links": [{
-          "dashUri": "db/federation-authentication-service-details",
-          "dashboard": "Federation Authentication Service Details",
-          "title": "Federation Authentication Service Details",
-          "type": "dashboard"
-        }],
-        "mappingType": 2,
-        "mappingTypes": [{
-            "name": "value to text",
-            "value": 1
-          },
-          {
-            "name": "range to text",
-            "value": 2
-          }
-        ],
-        "maxDataPoints": 100,
-        "nullPointMode": "connected",
-        "nullText": null,
-        "postfix": "",
-        "postfixFontSize": "50%",
-        "prefix": "",
-        "prefixFontSize": "50%",
-        "rangeMaps": [{
-            "from": "0",
-            "text": "DOWN",
-            "to": "0.01"
-          },
-          {
-            "from": "0.02",
-            "text": "DEGRADED",
-            "to": "1.99"
-          },
-          {
-            "from": "2",
-            "text": "UP",
-            "to": "2"
-          }
-        ],
-        "sparkline": {
-          "fillColor": "rgba(31, 118, 189, 0.18)",
-          "full": false,
-          "lineColor": "rgb(31, 120, 193)",
-          "show": false
-        },
-        "tableColumn": "",
-        "targets": [{
-          "groupBy": [{
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "FAS",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [{
-                "params": [
-                  "State"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": []
-        }],
-        "thresholds": "0.01,2",
-        "title": "FAS",
-        "transparent": true,
-        "type": "singlestat",
-        "valueFontSize": "50%",
-        "valueMaps": [{
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }],
-        "valueName": "current"
-      },
-      {
-        "cacheTimeout": null,
-        "colorBackground": false,
-        "colorValue": true,
-        "colors": [
-          "#d44a3a",
-          "rgba(237, 129, 40, 0.89)",
-          "#299c46"
-        ],
-        "datasource": "${DS_EUCMONITORING}",
-        "format": "none",
-        "gauge": {
-          "maxValue": 2,
-          "minValue": 0,
-          "show": false,
-          "thresholdLabels": false,
-          "thresholdMarkers": false
-        },
-        "gridPos": {
-          "h": 2,
-          "w": 3,
-          "x": 15,
-          "y": 13
-        },
-        "id": 15,
-        "interval": null,
-        "links": [{
-          "dashUri": "db/netscaler-details",
-          "dashboard": "Netscaler Details",
-          "title": "Netscaler Details",
-          "type": "dashboard"
-        }],
-        "mappingType": 2,
-        "mappingTypes": [{
-            "name": "value to text",
-            "value": 1
-          },
-          {
-            "name": "range to text",
-            "value": 2
-          }
-        ],
-        "maxDataPoints": 100,
-        "nullPointMode": "connected",
-        "nullText": null,
-        "postfix": "",
-        "postfixFontSize": "50%",
-        "prefix": "",
-        "prefixFontSize": "50%",
-        "rangeMaps": [{
-            "from": "0",
-            "text": "DOWN",
-            "to": "0.01"
-          },
-          {
-            "from": "0.02",
-            "text": "DEGRADED",
-            "to": "1.99"
-          },
-          {
-            "from": "2",
-            "text": "UP",
-            "to": "2"
-          }
-        ],
-        "sparkline": {
-          "fillColor": "rgba(31, 118, 189, 0.18)",
-          "full": false,
-          "lineColor": "rgb(31, 120, 193)",
-          "show": false
-        },
-        "tableColumn": "",
-        "targets": [{
-          "groupBy": [{
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "Netscaler",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [{
-                "params": [
-                  "State"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": []
-        }],
-        "thresholds": "0.01,2",
-        "title": "Netscaler",
-        "transparent": true,
-        "type": "singlestat",
-        "valueFontSize": "50%",
-        "valueMaps": [{
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }],
-        "valueName": "current"
-      },
-      {
-        "cacheTimeout": null,
-        "colorBackground": false,
-        "colorValue": true,
-        "colors": [
-          "#d44a3a",
-          "rgba(237, 129, 40, 0.89)",
-          "#299c46"
-        ],
-        "datasource": "${DS_EUCMONITORING}",
-        "format": "none",
-        "gauge": {
-          "maxValue": 2,
-          "minValue": 0,
-          "show": false,
-          "thresholdLabels": false,
-          "thresholdMarkers": false
-        },
-        "gridPos": {
-          "h": 2,
-          "w": 3,
-          "x": 18,
-          "y": 13
-        },
-        "id": 16,
-        "interval": null,
-        "links": [{
-          "dashUri": "db/netscaler-gateway-details",
-          "dashboard": "Netscaler Gateway Details",
-          "title": "Netscaler Gateway Details",
-          "type": "dashboard"
-        }],
-        "mappingType": 2,
-        "mappingTypes": [{
-            "name": "value to text",
-            "value": 1
-          },
-          {
-            "name": "range to text",
-            "value": 2
-          }
-        ],
-        "maxDataPoints": 100,
-        "nullPointMode": "connected",
-        "nullText": null,
-        "postfix": "",
-        "postfixFontSize": "50%",
-        "prefix": "",
-        "prefixFontSize": "50%",
-        "rangeMaps": [{
-            "from": "0",
-            "text": "DOWN",
-            "to": "0.01"
-          },
-          {
-            "from": "0.02",
-            "text": "DEGRADED",
-            "to": "1.99"
-          },
-          {
-            "from": "2",
-            "text": "UP",
-            "to": "2"
-          }
-        ],
-        "sparkline": {
-          "fillColor": "rgba(31, 118, 189, 0.18)",
-          "full": false,
-          "lineColor": "rgb(31, 120, 193)",
-          "show": false
-        },
-        "tableColumn": "",
-        "targets": [{
-          "groupBy": [{
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "NetscalerGateway",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [{
-                "params": [
-                  "State"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": []
-        }],
-        "thresholds": "0.01,2",
-        "title": "Netscaler Gateways",
-        "transparent": true,
-        "type": "singlestat",
-        "valueFontSize": "50%",
-        "valueMaps": [{
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }],
-        "valueName": "current"
-      },
-      {
-        "cacheTimeout": null,
-        "colorBackground": false,
-        "colorValue": true,
-        "colors": [
-          "#d44a3a",
-          "rgba(237, 129, 40, 0.89)",
-          "#299c46"
-        ],
-        "datasource": "${DS_EUCMONITORING}",
-        "format": "none",
-        "gauge": {
-          "maxValue": 2,
-          "minValue": 0,
-          "show": false,
-          "thresholdLabels": false,
-          "thresholdMarkers": false
-        },
-        "gridPos": {
-          "h": 2,
-          "w": 3,
-          "x": 21,
-          "y": 13
-        },
-        "id": 17,
-        "interval": null,
-        "links": [{
-          "dashUri": "db/provisioning-details",
-          "dashboard": "Provisioning Details",
-          "title": "Provisioning Details",
-          "type": "dashboard"
-        }],
-        "mappingType": 2,
-        "mappingTypes": [{
-            "name": "value to text",
-            "value": 1
-          },
-          {
-            "name": "range to text",
-            "value": 2
-          }
-        ],
-        "maxDataPoints": 100,
-        "nullPointMode": "connected",
-        "nullText": null,
-        "postfix": "",
-        "postfixFontSize": "50%",
-        "prefix": "",
-        "prefixFontSize": "50%",
-        "rangeMaps": [{
-            "from": "0",
-            "text": "DOWN",
-            "to": "0.01"
-          },
-          {
-            "from": "0.02",
-            "text": "DEGRADED",
-            "to": "1.99"
-          },
-          {
-            "from": "2",
-            "text": "UP",
-            "to": "2"
-          }
-        ],
-        "sparkline": {
-          "fillColor": "rgba(31, 118, 189, 0.18)",
-          "full": false,
-          "lineColor": "rgb(31, 120, 193)",
-          "show": false
-        },
-        "tableColumn": "",
-        "targets": [{
-          "groupBy": [{
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "Provisioning",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [{
-                "params": [
-                  "State"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": []
-        }],
-        "thresholds": "0.01,2",
-        "title": "Provisioning",
-        "transparent": true,
-        "type": "singlestat",
-        "valueFontSize": "50%",
-        "valueMaps": [{
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }],
-        "valueName": "current"
-      },
-      {
-        "cacheTimeout": null,
-        "colorBackground": false,
-        "colorValue": true,
-        "colors": [
-          "#d44a3a",
-          "rgba(237, 129, 40, 0.89)",
-          "#299c46"
-        ],
-        "datasource": "${DS_EUCMONITORING}",
-        "format": "none",
-        "gauge": {
-          "maxValue": 2,
-          "minValue": 0,
-          "show": false,
-          "thresholdLabels": false,
-          "thresholdMarkers": false
-        },
-        "gridPos": {
-          "h": 2,
-          "w": 3,
-          "x": 3,
-          "y": 15
+          "y": 14
         },
         "id": 18,
         "interval": null,
@@ -2015,12 +1319,16 @@
                 "type": "field"
               },
               {
-                "params": [],
+                "params": [
+
+                ],
                 "type": "mean"
               }
             ]
           ],
-          "tags": []
+          "tags": [
+
+          ]
         }],
         "thresholds": "0.01,2",
         "title": "SQL",
@@ -2056,7 +1364,861 @@
           "h": 2,
           "w": 3,
           "x": 6,
-          "y": 15
+          "y": 14
+        },
+        "id": 12,
+        "interval": null,
+        "links": [{
+          "dashUri": "db/cloud-connector-details",
+          "dashboard": "Cloud Connector Details",
+          "title": "Cloud Connector Details",
+          "type": "dashboard"
+        }],
+        "mappingType": 2,
+        "mappingTypes": [{
+            "name": "value to text",
+            "value": 1
+          },
+          {
+            "name": "range to text",
+            "value": 2
+          }
+        ],
+        "maxDataPoints": 100,
+        "nullPointMode": "connected",
+        "nullText": null,
+        "postfix": "",
+        "postfixFontSize": "50%",
+        "prefix": "",
+        "prefixFontSize": "50%",
+        "rangeMaps": [{
+            "from": "0",
+            "text": "DOWN",
+            "to": "0.01"
+          },
+          {
+            "from": "0.02",
+            "text": "DEGRADED",
+            "to": "1.99"
+          },
+          {
+            "from": "2",
+            "text": "UP",
+            "to": "2"
+          }
+        ],
+        "sparkline": {
+          "fillColor": "rgba(31, 118, 189, 0.18)",
+          "full": true,
+          "lineColor": "rgb(31, 120, 193)",
+          "show": false
+        },
+        "tableColumn": "",
+        "targets": [{
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "CC",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
+                "params": [
+                  "State"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+
+                ],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+
+          ]
+        }],
+        "thresholds": "0.01,2",
+        "title": "Cloud Connector",
+        "transparent": true,
+        "type": "singlestat",
+        "valueFontSize": "50%",
+        "valueMaps": [{
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }],
+        "valueName": "current"
+      },
+      {
+        "cacheTimeout": null,
+        "colorBackground": false,
+        "colorValue": true,
+        "colors": [
+          "#d44a3a",
+          "rgba(237, 129, 40, 0.89)",
+          "#299c46"
+        ],
+        "datasource": "${DS_EUCMONITORING}",
+        "format": "none",
+        "gauge": {
+          "maxValue": 2,
+          "minValue": 0,
+          "show": false,
+          "thresholdLabels": false,
+          "thresholdMarkers": false
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 3,
+          "x": 9,
+          "y": 14
+        },
+        "id": 13,
+        "interval": null,
+        "links": [{
+          "dashUri": "db/director-details",
+          "dashboard": "Director Details",
+          "title": "Director Details",
+          "type": "dashboard"
+        }],
+        "mappingType": 2,
+        "mappingTypes": [{
+            "name": "value to text",
+            "value": 1
+          },
+          {
+            "name": "range to text",
+            "value": 2
+          }
+        ],
+        "maxDataPoints": 100,
+        "nullPointMode": "connected",
+        "nullText": null,
+        "postfix": "",
+        "postfixFontSize": "50%",
+        "prefix": "",
+        "prefixFontSize": "50%",
+        "rangeMaps": [{
+            "from": "0",
+            "text": "DOWN",
+            "to": "0.01"
+          },
+          {
+            "from": "0.02",
+            "text": "DEGRADED",
+            "to": "1.99"
+          },
+          {
+            "from": "2",
+            "text": "UP",
+            "to": "2"
+          }
+        ],
+        "sparkline": {
+          "fillColor": "rgba(31, 118, 189, 0.18)",
+          "full": false,
+          "lineColor": "rgb(31, 120, 193)",
+          "show": false
+        },
+        "tableColumn": "",
+        "targets": [{
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "Director",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
+                "params": [
+                  "State"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+
+                ],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+
+          ]
+        }],
+        "thresholds": "0.01,2",
+        "title": "Director",
+        "transparent": true,
+        "type": "singlestat",
+        "valueFontSize": "50%",
+        "valueMaps": [{
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }],
+        "valueName": "current"
+      },
+      {
+        "cacheTimeout": null,
+        "colorBackground": false,
+        "colorValue": true,
+        "colors": [
+          "#d44a3a",
+          "rgba(237, 129, 40, 0.89)",
+          "#299c46"
+        ],
+        "datasource": "${DS_EUCMONITORING}",
+        "format": "none",
+        "gauge": {
+          "maxValue": 2,
+          "minValue": 0,
+          "show": false,
+          "thresholdLabels": false,
+          "thresholdMarkers": false
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 3,
+          "x": 12,
+          "y": 14
+        },
+        "id": 14,
+        "interval": null,
+        "links": [{
+          "dashUri": "db/federation-authentication-service-details",
+          "dashboard": "Federation Authentication Service Details",
+          "title": "Federation Authentication Service Details",
+          "type": "dashboard"
+        }],
+        "mappingType": 2,
+        "mappingTypes": [{
+            "name": "value to text",
+            "value": 1
+          },
+          {
+            "name": "range to text",
+            "value": 2
+          }
+        ],
+        "maxDataPoints": 100,
+        "nullPointMode": "connected",
+        "nullText": null,
+        "postfix": "",
+        "postfixFontSize": "50%",
+        "prefix": "",
+        "prefixFontSize": "50%",
+        "rangeMaps": [{
+            "from": "0",
+            "text": "DOWN",
+            "to": "0.01"
+          },
+          {
+            "from": "0.02",
+            "text": "DEGRADED",
+            "to": "1.99"
+          },
+          {
+            "from": "2",
+            "text": "UP",
+            "to": "2"
+          }
+        ],
+        "sparkline": {
+          "fillColor": "rgba(31, 118, 189, 0.18)",
+          "full": false,
+          "lineColor": "rgb(31, 120, 193)",
+          "show": false
+        },
+        "tableColumn": "",
+        "targets": [{
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "FAS",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
+                "params": [
+                  "State"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+
+                ],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+
+          ]
+        }],
+        "thresholds": "0.01,2",
+        "title": "FAS",
+        "transparent": true,
+        "type": "singlestat",
+        "valueFontSize": "50%",
+        "valueMaps": [{
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }],
+        "valueName": "current"
+      },
+      {
+        "cacheTimeout": null,
+        "colorBackground": false,
+        "colorValue": true,
+        "colors": [
+          "#d44a3a",
+          "rgba(237, 129, 40, 0.89)",
+          "#299c46"
+        ],
+        "datasource": "${DS_EUCMONITORING}",
+        "format": "none",
+        "gauge": {
+          "maxValue": 2,
+          "minValue": 0,
+          "show": false,
+          "thresholdLabels": false,
+          "thresholdMarkers": false
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 3,
+          "x": 15,
+          "y": 14
+        },
+        "id": 15,
+        "interval": null,
+        "links": [{
+          "dashUri": "db/netscaler-details",
+          "dashboard": "Netscaler Details",
+          "title": "Netscaler Details",
+          "type": "dashboard"
+        }],
+        "mappingType": 2,
+        "mappingTypes": [{
+            "name": "value to text",
+            "value": 1
+          },
+          {
+            "name": "range to text",
+            "value": 2
+          }
+        ],
+        "maxDataPoints": 100,
+        "nullPointMode": "connected",
+        "nullText": null,
+        "postfix": "",
+        "postfixFontSize": "50%",
+        "prefix": "",
+        "prefixFontSize": "50%",
+        "rangeMaps": [{
+            "from": "0",
+            "text": "DOWN",
+            "to": "0.01"
+          },
+          {
+            "from": "0.02",
+            "text": "DEGRADED",
+            "to": "1.99"
+          },
+          {
+            "from": "2",
+            "text": "UP",
+            "to": "2"
+          }
+        ],
+        "sparkline": {
+          "fillColor": "rgba(31, 118, 189, 0.18)",
+          "full": false,
+          "lineColor": "rgb(31, 120, 193)",
+          "show": false
+        },
+        "tableColumn": "",
+        "targets": [{
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "Netscaler",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
+                "params": [
+                  "State"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+
+                ],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+
+          ]
+        }],
+        "thresholds": "0.01,2",
+        "title": "Netscaler",
+        "transparent": true,
+        "type": "singlestat",
+        "valueFontSize": "50%",
+        "valueMaps": [{
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }],
+        "valueName": "current"
+      },
+      {
+        "cacheTimeout": null,
+        "colorBackground": false,
+        "colorValue": true,
+        "colors": [
+          "#d44a3a",
+          "rgba(237, 129, 40, 0.89)",
+          "#299c46"
+        ],
+        "datasource": "${DS_EUCMONITORING}",
+        "format": "none",
+        "gauge": {
+          "maxValue": 2,
+          "minValue": 0,
+          "show": false,
+          "thresholdLabels": false,
+          "thresholdMarkers": false
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 3,
+          "x": 18,
+          "y": 14
+        },
+        "id": 16,
+        "interval": null,
+        "links": [{
+          "dashUri": "db/netscaler-gateway-details",
+          "dashboard": "Netscaler Gateway Details",
+          "title": "Netscaler Gateway Details",
+          "type": "dashboard"
+        }],
+        "mappingType": 2,
+        "mappingTypes": [{
+            "name": "value to text",
+            "value": 1
+          },
+          {
+            "name": "range to text",
+            "value": 2
+          }
+        ],
+        "maxDataPoints": 100,
+        "nullPointMode": "connected",
+        "nullText": null,
+        "postfix": "",
+        "postfixFontSize": "50%",
+        "prefix": "",
+        "prefixFontSize": "50%",
+        "rangeMaps": [{
+            "from": "0",
+            "text": "DOWN",
+            "to": "0.01"
+          },
+          {
+            "from": "0.02",
+            "text": "DEGRADED",
+            "to": "1.99"
+          },
+          {
+            "from": "2",
+            "text": "UP",
+            "to": "2"
+          }
+        ],
+        "sparkline": {
+          "fillColor": "rgba(31, 118, 189, 0.18)",
+          "full": false,
+          "lineColor": "rgb(31, 120, 193)",
+          "show": false
+        },
+        "tableColumn": "",
+        "targets": [{
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "NetscalerGateway",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
+                "params": [
+                  "State"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+
+                ],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+
+          ]
+        }],
+        "thresholds": "0.01,2",
+        "title": "Netscaler Gateways",
+        "transparent": true,
+        "type": "singlestat",
+        "valueFontSize": "50%",
+        "valueMaps": [{
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }],
+        "valueName": "current"
+      },
+      {
+        "cacheTimeout": null,
+        "colorBackground": false,
+        "colorValue": true,
+        "colors": [
+          "#d44a3a",
+          "rgba(237, 129, 40, 0.89)",
+          "#299c46"
+        ],
+        "datasource": "${DS_EUCMONITORING}",
+        "format": "none",
+        "gauge": {
+          "maxValue": 2,
+          "minValue": 0,
+          "show": false,
+          "thresholdLabels": false,
+          "thresholdMarkers": false
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 3,
+          "x": 21,
+          "y": 14
+        },
+        "id": 17,
+        "interval": null,
+        "links": [{
+          "dashUri": "db/provisioning-details",
+          "dashboard": "Provisioning Details",
+          "title": "Provisioning Details",
+          "type": "dashboard"
+        }],
+        "mappingType": 2,
+        "mappingTypes": [{
+            "name": "value to text",
+            "value": 1
+          },
+          {
+            "name": "range to text",
+            "value": 2
+          }
+        ],
+        "maxDataPoints": 100,
+        "nullPointMode": "connected",
+        "nullText": null,
+        "postfix": "",
+        "postfixFontSize": "50%",
+        "prefix": "",
+        "prefixFontSize": "50%",
+        "rangeMaps": [{
+            "from": "0",
+            "text": "DOWN",
+            "to": "0.01"
+          },
+          {
+            "from": "0.02",
+            "text": "DEGRADED",
+            "to": "1.99"
+          },
+          {
+            "from": "2",
+            "text": "UP",
+            "to": "2"
+          }
+        ],
+        "sparkline": {
+          "fillColor": "rgba(31, 118, 189, 0.18)",
+          "full": false,
+          "lineColor": "rgb(31, 120, 193)",
+          "show": false
+        },
+        "tableColumn": "",
+        "targets": [{
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "Provisioning",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
+                "params": [
+                  "State"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+
+                ],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+
+          ]
+        }],
+        "thresholds": "0.01,2",
+        "title": "Provisioning",
+        "transparent": true,
+        "type": "singlestat",
+        "valueFontSize": "50%",
+        "valueMaps": [{
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }],
+        "valueName": "current"
+      },
+      {
+        "cacheTimeout": null,
+        "colorBackground": false,
+        "colorValue": true,
+        "colors": [
+          "#d44a3a",
+          "rgba(237, 129, 40, 0.89)",
+          "#299c46"
+        ],
+        "datasource": "${DS_EUCMONITORING}",
+        "format": "none",
+        "gauge": {
+          "maxValue": 2,
+          "minValue": 0,
+          "show": false,
+          "thresholdLabels": false,
+          "thresholdMarkers": false
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 3,
+          "x": 3,
+          "y": 16
+        },
+        "id": 11,
+        "interval": null,
+        "links": [{
+          "dashUri": "db/app-v-details",
+          "dashboard": "APP-V Details",
+          "title": "APP-V Details",
+          "type": "dashboard"
+        }],
+        "mappingType": 2,
+        "mappingTypes": [{
+            "name": "value to text",
+            "value": 1
+          },
+          {
+            "name": "range to text",
+            "value": 2
+          }
+        ],
+        "maxDataPoints": 100,
+        "nullPointMode": "connected",
+        "nullText": null,
+        "postfix": "",
+        "postfixFontSize": "50%",
+        "prefix": "",
+        "prefixFontSize": "50%",
+        "rangeMaps": [{
+            "from": "0",
+            "text": "DOWN",
+            "to": "0.01"
+          },
+          {
+            "from": "0.02",
+            "text": "DEGRADED",
+            "to": "1.99"
+          },
+          {
+            "from": "2",
+            "text": "UP",
+            "to": "2"
+          }
+        ],
+        "sparkline": {
+          "fillColor": "rgba(31, 118, 189, 0.18)",
+          "full": false,
+          "lineColor": "rgb(31, 120, 193)",
+          "show": false
+        },
+        "tableColumn": "",
+        "targets": [{
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "AppV",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
+                "params": [
+                  "State"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+
+                ],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+
+          ]
+        }],
+        "thresholds": "0.01,2",
+        "title": "App-V",
+        "transparent": true,
+        "type": "singlestat",
+        "valueFontSize": "50%",
+        "valueMaps": [{
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }],
+        "valueName": "current"
+      },
+      {
+        "cacheTimeout": null,
+        "colorBackground": false,
+        "colorValue": true,
+        "colors": [
+          "#d44a3a",
+          "rgba(237, 129, 40, 0.89)",
+          "#299c46"
+        ],
+        "datasource": "${DS_EUCMONITORING}",
+        "format": "none",
+        "gauge": {
+          "maxValue": 2,
+          "minValue": 0,
+          "show": false,
+          "thresholdLabels": false,
+          "thresholdMarkers": false
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 3,
+          "x": 6,
+          "y": 16
         },
         "id": 19,
         "interval": null,
@@ -2133,12 +2295,16 @@
                 "type": "field"
               },
               {
-                "params": [],
+                "params": [
+
+                ],
                 "type": "mean"
               }
             ]
           ],
-          "tags": []
+          "tags": [
+
+          ]
         }],
         "thresholds": "0.01,2",
         "title": "Storefront",
@@ -2174,7 +2340,7 @@
           "h": 2,
           "w": 3,
           "x": 9,
-          "y": 15
+          "y": 16
         },
         "id": 20,
         "interval": null,
@@ -2251,12 +2417,16 @@
                 "type": "field"
               },
               {
-                "params": [],
+                "params": [
+
+                ],
                 "type": "mean"
               }
             ]
           ],
-          "tags": []
+          "tags": [
+
+          ]
         }],
         "thresholds": "0.01,2",
         "title": "UPS",
@@ -2292,7 +2462,7 @@
           "h": 2,
           "w": 3,
           "x": 12,
-          "y": 15
+          "y": 16
         },
         "id": 21,
         "interval": null,
@@ -2369,12 +2539,16 @@
                 "type": "field"
               },
               {
-                "params": [],
+                "params": [
+
+                ],
                 "type": "mean"
               }
             ]
           ],
-          "tags": []
+          "tags": [
+
+          ]
         }],
         "thresholds": "0.01,2",
         "title": "WEM",
@@ -2410,7 +2584,7 @@
           "h": 2,
           "w": 3,
           "x": 15,
-          "y": 15
+          "y": 16
         },
         "id": 22,
         "interval": null,
@@ -2487,12 +2661,16 @@
                 "type": "field"
               },
               {
-                "params": [],
+                "params": [
+
+                ],
                 "type": "mean"
               }
             ]
           ],
-          "tags": []
+          "tags": [
+
+          ]
         }],
         "thresholds": "0.01,2",
         "title": "XD Controllers",
@@ -2528,7 +2706,7 @@
           "h": 2,
           "w": 3,
           "x": 18,
-          "y": 15
+          "y": 16
         },
         "id": 23,
         "interval": null,
@@ -2605,12 +2783,16 @@
                 "type": "field"
               },
               {
-                "params": [],
+                "params": [
+
+                ],
                 "type": "mean"
               }
             ]
           ],
-          "tags": []
+          "tags": [
+
+          ]
         }],
         "thresholds": "0.01,2",
         "title": "XD Licensing",
@@ -2623,17 +2805,143 @@
           "value": "null"
         }],
         "valueName": "current"
+      },
+      {
+        "cacheTimeout": null,
+        "colorBackground": false,
+        "colorValue": true,
+        "colors": [
+          "#d44a3a",
+          "rgba(237, 129, 40, 0.89)",
+          "#299c46"
+        ],
+        "datasource": "${DS_EUCMONITORING}",
+        "format": "none",
+        "gauge": {
+          "maxValue": 2,
+          "minValue": 0,
+          "show": false,
+          "thresholdLabels": false,
+          "thresholdMarkers": false
+        },
+        "gridPos": {
+          "h": 2,
+          "w": 3,
+          "x": 21,
+          "y": 16
+        },
+        "id": 24,
+        "interval": null,
+        "links": [{
+          "dashUri": "db/xenserver-details",
+          "dashboard": "XenServer Details",
+          "title": "XenServer Details",
+          "type": "dashboard"
+        }],
+        "mappingType": 2,
+        "mappingTypes": [{
+            "name": "value to text",
+            "value": 1
+          },
+          {
+            "name": "range to text",
+            "value": 2
+          }
+        ],
+        "maxDataPoints": 100,
+        "nullPointMode": "connected",
+        "nullText": null,
+        "postfix": "",
+        "postfixFontSize": "50%",
+        "prefix": "",
+        "prefixFontSize": "50%",
+        "rangeMaps": [{
+            "from": "0",
+            "text": "DOWN",
+            "to": "0.01"
+          },
+          {
+            "from": "0.02",
+            "text": "DEGRADED",
+            "to": "1.99"
+          },
+          {
+            "from": "2",
+            "text": "UP",
+            "to": "2"
+          }
+        ],
+        "sparkline": {
+          "fillColor": "rgba(31, 118, 189, 0.18)",
+          "full": false,
+          "lineColor": "rgb(31, 120, 193)",
+          "show": false
+        },
+        "tableColumn": "",
+        "targets": [{
+          "groupBy": [{
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "Xenserver",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [{
+                "params": [
+                  "State"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+
+                ],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+
+          ]
+        }],
+        "thresholds": "0.01,2",
+        "title": "XenServer",
+        "transparent": true,
+        "type": "singlestat",
+        "valueFontSize": "50%",
+        "valueMaps": [{
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }],
+        "valueName": "current"
       }
     ],
-    "refresh": "1m",
+    "refresh": "15m",
     "schemaVersion": 16,
     "style": "dark",
-    "tags": [],
+    "tags": [
+
+    ],
     "templating": {
-      "list": []
+      "list": [
+
+      ]
     },
     "time": {
-      "from": "now-12h",
+      "from": "now-6h",
       "to": "now"
     },
     "timepicker": {
@@ -2664,7 +2972,7 @@
     "timezone": "",
     "title": "EUCMonitoring",
     "uid": "MDZmSxHiz",
-    "version": 4
+    "version": 11
   },
   "folderID": 0,
   "inputs": [{

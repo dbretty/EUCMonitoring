@@ -19,7 +19,7 @@ function Test-XdWorker {
 .PARAMETER DesktopHighLoad
     Desktop High Load
 .NOTES
-    Current Version:        1.0
+    Current Version:        1.4
     Creation Date:          29/03/2018
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
@@ -29,6 +29,10 @@ function Test-XdWorker {
     Adam Yarborough         1.3             23/07/2018          Change Advanced to include BrokerGood/BrokerBad
                                                                 renamed iterator to details to avoid name clash
                                                                 with system variable $error
+    Adam Yarborough         1.4              13/08/2018         Added MaxRecordCount due to bug Vadim Gonzalez 
+                                                                found. Changed powerstate to notmatch Off so that
+                                                                Unknown or Unmanaged powerstates would be included
+
 .EXAMPLE
     None Required
 #>
@@ -95,17 +99,18 @@ function Test-XdWorker {
         # Work Out the Broker Machine Status Details
         Write-Verbose "Querying Broker Machine Details"
         if ($Workload -eq "server") {
-            $BrokerMachines = Get-BrokerMachine -AdminAddress $Broker | Where-Object {$_.SessionSupport -eq "MultiSession"} | Select-Object HostedMachineName, DesktopKind, InMaintenanceMode, PowerState, RegistrationState, SessionSupport, WindowsConnectionSetting, ZoneName
+            $BrokerMachines = Get-BrokerMachine -AdminAddress $Broker -MaxRecordCount 5000 | Where-Object {$_.SessionSupport -eq "MultiSession"} | Select-Object HostedMachineName, DesktopKind, InMaintenanceMode, PowerState, RegistrationState, SessionSupport, WindowsConnectionSetting, ZoneName
         }
         else {
-            $BrokerMachines = Get-BrokerMachine -AdminAddress $Broker | Where-Object {$_.SessionSupport -eq "SingleSession"} | Select-Object HostedMachineName, DesktopKind, InMaintenanceMode, PowerState, RegistrationState, SessionSupport, WindowsConnectionSetting, ZoneName
+            $BrokerMachines = Get-BrokerMachine -AdminAddress $Broker -MaxRecordCount 5000 | Where-Object {$_.SessionSupport -eq "SingleSession"} | Select-Object HostedMachineName, DesktopKind, InMaintenanceMode, PowerState, RegistrationState, SessionSupport, WindowsConnectionSetting, ZoneName
         }
+    
         $BMFullCount = ($BrokerMachines | Measure-object).Count
-        $BMMaintenanceCount = ($BrokerMachines | Where-Object {($_.InMaintenanceMode -match "True" -and $_.PowerState -match "On")} | Measure-Object).Count
+        $BMMaintenanceCount = ($BrokerMachines | Where-Object {($_.InMaintenanceMode -match "True" -and $_.PowerState -notmatch "Off")} | Measure-Object).Count
         $BMOffCount = ($BrokerMachines | Where-Object {($_.PowerState -match "Off")} | Measure-Object).Count
         $BMOnCount = ($BrokerMachines | Where-Object {($_.PowerState -match "On")} | Measure-Object).Count
-        $BMRegisteredCount = ($BrokerMachines | Where-Object {($_.RegistrationState -eq "Registered" -and $_.PowerState -match "On")} | Measure-Object).Count
-        $BMUnRegisteredCount = ($BrokerMachines | Where-Object {($_.RegistrationState -eq "Unregistered" -and $_.PowerState -match "On")} | Measure-Object).Count
+        $BMRegisteredCount = ($BrokerMachines | Where-Object {($_.RegistrationState -eq "Registered" -and $_.PowerState -notmatch "Off")} | Measure-Object).Count
+        $BMUnRegisteredCount = ($BrokerMachines | Where-Object {($_.RegistrationState -eq "Unregistered" -and $_.PowerState -notmatch "Off")} | Measure-Object).Count
 
         Write-Verbose "Total Number of Broker Machines: $BMFullCount"
         Write-Verbose "Total Number of Broker Machines in Maintenance Mode: $BMMaintenanceCount"
@@ -169,8 +174,8 @@ function Test-XdWorker {
             $results += [PSCustomObject]@{
                 'SiteName'                       = $SiteName
                 'WorkLoad'                       = $WorkLoad
-                'TotalConnectedUsers'            = $TotalConnectedUsers
-                'TotalUsersDisconnected'         = $TotalUsersDisconnected
+                'ConnectedUsers'                 = $TotalConnectedUsers    # Changed to match Basic
+                'DisconnectedUsers'              = $TotalUsersDisconnected
                 'DeliveryGroupsNotInMaintenance' = $DGNonMaintenanceCount
                 'DeliveryGroupsInMaintenance'    = $DGMaintenanceCount
                 'BrokerMachineOn'                = $BMOnCount

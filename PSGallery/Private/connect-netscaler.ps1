@@ -28,6 +28,7 @@ function Connect-NetScaler {
         [parameter(Mandatory = $false, ValueFromPipeline = $true)]$UserName,
         [parameter(Mandatory = $false, ValueFromPipeline = $true)][System.Security.SecureString]$NSPassword
     )
+
     [Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls"
 
     # Strip the Secure Password back to a basic text password
@@ -35,7 +36,7 @@ function Connect-NetScaler {
     $UnsecurePassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
 
     # Validate That the IP Address is valid
-    Test-IP $NSIP
+    # Test-IP $NSIP
 
     # Set up the JSON Payload to send to the netscaler    
     $PayLoad = ConvertTo-JSON @{
