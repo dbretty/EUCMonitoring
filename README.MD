@@ -17,12 +17,12 @@ The reason I started writing this is because I wanted a platform that will give 
 To install and run this software follow these steps
 
 ### Pre-requisites 
-(On-Premises) 
+#### On-Premises
 
-The Server that you want to run this script from must have the XenServer and XenDesktop PowerShell SDK Installed. Install Citrix Studio on the monitoring server and also install the XenServer SDK from the [XenServer 7.2 Standard Edition](https://www.citrix.com/downloads/xenserver/product-software/xenserver-72-standard-edition.html) download page.
+The Server that you want to run this script from must have the XenServer and XenDesktop PowerShell SDK Installed. Install Citrix Studio on the monitoring server and also install the XenServer SDK from the [XenServer](https://www.citrix.com/downloads/xenserver/product-software.html) download page.
 
-(Cloud)
-The Server that you want to run this script from must have the Remote PowerShell SDK for Applications and Desktops Service from: http://download.apps.cloud.com/CitrixPoshSdk.exe
+#### Cloud
+The Server that you want to run this script from must have the Remote [PowerShell SDK for Applications and Desktops Service](http://download.apps.cloud.com/CitrixPoshSdk.exe): 
 
 Obtain a Citrix Cloud automation credential as follows:
 - Login to https://citrix.cloud.com/
@@ -32,7 +32,11 @@ Obtain a Citrix Cloud automation credential as follows:
 - Once Secure Client is created, download Secure Client Credentials file (ie. downloaded to C:\Monitoring)
 
 Note the Customer ID located in this same page, this is case senstitive.
+```
 Set-XDCredentials -CustomerId "%Customer ID%" -SecureClientFile "C:\Monitoring\secureclient.csv" -ProfileType CloudApi -StoreAs "CloudAdmin"
+```
+
+NOTE: **xdbrokerprimary/xdbrokerfailover** should be set as the Citrix Cloud Connector, the cloud connectors will proxy the connection directly to the Delivery Controller as they are not directly accessible.
 
 NOTE: xdbrokerprimary/xdbrokerfailover should be set as the Citrix Cloud Connector, the cloud connectors will proxy the connection directly to the Delivery Controller as they are not directly accessible.
 
@@ -57,31 +61,32 @@ Find-Module EUCMonitoring
         ```text
         Set-EUCMonitoring C:\Monitoring -verbose
         ```
-   * Or, for new users, or those who prefer the defaults.  This will ask you a few questions about your environment. 
+   * Or, for users that want a more interactive dashboard, you can invoke this parameter which will install InfluxDB, Grafana, and NSSM, along with some default dashboards. (This will need to be run as Administrator)
         ```text
-        Set-EUCMonitoring C:\Monitoring -QuickConfig -verbose
+        Set-EUCMonitoring C:\Monitoring -InstallVisualizationSetup -verbose
         ```
-
+    * There is a corresponding ```-UninstallVisualizationSetup``` that will uninstall the Influx/Grafana/NSSM instances and remove their directories, but leave your remaining files intact. 
 5. If manually configuring, go to that directory and rename the **euc-monitoring.json.template** file to **euc-monitoring.json**
-6. Edit the json file to reflect your environment.  You can always regenerate a new json file with
-
-```text
-New-EUCMonitoringConfig C:\Monitoring 
-```
+6. Edit the json file to reflect your environment.  
 
 7. Finally run the following command pointing to the directory that holds the needed files
 
 ```text
 cd C:\Monitoring
-Start-XDMonitor
+Start-EUCMonitor
 ```
 OR
 ```text
-Start-XDMonitor -JsonFile ".\mysettings.json" -LogFile ".\mylog.txt" -CSSFile ".\euc-monitor.css" -Verbose 
+Start-EUCMonitor -JsonFile ".\mysettings.json" -Verbose 
+```
+OR, if you did the interactive dashboard
+```text
+cd C:\Monitoring
+.\Begin-EUCMonitor.ps1
 ```
 
 8. Open up your new dashboard HTML file from the location you specified in your json for web data output
 
 ## Active Contributors
 
-Dave Brett [@dbretty](https://twitter.com/dbretty) | James Kindon [@james_kindon](https://twitter.com/james_kindon) | Ryan Butler [@ryan_c_butler](https://twitter.com/Ryan_C_Butler) | David Wilkinson [@WilkyIT](https://twitter.com/WilkyIT) | Adam Yarborough [@littletoyrobots](https://twitter.com/littletoyrobots)
+Dave Brett [@dbretty](https://twitter.com/dbretty) | James Kindon [@james_kindon](https://twitter.com/james_kindon) | Ryan Butler [@ryan_c_butler](https://twitter.com/Ryan_C_Butler) | David Wilkinson [@WilkyIT](https://twitter.com/WilkyIT) | Adam Yarborough [@littletoyrobots](https://twitter.com/littletoyrobots) | Hal Lange [@hal_lange](https://twitter.com/hal_lange) | Ryan Revord [@rsrevord](https://twitter.com/rsrevord)

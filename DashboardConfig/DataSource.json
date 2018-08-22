@@ -1,0 +1,8 @@
+{
+  "name":"EUCMonitoring",
+  "type":"influxdb",
+  "url":"http://localhost:8086",
+  "database":"EUCMonitoring",
+  "access":"proxy",
+  "basicAuth":false
+}

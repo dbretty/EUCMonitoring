@@ -12,19 +12,26 @@ function Get-vServer {
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     David Brett             1.0             12/03/2018          Function Creation
+    Ryan Butler             1.1             27/03/2018          Added in nsession parameter
 .EXAMPLE
     None Required
 #> 
 
     Param
     (
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$NSIP
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$NSIP,
+        [parameter(Mandatory = $true, ValueFromPipeline = $false)]$NSSession
 
     )
 
     # Build Global Variables with all Load Balance vServers on NetScaler
     Write-Verbose "Return all Virtual Servers on $NSIP"
-    $vServers = Invoke-RestMethod -uri "$NSIP/nitro/v1/stat/lbvserver" -WebSession $NSSession.WebSession -Method GET
-
+    try {
+        $vServers = Invoke-RestMethod -uri "$NSIP/nitro/v1/stat/lbvserver" -WebSession $NSSession.WebSession -Method GET -ErrorAction Stop
+    }
+    catch {
+        Write-Verbose "Unabled to get vServers"
+        $vServers = $false
+    }
     Return $vServers
 }

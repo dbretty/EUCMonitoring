@@ -10,8 +10,6 @@ function Test-XenServer {
     TCP Port to use for XenServer Connectivity Tests
 .PARAMETER ErrorFile 
     Infrastructure Error File to Log To
-.PARAMETER OutputFile 
-    Infrastructure OutputFile
 .PARAMETER XenUserName 
     XenServer Username
 .PARAMETER XenPassword 
@@ -22,20 +20,22 @@ function Test-XenServer {
 .CHANGE CONTROL
     Name                    Version         Date                Change Detail
     David Brett             1.0             22/02/2018          Function Creation
-
+    Ryan Butler             1.1             28/03/2018          Returns object
+    David Brett             1.2             16/06/2018          Updated for Object Model
 .EXAMPLE
     None Required
 #>
-
+    [CmdletBinding()]
     Param
     (
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$PoolMasters,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ConnectionPort,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$ErrorFile,
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$OutputFile,
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$PoolMaster,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$XenUserName,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)][System.Security.SecureString]$XenPassword
     )
+
+    #Create array with results
+    $Results = @()
+    $Errors = @()
 
     # Convert Secure Password to Standard Text
     $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($XenPassword)
@@ -46,95 +46,62 @@ function Test-XenServer {
     $xenTest = get-module xen*
     if ($null -eq $xentest) {
         write-verbose "XenServer checks are enabled but no XenServer SDK Found"
-        "XenServer checks are enabled but no XenServer SDK Found" | Out-File $ErrorFile -Append
+        $Errors += "XenServer checks are enabled but no XenServer SDK Found"
     }
     else {
         Write-Verbose "XenServer SDK Imported Sucessfully"
+        Write-Verbose "XenServer Pool Master: $PoolMaster"
+        Write-Verbose "Management Port: 80"
 
-        # Initialize Arrays and Variables
         $HostsUp = 0
         $HostsDown = 0
-        $PoolsUp = 0
-        $PoolsDown = 0
-        Write-Verbose "Variables and Arrays Initalized"
 
-        # Get XenServer Comma Delimited List and Management Port
-        $XenServers = $PoolMasters
-        Write-Verbose "Read in XenServer Pool Masters and Management Ports"
-        Write-Verbose "XenServer Pool Masters: $XenServers"
-        Write-Verbose "Management Port: $ConnectionPort"
 
-        #Loop through Pool Masters pulled from Registry
-        Write-Verbose "Looping through XenServer Pool Masters and running monitoring checks"                                                                                                                                                                                                                                          
+        $Session = Connect-XenServer $PoolMaster -Port 80 -UserName $XenUserName -Password $UnsecurePassword
+        Write-Verbose "Connecting to XenServer Pool Using PoolMaster $PoolMaster"
 
-        foreach ($PoolMaster in $XenServers) { 
+        $XenHosts = Get-XenHost
 
-            # If Pool Master is up log to Console and start the monitoring checks
-            if ((Connect-Server $PoolMaster) -eq "Successful") {
-                Write-Verbose "PoolMaster - $PoolMaster is up"
+        # Loop Through Each Host and Check Availability and Management Access
+        foreach ($XenHost in $XenHosts) {
 
-                # Test Management Port Access
+            # Get the HostName and IP Addressd for the XenServer Host
+            $XenHostName = $XenHost.hostname
+            $XenIP = $XenHost.address
+            Write-Verbose "XenServer Details - $XenHostName / $XenIP"
 
-                if ((Test-NetConnection $PoolMaster $ConnectionPort).open -eq "True") {
-                    
-                    # Increment Pool Master Up Count
-                    $PoolsUp ++
+            if ((Connect-Server $XenIP) -eq "Successful") {
+                Write-Verbose "XenServer Host - $XenHostName is up"
 
-                    # Connect to XenServer Pool
-                    [int]$PortInt = [convert]::ToInt32($ConnectionPort, 10)
-                    $Session = Connect-XenServer $PoolMaster -Port $PortInt -UserName $XenUserName -Password $UnsecurePassword
-                    Write-Verbose "Connecting to XenServer Pool Using PoolMaster $PoolMaster"
-
-                    # Gather Hosts in Pool
-                    $XenHosts = Get-XenHost
-
-                    # Loop Through Each Host and Check Availability and Management Access
-                    foreach ($XenHost in $XenHosts) {
-
-                        # Get the HostName and IP Addressd for the XenServer Host
-                        $XenHostName = $XenHost.hostname
-                        $XenIP = $XenHost.address
-                        Write-Verbose "XenServer Details - $XenHostName / $XenIP"
-
-                        if ((Connect-Server $XenIP) -eq "Successful") {
-                            Write-Verbose "XenServer Host - $XenHostName is up"
-
-                            # If Host Management Port is UP log to Console and Increment UP Port Count
-                            if ((Test-NetConnection $XenIP $ConnectionPort).Open -eq "True") {
-                                Write-Verbose "$XenHostName Management Port is up: Port - $ConnectionPort"
-                                $HostsUp ++
-                            }
-                            else {
-                                Write-Verbose "$XenHostName Management Port is down - Port - $ConnectionPort" 
-                                "$XenHostName Management Port is down" | Out-File $ErrorFile -Append
-                                $HostsDown ++
-                            }
-                        }
-                        else {
-                            Write-Verbose "XenServer Host - $XenHostName is down"
-                            "XenServer Host - $XenHostName is down" | Out-File $ErrorFile -Append
-                            $HostsDown ++
-                        }
-                    }
-                    Disconnect-XenServer -Session $session
+                # If Host Management Port is UP log to Console and Increment UP Port Count
+                if ( Test-NetConnection -ComputerName $XenIP -Port 80 -InformationLevel Quiet ) {
+                    Write-Verbose "$XenHostName Management Port is up: Port - 80"
+                    $HostsUp ++
                 }
                 else {
-                    Write-Verbose "$PoolMaster Management Port is down"
-                    "$PoolMaster Management Port is down" | Out-File $ErrorFile -Append
-                    $PoolsDown ++
+                    Write-Verbose "$XenHostName Management Port is down - Port - $ConnectionPort" 
+                    $Errors += "$XenHostName Management Port is down"
+                    $HostsDown ++
                 }
             }
             else {
-                Write-Verbose "PoolMaster - $PoolMaster is down"
-                "Pool Master - $PoolMaster is down" | Out-File $ErrorFile -Append
-                $PoolsDown ++
+                Write-Verbose "XenServer Host - $XenHostName is down"
+                $Errors += "XenServer Host - $XenHostName is down"
+                $HostsDown ++
             }
         }
-    }
+        Disconnect-XenServer -Session $session
 
-    # Write Data to Output File
-    Write-Verbose "Writing XenServer Pool and Host Data to output file"
-    "xenserverpool,$PoolsUp,$PoolsDown" | Out-File $OutputFile
-    "xenserverhost,$HostsUp,$HostsDown" | Out-File $OutputFile -Append
+        $results += [PSCustomObject]@{
+            'PoolMaster' = $poolmaster
+            'HostsUp'    = $HostsUp
+            'HostsDown'  = $HostsDown
+            'Errors'     = $Errors
+        }
+
+        #Returns test results
+        return $results
+    
+    }
 
 }
