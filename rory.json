@@ -1,0 +1,379 @@
+{
+    "Global": {
+        "OutputLocation": "c:\\Monitoring",
+        "ServerErrorFile": "server-errors.txt",
+        "DesktopErrorFile": "desktop-errors.txt",
+        "WorkerErrorFile": "worker-errors.txt",
+        "InfraErrorFile": "infra-errors.txt",
+        "ThirdParty": {
+            "controlup": "no"
+        },
+        "WebData": {
+            "enabled": true,
+            "title": "End User Computing - Dashboard",
+            "logofile": "logo.png",
+            "htmldatafile": "htmldata.txt",
+            "htmloutputfile": "index.html",
+            "refreshduration": 30,
+            "UpColour": "rgba(221, 70, 70, 0.9)",
+            "DownColour": "rgba(67, 137, 203, 0.95)",
+            "WorkerDonutStroke": 5,
+            "workerdonutsize": 500,
+            "InfraDonutStroke": 4,
+            "Infradonutsize": 160
+        },
+        "Influx": {
+            "Enabled": false,
+            "InfluxDB": "EUCMonitoring",
+            "InfluxServer": "localhost",
+            "Protocol": "http",
+            "Port": 8086
+        },
+        "ConsoleResults": {
+            "Enabled": true
+        },
+        "Alerting": {
+            "Enabled": false,
+            "Slack": {
+                "Enabled": false,
+                "Channel": "some-channel",
+                "URI": "https://hooks.slack.com/services/<ID HERE>"
+            }
+        }
+    },
+    "AD": {
+        "test": false,
+        "Servers": [
+            "dc.domain.com"
+        ],
+        "Ports": [
+            389,
+            636
+        ],
+        "Services": [
+            "Netlogon",
+            "ADWS",
+            "NTDS"
+        ],
+        "Checks": {
+            "ValidCert": {
+                "test": false,
+                "Ports": [
+                    636
+                ]
+            }
+        }
+    },
+    "SQL": {
+        "test": true,
+        "Servers": [
+            "dc1pvwinfsql01.gb.bupagroup.com",
+            "dc1pvwinfsql01.gb.bupagroup.com"
+        ],
+        "Ports": [
+            1433
+        ],
+        "Services": [
+            "MSSQLServer"
+        ]
+    },
+    "AppV": {
+        "test": false,
+        "Servers": [
+            "appv.domain.com"
+        ],
+        "Ports": [
+            8080
+        ],
+        "Services": [
+            "W3SVC"
+        ]
+    },
+    "Worker": {
+        "test": true,
+        "XdSites": [
+            {
+                "PrimaryController": "dc1pvwctxcnt01.gb.bupagroup.com",
+                "SecondaryController": "dc2pvwctxcnt01.gb.bupagroup.com"
+            }
+        ],
+        "Checks": {
+            "XdServer": {
+                "test": true,
+                "testmode": "advanced",
+                "BootThreshold": 365,
+                "HighLoad": 8000
+            },
+            "XdDesktop": {
+                "test": true,
+                "testmode": "basic",
+                "BootThreshold": 365,
+                "HighLoad": 8000
+            },
+            "XdSessionInfo": { "test": true },
+            "XdDeliveryGroupHealth":  { "test": false },
+            "XdControllerHealth":  { "test": false },
+            "XdCatalogHealth":  { "test": false },
+            "XdHypervisorHealth":  { "test": false }
+        }
+    },
+    "Xenserver": {
+        "test": true,
+        "Servers": [
+            "10.196.0.55",
+            "10.196.0.65",
+			"10.220.0.71"
+        ],
+        "Ports": [
+            80
+        ],
+        "Checks": {
+            "XenServer": {
+                "test": true,
+                "username": "root",
+                "password": "Kit35urf3r!"
+            }
+        }
+    },
+    "Storefront": {
+        "test": true,
+        "Servers": [
+            "dc1pvwctxstf01.gb.bupagroup.com",
+			"dc1pvwctxstf02.gb.bupagroup.com",
+			"dc2pvwctxstf01.gb.bupagroup.com",
+			"dc2pvwctxstf02.gb.bupagroup.com"
+        ],
+        "Ports": [
+            80,
+            443
+        ],
+        "Checks": {
+            "HTTPUrl": {
+                "test": true,
+                "Port": 80,
+                "Path": "/Citrix/BupaWeb"
+            },
+            "HTTPSUrl": {
+                "test": true,
+                "Port": 443,
+                "Path": "/Citrix/BupaWeb"
+            },
+            "ValidCert": {
+                "test": true,
+                "Port":
+                    443
+            }
+        }
+    },
+    "XdLicensing": {
+        "test": true,
+        "Servers": [
+            "dc1pvwctxlic01.gb.bupagroup.com",
+            "dc2pvwctxlic01.gb.bupagroup.com"
+        ],
+        "Ports": [
+            7279,
+            27000,
+            8082,
+            8083
+        ],
+        "Services": [
+            "Citrix Licensing",
+            "CitrixWebServicesforLicensing"
+        ],
+        "Checks": {
+            "XdLicense": {
+                "test": true,
+                "LicenseType": "XDT"
+            }
+        }
+    },
+    "Director": {
+        "test": true,
+        "Servers": [
+            "dc1pvwctxstf01.gb.bupagroup.com",
+			"dc1pvwctxstf02.gb.bupagroup.com",
+			"dc2pvwctxstf01.gb.bupagroup.com",
+			"dc2pvwctxstf02.gb.bupagroup.com"
+        ],
+        "Ports": [
+            80,
+            443
+        ],
+        "Checks": {
+            "HTTPUrl": {
+                "test": true,
+                "Port": 80,
+                "Path": "/Director/LogOn.aspx?cc=true"
+            },
+            "HTTPSUrl": {
+                "test": true,
+                "Port": 443,
+                "Path": "/Director/LogOn.aspx?cc=true"
+            }
+        }
+    },
+    "XdControllers": {
+        "test": true,
+        "Servers": [
+            "dc1pvwctxcnt01.gb.bupagroup.com",
+			"dc1pvwctxcnt02.gb.bupagroup.com",
+			"dc2pvwctxcnt01.gb.bupagroup.com",
+			"dc2pvwctxcnt02.gb.bupagroup.com"
+        ],
+        "Ports": [
+            80
+        ],
+        "Services": [
+            "CitrixBrokerService",
+            "CitrixHighAvailabilityService",
+            "CitrixConfigSyncService",
+            "CitrixConfigurationService",
+            "CitrixConfigurationLogging",
+            "CitrixDelegatedAdmin",
+            "CitrixADIdentityService",
+            "CitrixMachineCreationService",
+            "CitrixHostService",
+            "CitrixEnvTest",
+            "CitrixMonitor",
+            "CitrixAnalytics",
+            "CitrixAppLibrary",
+            "CitrixOrchestration"
+        ]
+    },
+    "Netscaler": {
+        "test": true,
+        "Servers": [
+            "10.196.0.75",
+            "10.220.0.84",
+			"10.196.16.42",
+            "10.220.16.46"
+        ],
+        "Ports": [
+            443,
+            80
+        ],
+        "Checks": {
+            "Netscaler": {
+                "test": true,
+                "username": "nsroot",
+                "password": "Hz!*3pQ13@"
+            }
+        }
+    },
+    "NetscalerGateway": {
+        "test": true,
+        "Servers": [
+            "10.196.16.42",
+            "10.220.16.46"
+        ],
+        "Ports": [
+            443,
+            80
+        ],
+        "Checks": {
+            "NetscalerGateway": {
+                "test": true,
+                "username": "nsroot",
+                "password": "Hz!*3pQ13@"
+            }
+        }
+    },
+    "Provisioning": {
+        "test": true,
+        "Servers": [
+            "dc1pvwctxpvs01.gb.bupagroup.com",
+			"dc1pvwctxpvs02.gb.bupagroup.com",
+			"dc1pvwctxpvs03.gb.bupagroup.com",
+			"dc1pvwctxpvs04.gb.bupagroup.com",
+			"dc1pvwctxpvs05.gb.bupagroup.com",
+			"dc1pvwctxpvs06.gb.bupagroup.com",
+			"dc1pvwctxpvs07.gb.bupagroup.com",
+			"dc1pvwctxpvs08.gb.bupagroup.com",
+			"dc1pvwctxpvs09.gb.bupagroup.com",
+			"dc1pvwctxpvs10.gb.bupagroup.com",
+            "dc2pvwctxpvs01.gb.bupagroup.com",
+			"dc2pvwctxpvs02.gb.bupagroup.com",
+			"dc2pvwctxpvs03.gb.bupagroup.com",
+			"dc2pvwctxpvs04.gb.bupagroup.com",
+			"dc2pvwctxpvs05.gb.bupagroup.com",
+			"dc2pvwctxpvs06.gb.bupagroup.com"
+        ],
+        "Ports": [
+            54321
+        ],
+        "Services": [
+            "BNPXE",
+            "BNTFTP",
+            "PVSTSB",
+            "soapserver",
+            "StreamService"
+        ],
+        "Checks": {
+        }
+    },
+    "WEM": {
+        "test": false,
+        "Servers": [
+            "wembroker1.domain.com",
+            "wembroker2.domain.com"
+        ],
+        "Ports": [
+            8286
+        ],
+        "Services": [
+            "Norskale Infrastructure Service"
+        ]
+    },
+    "UPS": {
+        "test": false,
+        "Servers": [
+            "upsserver.domain.com"
+        ],
+        "Ports": [
+            7229
+        ],
+        "Services": [
+            "UpSvc",
+            "CitrixXTEServer"
+        ]
+    },
+    "FAS": {
+        "test": false,
+        "Servers": [
+            "fasserver1.domain.com",
+            "fasserver2.domain.com"
+        ],
+        "Ports": [
+            135
+        ],
+        "Services": [
+            "CitrixFederatedAuthenticationService"
+        ]
+    },
+    "CC": {
+        "test": false,
+        "Servers": [
+            "ccserver1.domain",
+            "ccserver2.domain"
+        ],
+        "Ports": [
+            80
+        ],
+        "Services": [
+            "CitrixWorkspaceCloudADProvider",
+            "CitrixWorkspaceCloudAgentDiscovery",
+            "CitrixWorkspaceCloudAgentLogger",
+            "CitrixWorkspaceCloudAgentSystem",
+            "CitrixWorkspaceCloudAgentWatchDog",
+            "CitrixWorkspaceCloudCredentialProvider",
+            "CitrixWorkspaceCloudWebRelayProvider",
+            "CitrixConfigSyncService",
+            "CitrixHighAvailabilityService",
+            "Citrix NetScaler Cloud Gateway",
+            "XaXdCloudProxy",
+            "RemoteHCLServer",
+            "SessionManagerProxy"
+        ]
+    }
+}
