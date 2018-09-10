@@ -144,6 +144,15 @@
             80,
             443
         ],
+        "Services": [
+            "W3SVC",
+            "NetTcpPortSharing",
+            "CitrixSubscriptionsStore",
+            "WAS",
+            "CitrixDefaultDomainService",
+            "CitrixCredentialWallet",
+            "CitrixConfigurationReplication"
+        ],
         "Checks": {
             "HTTPUrl": {
                 "test": false,
