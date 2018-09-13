@@ -15,7 +15,7 @@
             "htmldatafile": "htmldata.txt", - Can leave as default
             "htmloutputfile": "index.html", - HTML Output File. can leave as default
             "refreshduration": 0, - HTML Automatic page refresh, in seconds. 0 for no refresh
-	    "WorkerSiteName": false, - Display XD site name in server and desktkop worker donuts
+            "WorkerSiteName": false, - Display XD site name in server and desktkop worker donuts
             "UpColour": "rgba(221, 70, 70, 0.9)", - Color for Up Servers
             "DownColour": "rgba(67, 137, 203, 0.95)", - Color for Down Servers. 
             "WorkerDonutStroke": 5, - Width for the Worker Donut Ring
