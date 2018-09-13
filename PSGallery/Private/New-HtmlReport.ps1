@@ -22,7 +22,8 @@ function New-HtmlReport {
     David Brett             1.4             26/06/2018          Bug Fixes and Code Cleaning
                                                                 Fixes #24
                                                                 Fixes #40
-    David Brett             1.5             21/08/2018          Bug fixes and naming clean up
+    David Brett             1.5             21/08/2018          Bug fixes and naming clean 
+    Alex Spicola            1.7             11/09/2018          Worker donut site name, bug fixes
 .EXAMPLE
     None Required
 #> 
@@ -116,7 +117,7 @@ function New-HtmlReport {
             $totalinf ++
         }
     } 
-    $totalinf--
+    if ($TotalInf -gt 1) {$totalinf--} 
     $ColumnPercent = 100 / [int]$totalinf
 
     foreach ($SeriesResult in $Results) { 
@@ -125,6 +126,7 @@ function New-HtmlReport {
         $Width = $Height
         $Up = 0
         $Down = 0
+        $SiteName = "" # Blank XD site name, not used for these donuts
         $Series = $SeriesResult.Series
         if ($null -ne $series) {
             if ( "Worker" -ne $Series ) {
@@ -144,7 +146,7 @@ function New-HtmlReport {
                     "NetScaler" {$NewSeries = "Citrix ADC"; break}
                     default {$NewSeries = $Series; break}
                 }
-                Get-DonutHTML $Height $Width $UpColor $DownColor $DonutStroke $NewSeries $Up $Down | Out-File $HTMLOutputFileFull -Append
+                Get-DonutHTML $Height $Width $UpColor $DownColor $DonutStroke $SiteName $NewSeries $Up $Down | Out-File $HTMLOutputFileFull -Append
                 "</td>" | Out-File $HTMLOutputFileFull -Append
             }
         }
@@ -172,6 +174,7 @@ function New-HtmlReport {
     foreach ($SeriesResult in $Results) { 
         $DonutStroke = $ConfigObject.Global.WebData.WorkerDonutStroke
         $Height = $ConfigObject.Global.WebData.WorkerDonutSize
+        $ShowSiteName = $ConfigObject.Global.WebData.WorkerSiteName
         $Width = $Height
         $Series = $SeriesResult.Series
 
@@ -189,7 +192,13 @@ function New-HtmlReport {
                             default {$NewName = $Series; break}
                         }
                         "<td width='$ColumnPercent%' align=center valign=top>" | Out-File $HTMLOutputFileFull -Append
-                        Get-DonutHTML $Height $Width $UpColor $DownColor $DonutStroke $NewName $Up $Down -Worker | Out-File $HTMLOutputFileFull -Append
+                        if ($ShowSiteName -eq $true) {
+                            $SiteName = $CheckData.Values.SiteName | select -Unique
+                            Get-DonutHTML $Height $Width $UpColor $DownColor $DonutStroke $SiteName $NewName $Up $Down -Worker | Out-File $HTMLOutputFileFull -Append
+                        } else {
+                            $SiteName = ""
+                            Get-DonutHTML $Height $Width $UpColor $DownColor $DonutStroke $SiteName $NewName $Up $Down -Worker | Out-File $HTMLOutputFileFull -Append
+                        }
                         "</td>" | Out-File $HTMLOutputFileFull -Append
                     }
                 }
