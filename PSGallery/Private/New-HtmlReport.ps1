@@ -115,9 +115,9 @@ function New-HtmlReport {
     foreach ($SeriesResult in $Results) {
         if ("Worker" -ne $seriesresult.series) {
             $totalinf ++
-        }
+        } 
     } 
-    if ($TotalInf -gt 1) {$totalinf--} 
+    if ($TotalInf -gt 1) {$totalinf--} else {$TotalInf = 1}
     $ColumnPercent = 100 / [int]$totalinf
 
     foreach ($SeriesResult in $Results) { 
