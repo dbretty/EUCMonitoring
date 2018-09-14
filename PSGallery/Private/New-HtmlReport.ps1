@@ -23,7 +23,7 @@ function New-HtmlReport {
                                                                 Fixes #24
                                                                 Fixes #40
     David Brett             1.5             21/08/2018          Bug fixes and naming clean 
-    Alex Spicola            1.7             11/09/2018          Worker donut site name, bug fixes
+    Alex Spicola            1.6             11/09/2018          Worker donut site name, bug fixes
 .EXAMPLE
     None Required
 #> 
