@@ -27,6 +27,7 @@ function Get-DonutHTML {
     Name                    Version         Date                Change Detail
     David Brett             1.0             07/02/2018          Function Creation
     Adam Yarborough         1.1             12/06/2018          Change to return string
+    Alex Spicola            1.2             11/09/2018          Worker donut site name
 .EXAMPLE
     None Required
 #>
@@ -40,6 +41,7 @@ function Get-DonutHTML {
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$DonutGoodColour,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$DonutBadColour,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$DonutStroke,
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]$SiteName,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$SeriesName,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$SeriesUpCount,
         [parameter(Mandatory = $true, ValueFromPipeline = $true)]$SeriesDownCount,
@@ -62,12 +64,14 @@ function Get-DonutHTML {
     $HTML += "<circle class='donut-segment' cx='21' cy='21' r='15.91549430918954' fill='transparent' stroke='$DonutBadColour' stroke-width='$DonutStroke' stroke-dasharray='$SeriesUpCount $SeriesDownCount' stroke-dashoffset='25'></circle>" 
         
     if ( $Worker ) {
-        $HTML += "<g class='worker-chart-text'>" 
-        $HTML += "<text x='50%' y='50%' class='worker-chart-label'>" 
+         $HTML += "<g class='worker-chart-text'>" 
+        $HTML += "<text x='50%' y='50%' class='worker-chart-label'>"
+        $HTML += "$SiteName $SeriesName" 
+        $HTML += "</text>"
     }
     else {
         $HTML += "<g class='chart-text'>" 
-        $HTML += "<text x='50%' y='50%' class='chart-label'>"      
+        $HTML += "<text x='50%' y='50%' class='chart-label'>"    
     }
         
     $HTML += "$SeriesName" 
