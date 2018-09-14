@@ -15,6 +15,7 @@
             "htmldatafile": "htmldata.txt",
             "htmloutputfile": "index.html",
             "refreshduration": 0,
+	    "WorkerSiteName": false,
             "UpColour": "rgba(221, 70, 70, 0.9)",
             "DownColour": "rgba(67, 137, 203, 0.95)",
             "WorkerDonutStroke": 5,
