@@ -193,7 +193,7 @@ function New-HtmlReport {
                         }
                         "<td width='$ColumnPercent%' align=center valign=top>" | Out-File $HTMLOutputFileFull -Append
                         if ($ShowSiteName -eq $true) {
-                            $SiteName = $CheckData.Values.SiteName | select -Unique
+                            $SiteName = $CheckData.Values.SiteName | Select-Object -Unique
                             Get-DonutHTML $Height $Width $UpColor $DownColor $DonutStroke $SiteName $NewName $Up $Down -Worker | Out-File $HTMLOutputFileFull -Append
                         } else {
                             $SiteName = ""
